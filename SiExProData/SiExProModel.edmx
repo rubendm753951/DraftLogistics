@@ -1,0 +1,1118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MasupackModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="C_AGENCIAS">
+          <Key>
+            <PropertyRef Name="id_agencia" />
+          </Key>
+          <Property Name="id_agencia" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_corporativo" Type="int" Nullable="false" />
+          <Property Name="id_pais" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="200" />
+          <Property Name="direccion" Type="varchar" MaxLength="200" />
+          <Property Name="estado_provincia" Type="varchar" MaxLength="100" />
+          <Property Name="ciudad" Type="varchar" MaxLength="100" />
+          <Property Name="telefono" Type="varchar" MaxLength="50" />
+          <Property Name="fecha_alta" Type="datetime" />
+          <Property Name="fecha_termino" Type="datetime" />
+          <Property Name="id_moneda" Type="int" Nullable="false" />
+          <Property Name="limite_credito" Type="decimal" Precision="10" Scale="0" />
+          <Property Name="NIT" Type="varchar" MaxLength="100" />
+          <Property Name="requiere_asignacion" Type="bit" Nullable="false" />
+          <Property Name="id_recibo" Type="int" Nullable="false" />
+          <Property Name="factor" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="esquema_por_factor" Type="bit" Nullable="false" />
+          <Property Name="costo_adicional" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="guia_estafeta" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="C_CLIENTES">
+          <Key>
+            <PropertyRef Name="id_cliente" />
+          </Key>
+          <Property Name="id_cliente" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_pais" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="100" />
+          <Property Name="empresa" Type="varchar" MaxLength="200" />
+          <Property Name="apellidos" Type="varchar" MaxLength="200" />
+          <Property Name="calle" Type="varchar" MaxLength="100" />
+          <Property Name="noexterior" Type="int" />
+          <Property Name="nointerior" Type="varchar" MaxLength="100" />
+          <Property Name="direccion2" Type="varchar" MaxLength="200" />
+          <Property Name="colonia" Type="varchar" MaxLength="100" />
+          <Property Name="ciudad" Type="varchar" MaxLength="200" />
+          <Property Name="municipio" Type="varchar" MaxLength="100" />
+          <Property Name="estadoprovincia" Type="varchar" MaxLength="200" />
+          <Property Name="telefono" Type="varchar" MaxLength="50" />
+          <Property Name="codigo_postal" Type="varchar" MaxLength="20" />
+          <Property Name="email" Type="varchar" MaxLength="200" />
+          <Property Name="NIT" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="C_DESTINATARIOS">
+          <Key>
+            <PropertyRef Name="id_destinatario" />
+          </Key>
+          <Property Name="id_destinatario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_pais" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="100" />
+          <Property Name="empresa" Type="varchar" MaxLength="200" />
+          <Property Name="apellidos" Type="varchar" MaxLength="200" />
+          <Property Name="calle" Type="varchar" MaxLength="100" />
+          <Property Name="noexterior" Type="int" />
+          <Property Name="nointerior" Type="varchar" MaxLength="100" />
+          <Property Name="direccion2" Type="varchar" MaxLength="200" />
+          <Property Name="colonia" Type="varchar" MaxLength="100" />
+          <Property Name="ciudad" Type="varchar" MaxLength="200" />
+          <Property Name="municipio" Type="varchar" MaxLength="100" />
+          <Property Name="estadoprovincia" Type="varchar" MaxLength="200" />
+          <Property Name="telefono" Type="varchar" MaxLength="50" />
+          <Property Name="codigo_postal" Type="varchar" MaxLength="20" />
+          <Property Name="email" Type="varchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="C_ESTADOS_GOMBAR">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="siglas" Type="nvarchar" MaxLength="10" />
+          <Property Name="destino" Type="nvarchar" MaxLength="50" />
+          <Property Name="zona" Type="int" />
+          <Property Name="tiempo_transito" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="C_SEPOMEX">
+          <Key>
+            <PropertyRef Name="d_codigo" />
+            <PropertyRef Name="d_asenta" />
+            <PropertyRef Name="d_tipo_asenta" />
+            <PropertyRef Name="D_mnpio" />
+            <PropertyRef Name="d_estado" />
+            <PropertyRef Name="d_CP" />
+            <PropertyRef Name="c_estado" />
+            <PropertyRef Name="c_oficina" />
+            <PropertyRef Name="c_tipo_asenta" />
+            <PropertyRef Name="c_mnpio" />
+            <PropertyRef Name="id_asenta_cpcons" />
+            <PropertyRef Name="d_zona" />
+            <PropertyRef Name="id_estado" />
+          </Key>
+          <Property Name="d_codigo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="d_asenta" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="d_tipo_asenta" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="D_mnpio" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="d_estado" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="d_ciudad" Type="nvarchar" MaxLength="150" />
+          <Property Name="d_CP" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_estado" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_oficina" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_CP" Type="nvarchar" MaxLength="50" />
+          <Property Name="c_tipo_asenta" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_mnpio" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="id_asenta_cpcons" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="d_zona" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_cve_ciudad" Type="nvarchar" MaxLength="50" />
+          <Property Name="id_estado" Type="int" Nullable="false" />
+          <Property Name="estado_codigo" Type="nvarchar" MaxLength="5" />
+        </EntityType>
+        <EntityType Name="C_ZONAS">
+          <Key>
+            <PropertyRef Name="id_zona" />
+          </Key>
+          <Property Name="id_zona" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="50" />
+          <Property Name="usuario_estafeta" Type="int" />
+        </EntityType>
+        <EntityType Name="D_CIUDADES_RUTAS">
+          <Key>
+            <PropertyRef Name="id_ciudad_ruta" />
+          </Key>
+          <Property Name="id_ciudad_ruta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_ciudad" Type="int" Nullable="false" />
+          <Property Name="id_ruta" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="D_COBERTURA">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="codigo_postal" Type="nvarchar" MaxLength="15" />
+          <Property Name="municipio" Type="nvarchar" MaxLength="90" />
+          <Property Name="estado" Type="nvarchar" MaxLength="90" />
+          <Property Name="siglas_plaza" Type="nvarchar" MaxLength="10" />
+          <Property Name="lunes" Type="bit" Nullable="false" />
+          <Property Name="martes" Type="bit" Nullable="false" />
+          <Property Name="miercoles" Type="bit" Nullable="false" />
+          <Property Name="jueves" Type="bit" Nullable="false" />
+          <Property Name="viernes" Type="bit" Nullable="false" />
+          <Property Name="sabado" Type="bit" Nullable="false" />
+          <Property Name="domingo" Type="bit" Nullable="false" />
+          <Property Name="periodicidad" Type="nvarchar" MaxLength="50" />
+          <Property Name="ocurre" Type="bit" Nullable="false" />
+          <Property Name="reexpedicion" Type="bit" Nullable="false" />
+          <Property Name="garantia_maxima" Type="nvarchar" MaxLength="50" />
+          <Property Name="ciudad" Type="nvarchar" MaxLength="90" />
+        </EntityType>
+        <EntityType Name="D_ENVIO_COMENTARIOS">
+          <Key>
+            <PropertyRef Name="id_comentario" />
+            <PropertyRef Name="tipo_comentario" />
+          </Key>
+          <Property Name="id_comentario" Type="int" Nullable="false" />
+          <Property Name="id_agente" Type="int" Nullable="false" />
+          <Property Name="id_usuario" Type="int" Nullable="false" />
+          <Property Name="fecha" Type="datetime" />
+          <Property Name="comentario" Type="nvarchar(max)" />
+          <Property Name="tipo_comentario" Type="tinyint" Nullable="false" />
+          <Property Name="id_envio" Type="int" />
+        </EntityType>
+        <EntityType Name="D_ENVIOS">
+          <Key>
+            <PropertyRef Name="id_envio" />
+          </Key>
+          <Property Name="id_envio" Type="int" Nullable="false" />
+          <Property Name="precio" Type="money" Nullable="false" />
+          <Property Name="valor_seguro" Type="money" Nullable="false" />
+          <Property Name="id_tarifa_agencia" Type="int" Nullable="false" />
+          <Property Name="id_codigo_promocion" Type="int" />
+          <Property Name="total_envio" Type="money" Nullable="false" />
+          <Property Name="fecha" Type="datetime" Nullable="false" />
+          <Property Name="fecha_corte" Type="datetime" />
+          <Property Name="instrucciones_entrega" Type="varchar" MaxLength="200" />
+          <Property Name="id_usuario" Type="int" Nullable="false" />
+          <Property Name="id_ruta" Type="int" />
+          <Property Name="largo" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="ancho" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="alto" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="peso" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Referencia1" Type="varchar" MaxLength="50" />
+          <Property Name="id_contenido" Type="int" />
+          <Property Name="id_status" Type="int" Nullable="false" />
+          <Property Name="valor_aduana" Type="money" />
+          <Property Name="Referencia_FedEx" Type="nvarchar" MaxLength="350" />
+          <Property Name="Referencia_USPS" Type="nchar" MaxLength="50" />
+          <Property Name="id_subproducto" Type="int" />
+          <Property Name="contenedores" Type="nvarchar" MaxLength="100" />
+          <Property Name="observaciones" Type="nvarchar" MaxLength="3000" />
+        </EntityType>
+        <EntityType Name="D_ENVIOS_DATOS">
+          <Key>
+            <PropertyRef Name="id_envio" />
+          </Key>
+          <Property Name="id_envio" Type="int" Nullable="false" />
+          <Property Name="id_cliente" Type="int" Nullable="false" />
+          <Property Name="id_destinatario" Type="int" Nullable="false" />
+          <Property Name="id_contenido" Type="int" />
+          <Property Name="observaciones" Type="varchar" MaxLength="200" />
+          <Property Name="exportado" Type="bit" />
+          <Property Name="entregado" Type="bit" />
+          <Property Name="fecha_entrega" Type="datetime" />
+        </EntityType>
+        <EntityType Name="D_ESTAFETA_FRECUENCIA_COTIZADOR">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EsPaquete" Type="bit" />
+          <Property Name="Largo" Type="float" />
+          <Property Name="Peso" Type="float" />
+          <Property Name="Alto" Type="float" />
+          <Property Name="Ancho" Type="float" />
+          <Property Name="OcurreForzoso" Type="nvarchar" MaxLength="20" />
+          <Property Name="Frecuencia" Type="nvarchar" MaxLength="20" />
+          <Property Name="CostoReexpedicion" Type="nvarchar" MaxLength="20" />
+          <Property Name="ExistenteSiglaOri" Type="nvarchar" MaxLength="20" />
+          <Property Name="ExistenteSiglaDes" Type="nvarchar" MaxLength="20" />
+          <Property Name="Lunes" Type="nvarchar" MaxLength="20" />
+          <Property Name="Martes" Type="nvarchar" MaxLength="20" />
+          <Property Name="Miercoles" Type="nvarchar" MaxLength="20" />
+          <Property Name="Jueves" Type="nvarchar" MaxLength="20" />
+          <Property Name="Viernes" Type="nvarchar" MaxLength="20" />
+          <Property Name="Sabado" Type="nvarchar" MaxLength="20" />
+          <Property Name="Domingo" Type="nvarchar" MaxLength="20" />
+          <Property Name="id_envio" Type="int" Nullable="false" />
+          <Property Name="FechaCotizacion" Type="datetime" />
+        </EntityType>
+        <EntityType Name="D_ESTAFETA_LABEL">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_envio" Type="int" />
+          <Property Name="labelPDF" Type="varbinary(max)" />
+          <Property Name="trackId" Type="nvarchar" MaxLength="150" />
+          <Property Name="fecha" Type="datetime" />
+          <Property Name="relacion" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="D_ESTAFETA_REQUEST_RESPONSE">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="metodo" Type="nvarchar" MaxLength="100" />
+          <Property Name="request" Type="varchar(max)" />
+          <Property Name="response" Type="varchar(max)" />
+          <Property Name="fecha" Type="datetime" />
+          <Property Name="cuenta" Type="int" />
+          <Property Name="imagenBase64" Type="varchar(max)" />
+          <Property Name="carrier" Type="int" />
+        </EntityType>
+        <EntityType Name="D_ESTAFETA_TIPO_SERVICIO">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_envio" Type="int" Nullable="false" />
+          <Property Name="DescripcionServicio" Type="nvarchar" MaxLength="50" />
+          <Property Name="TipoEnvioRes" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="AplicaCotizacion" Type="nvarchar" MaxLength="50" />
+          <Property Name="TarifaBase" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="CCTarifaBase" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="CargosExtra" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="SobrePeso" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="CCSobrePeso" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="CostoTotal" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="Peso" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="AplicaServicio" Type="nvarchar" MaxLength="50" />
+          <Property Name="FechaCotizacion" Type="datetime" />
+          <Property Name="Selecccionado" Type="bit" />
+        </EntityType>
+        <EntityType Name="D_TARIFAS_AGENCIA">
+          <Key>
+            <PropertyRef Name="id_tarifa_agencia" />
+          </Key>
+          <Property Name="id_tarifa_agencia" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_agencia" Type="int" Nullable="false" />
+          <Property Name="id_tarifa" Type="int" Nullable="false" />
+          <Property Name="valor" Type="money" />
+          <Property Name="Activado" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="C_AGENCIAS_D_TARIFAS_AGENCIA_fk">
+          <End Role="C_AGENCIAS" Type="Self.C_AGENCIAS" Multiplicity="1" />
+          <End Role="D_TARIFAS_AGENCIA" Type="Self.D_TARIFAS_AGENCIA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="C_AGENCIAS">
+              <PropertyRef Name="id_agencia" />
+            </Principal>
+            <Dependent Role="D_TARIFAS_AGENCIA">
+              <PropertyRef Name="id_agencia" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="C_CLIENTES_D_ENVIOS_DATOS_fk">
+          <End Role="C_CLIENTES" Type="Self.C_CLIENTES" Multiplicity="1" />
+          <End Role="D_ENVIOS_DATOS" Type="Self.D_ENVIOS_DATOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="C_CLIENTES">
+              <PropertyRef Name="id_cliente" />
+            </Principal>
+            <Dependent Role="D_ENVIOS_DATOS">
+              <PropertyRef Name="id_cliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
+          <End Role="C_DESTINATARIOS" Type="Self.C_DESTINATARIOS" Multiplicity="1" />
+          <End Role="D_ENVIOS_DATOS" Type="Self.D_ENVIOS_DATOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="C_DESTINATARIOS">
+              <PropertyRef Name="id_destinatario" />
+            </Principal>
+            <Dependent Role="D_ENVIOS_DATOS">
+              <PropertyRef Name="id_destinatario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="D_TARIFAS_AGENCIA_D_ENVIOS_fk">
+          <End Role="D_TARIFAS_AGENCIA" Type="Self.D_TARIFAS_AGENCIA" Multiplicity="1" />
+          <End Role="D_ENVIOS" Type="Self.D_ENVIOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="D_TARIFAS_AGENCIA">
+              <PropertyRef Name="id_tarifa_agencia" />
+            </Principal>
+            <Dependent Role="D_ENVIOS">
+              <PropertyRef Name="id_tarifa_agencia" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="sp_Select_envios_comentarios_pendientes" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_oficina" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="MasupackModelStoreContainer">
+          <EntitySet Name="C_AGENCIAS" EntityType="Self.C_AGENCIAS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="C_CLIENTES" EntityType="Self.C_CLIENTES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="C_DESTINATARIOS" EntityType="Self.C_DESTINATARIOS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="C_ESTADOS_GOMBAR" EntityType="Self.C_ESTADOS_GOMBAR" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="C_ZONAS" EntityType="Self.C_ZONAS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_CIUDADES_RUTAS" EntityType="Self.D_CIUDADES_RUTAS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_COBERTURA" EntityType="Self.D_COBERTURA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_ENVIO_COMENTARIOS" EntityType="Self.D_ENVIO_COMENTARIOS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_ENVIOS" EntityType="Self.D_ENVIOS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_ENVIOS_DATOS" EntityType="Self.D_ENVIOS_DATOS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_ESTAFETA_FRECUENCIA_COTIZADOR" EntityType="Self.D_ESTAFETA_FRECUENCIA_COTIZADOR" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_ESTAFETA_LABEL" EntityType="Self.D_ESTAFETA_LABEL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_ESTAFETA_REQUEST_RESPONSE" EntityType="Self.D_ESTAFETA_REQUEST_RESPONSE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_ESTAFETA_TIPO_SERVICIO" EntityType="Self.D_ESTAFETA_TIPO_SERVICIO" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_TARIFAS_AGENCIA" EntityType="Self.D_TARIFAS_AGENCIA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="C_SEPOMEX" EntityType="Self.C_SEPOMEX" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [C_SEPOMEX].[d_codigo] AS [d_codigo], 
+    [C_SEPOMEX].[d_asenta] AS [d_asenta], 
+    [C_SEPOMEX].[d_tipo_asenta] AS [d_tipo_asenta], 
+    [C_SEPOMEX].[D_mnpio] AS [D_mnpio], 
+    [C_SEPOMEX].[d_estado] AS [d_estado], 
+    [C_SEPOMEX].[d_ciudad] AS [d_ciudad], 
+    [C_SEPOMEX].[d_CP] AS [d_CP], 
+    [C_SEPOMEX].[c_estado] AS [c_estado], 
+    [C_SEPOMEX].[c_oficina] AS [c_oficina], 
+    [C_SEPOMEX].[c_CP] AS [c_CP], 
+    [C_SEPOMEX].[c_tipo_asenta] AS [c_tipo_asenta], 
+    [C_SEPOMEX].[c_mnpio] AS [c_mnpio], 
+    [C_SEPOMEX].[id_asenta_cpcons] AS [id_asenta_cpcons], 
+    [C_SEPOMEX].[d_zona] AS [d_zona], 
+    [C_SEPOMEX].[c_cve_ciudad] AS [c_cve_ciudad], 
+    [C_SEPOMEX].[id_estado] AS [id_estado], 
+    [C_SEPOMEX].[estado_codigo] AS [estado_codigo]
+    FROM [dbo].[C_SEPOMEX] AS [C_SEPOMEX]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="C_AGENCIAS_D_TARIFAS_AGENCIA_fk" Association="Self.C_AGENCIAS_D_TARIFAS_AGENCIA_fk">
+            <End Role="C_AGENCIAS" EntitySet="C_AGENCIAS" />
+            <End Role="D_TARIFAS_AGENCIA" EntitySet="D_TARIFAS_AGENCIA" />
+          </AssociationSet>
+          <AssociationSet Name="C_CLIENTES_D_ENVIOS_DATOS_fk" Association="Self.C_CLIENTES_D_ENVIOS_DATOS_fk">
+            <End Role="C_CLIENTES" EntitySet="C_CLIENTES" />
+            <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
+          </AssociationSet>
+          <AssociationSet Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk" Association="Self.C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
+            <End Role="C_DESTINATARIOS" EntitySet="C_DESTINATARIOS" />
+            <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
+          </AssociationSet>
+          <AssociationSet Name="D_TARIFAS_AGENCIA_D_ENVIOS_fk" Association="Self.D_TARIFAS_AGENCIA_D_ENVIOS_fk">
+            <End Role="D_TARIFAS_AGENCIA" EntitySet="D_TARIFAS_AGENCIA" />
+            <End Role="D_ENVIOS" EntitySet="D_ENVIOS" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MasupackModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Agencias">
+          <Key>
+            <PropertyRef Name="id_agencia" />
+          </Key>
+          <Property Name="id_agencia" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_corporativo" Type="Int32" Nullable="false" />
+          <Property Name="id_pais" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="direccion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="estado_provincia" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ciudad" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="telefono" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="fecha_alta" Type="DateTime" Precision="3" />
+          <Property Name="fecha_termino" Type="DateTime" Precision="3" />
+          <Property Name="id_moneda" Type="Int32" Nullable="false" />
+          <Property Name="limite_credito" Type="Decimal" Precision="10" Scale="0" />
+          <Property Name="NIT" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="requiere_asignacion" Type="Boolean" Nullable="false" />
+          <Property Name="id_recibo" Type="Int32" Nullable="false" />
+          <Property Name="factor" Type="Decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="esquema_por_factor" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="D_TARIFAS_AGENCIA" Relationship="MasupackModel.C_AGENCIAS_D_TARIFAS_AGENCIA_fk" FromRole="Agencias" ToRole="D_TARIFAS_AGENCIA" />
+          <Property Name="costo_adicional" Type="Decimal" Nullable="false" Precision="18" Scale="4" />
+          <Property Name="guia_estafeta" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Cliente">
+          <Key>
+            <PropertyRef Name="id_cliente" />
+          </Key>
+          <Property Name="id_cliente" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_pais" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="empresa" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="apellidos" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="calle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="noexterior" Type="Int32" />
+          <Property Name="nointerior" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="direccion2" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="colonia" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ciudad" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="municipio" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="estadoprovincia" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="telefono" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="codigo_postal" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="NIT" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="D_ENVIOS_DATOS" Relationship="Self.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="C_CLIENTES" ToRole="D_ENVIOS_DATOS" />
+        </EntityType>
+        <EntityType Name="Destinatario">
+          <Key>
+            <PropertyRef Name="id_destinatario" />
+          </Key>
+          <Property Name="id_destinatario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_pais" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="empresa" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="apellidos" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="calle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="noexterior" Type="Int32" />
+          <Property Name="nointerior" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="direccion2" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="colonia" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ciudad" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="municipio" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="estadoprovincia" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="telefono" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="codigo_postal" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="D_ENVIOS_DATOS" Relationship="Self.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="C_DESTINATARIOS" ToRole="D_ENVIOS_DATOS" />
+        </EntityType>
+        <EntityType Name="Envio">
+          <Key>
+            <PropertyRef Name="id_envio" />
+          </Key>
+          <Property Name="id_envio" Type="Int32" Nullable="false" />
+          <Property Name="precio" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="valor_seguro" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="id_tarifa_agencia" Type="Int32" Nullable="false" />
+          <Property Name="id_codigo_promocion" Type="Int32" />
+          <Property Name="total_envio" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="fecha" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="fecha_corte" Type="DateTime" Precision="3" />
+          <Property Name="instrucciones_entrega" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="id_usuario" Type="Int32" Nullable="false" />
+          <Property Name="id_ruta" Type="Int32" />
+          <Property Name="largo" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="ancho" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="alto" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="peso" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Referencia1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="id_contenido" Type="Int32" />
+          <Property Name="id_status" Type="Int32" Nullable="false" />
+          <Property Name="valor_aduana" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Referencia_FedEx" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Referencia_USPS" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="id_subproducto" Type="Int32" />
+          <Property Name="contenedores" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="observaciones" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="D_TARIFAS_AGENCIA" Relationship="MasupackModel.D_TARIFAS_AGENCIA_D_ENVIOS_fk" FromRole="Envio" ToRole="D_TARIFAS_AGENCIA" />
+        </EntityType>
+        <EntityType Name="EnvioDatos">
+          <Key>
+            <PropertyRef Name="id_envio" />
+          </Key>
+          <Property Name="id_envio" Type="Int32" Nullable="false" />
+          <Property Name="id_cliente" Type="Int32" Nullable="false" />
+          <Property Name="id_destinatario" Type="Int32" Nullable="false" />
+          <Property Name="id_contenido" Type="Int32" />
+          <Property Name="observaciones" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="exportado" Type="Boolean" />
+          <NavigationProperty Name="C_CLIENTES" Relationship="Self.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="C_CLIENTES" />
+          <NavigationProperty Name="C_DESTINATARIOS" Relationship="Self.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="C_DESTINATARIOS" />
+          <Property Name="entregado" Type="Boolean" />
+          <Property Name="fecha_entrega" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="C_CLIENTES_D_ENVIOS_DATOS_fk">
+          <End Role="C_CLIENTES" Type="MasupackModel.Cliente" Multiplicity="1" />
+          <End Role="D_ENVIOS_DATOS" Type="MasupackModel.EnvioDatos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="C_CLIENTES">
+              <PropertyRef Name="id_cliente" />
+            </Principal>
+            <Dependent Role="D_ENVIOS_DATOS">
+              <PropertyRef Name="id_cliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
+          <End Role="C_DESTINATARIOS" Type="MasupackModel.Destinatario" Multiplicity="1" />
+          <End Role="D_ENVIOS_DATOS" Type="MasupackModel.EnvioDatos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="C_DESTINATARIOS">
+              <PropertyRef Name="id_destinatario" />
+            </Principal>
+            <Dependent Role="D_ENVIOS_DATOS">
+              <PropertyRef Name="id_destinatario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SiExProEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="C_AGENCIAS" EntityType="MasupackModel.Agencias" />
+          <EntitySet Name="C_CLIENTES" EntityType="MasupackModel.Cliente" />
+          <EntitySet Name="C_DESTINATARIOS" EntityType="MasupackModel.Destinatario" />
+          <EntitySet Name="D_ENVIOS" EntityType="MasupackModel.Envio" />
+          <EntitySet Name="D_ENVIOS_DATOS" EntityType="MasupackModel.EnvioDatos" />
+          <AssociationSet Name="C_CLIENTES_D_ENVIOS_DATOS_fk" Association="Self.C_CLIENTES_D_ENVIOS_DATOS_fk">
+            <End Role="C_CLIENTES" EntitySet="C_CLIENTES" />
+            <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
+          </AssociationSet>
+          <AssociationSet Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk" Association="Self.C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
+            <End Role="C_DESTINATARIOS" EntitySet="C_DESTINATARIOS" />
+            <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
+          </AssociationSet>
+          <EntitySet Name="D_TARIFAS_AGENCIA" EntityType="MasupackModel.TarifaAgencia" />
+          <AssociationSet Name="C_AGENCIAS_D_TARIFAS_AGENCIA_fk" Association="MasupackModel.C_AGENCIAS_D_TARIFAS_AGENCIA_fk">
+            <End Role="Agencias" EntitySet="C_AGENCIAS" />
+            <End Role="D_TARIFAS_AGENCIA" EntitySet="D_TARIFAS_AGENCIA" />
+          </AssociationSet>
+          <AssociationSet Name="D_TARIFAS_AGENCIA_D_ENVIOS_fk" Association="MasupackModel.D_TARIFAS_AGENCIA_D_ENVIOS_fk">
+            <End Role="D_TARIFAS_AGENCIA" EntitySet="D_TARIFAS_AGENCIA" />
+            <End Role="Envio" EntitySet="D_ENVIOS" />
+          </AssociationSet>
+          <EntitySet Name="D_ENVIO_COMENTARIOS" EntityType="MasupackModel.EnvioComentario" />
+          <FunctionImport Name="sp_Select_envios_comentarios_pendientes" ReturnType="Collection(MasupackModel.SelectEnviosComentariosPendientesResult)">
+          <Parameter Name="id_oficina" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="D_CIUDADES_RUTAS" EntityType="MasupackModel.CiudadesRutas" />
+          <EntitySet Name="D_ESTAFETA_FRECUENCIA_COTIZADOR" EntityType="MasupackModel.EstafetaFrecuenciaCotizador" />
+          <EntitySet Name="D_ESTAFETA_TIPO_SERVICIO" EntityType="MasupackModel.EstafetaTipoServicio" />
+          <EntitySet Name="D_ESTAFETA_LABEL" EntityType="MasupackModel.EstafetaLabel" />
+          <EntitySet Name="C_ESTADOS_GOMBAR" EntityType="MasupackModel.EstadosGombar" />
+          <EntitySet Name="C_ZONAS" EntityType="MasupackModel.Zonas" />
+          <EntitySet Name="D_COBERTURAS" EntityType="MasupackModel.Cobertura" />
+          <EntitySet Name="D_ESTAFETA_REQUEST_RESPONSE" EntityType="MasupackModel.EstafetaRequestResponse" />
+          <EntitySet Name="C_SEPOMEX" EntityType="MasupackModel.Sepomex" />
+        </EntityContainer>
+        <EntityType Name="TarifaAgencia">
+          <Key>
+            <PropertyRef Name="id_tarifa_agencia" />
+          </Key>
+          <Property Name="id_tarifa_agencia" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_agencia" Type="Int32" Nullable="false" />
+          <Property Name="id_tarifa" Type="Int32" Nullable="false" />
+          <Property Name="valor" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Activado" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="C_AGENCIAS" Relationship="MasupackModel.C_AGENCIAS_D_TARIFAS_AGENCIA_fk" FromRole="D_TARIFAS_AGENCIA" ToRole="Agencias" />
+          <NavigationProperty Name="D_ENVIOS" Relationship="MasupackModel.D_TARIFAS_AGENCIA_D_ENVIOS_fk" FromRole="D_TARIFAS_AGENCIA" ToRole="Envio" />
+        </EntityType>
+        <Association Name="C_AGENCIAS_D_TARIFAS_AGENCIA_fk">
+          <End Type="MasupackModel.Agencias" Role="Agencias" Multiplicity="1" />
+          <End Type="MasupackModel.TarifaAgencia" Role="D_TARIFAS_AGENCIA" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Agencias">
+              <PropertyRef Name="id_agencia" />
+            </Principal>
+            <Dependent Role="D_TARIFAS_AGENCIA">
+              <PropertyRef Name="id_agencia" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="D_TARIFAS_AGENCIA_D_ENVIOS_fk">
+          <End Type="MasupackModel.TarifaAgencia" Role="D_TARIFAS_AGENCIA" Multiplicity="1" />
+          <End Type="MasupackModel.Envio" Role="Envio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="D_TARIFAS_AGENCIA">
+              <PropertyRef Name="id_tarifa_agencia" />
+            </Principal>
+            <Dependent Role="Envio">
+              <PropertyRef Name="id_tarifa_agencia" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EnvioComentario">
+          <Key>
+            <PropertyRef Name="id_comentario" />
+            <PropertyRef Name="tipo_comentario" />
+          </Key>
+          <Property Name="id_comentario" Type="Int32" Nullable="false" />
+          <Property Name="id_agente" Type="Int32" Nullable="false" />
+          <Property Name="id_usuario" Type="Int32" Nullable="false" />
+          <Property Name="fecha" Type="DateTime" Precision="3" />
+          <Property Name="comentario" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="tipo_comentario" Type="Byte" Nullable="false" />
+          <Property Name="id_envio" Type="Int32" />
+        </EntityType>
+        <ComplexType Name="SelectEnviosComentariosPendientesResult">
+          <Property Type="Int32" Name="id_comentario" Nullable="false" />
+          <Property Type="Int32" Name="id_agente" Nullable="false" />
+          <Property Type="Int32" Name="id_usuario" Nullable="false" />
+          <Property Type="DateTime" Name="fecha" Nullable="true" Precision="23" />
+          <Property Type="String" Name="comentario" Nullable="true" />
+          <Property Type="Byte" Name="tipo_comentario" Nullable="false" />
+          <Property Type="Int32" Name="id_envio" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="CiudadesRutas">
+          <Key>
+            <PropertyRef Name="id_ciudad_ruta" />
+          </Key>
+          <Property Name="id_ciudad_ruta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_ciudad" Type="Int32" Nullable="false" />
+          <Property Name="id_ruta" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EstafetaFrecuenciaCotizador">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EsPaquete" Type="Boolean" />
+          <Property Name="Largo" Type="Double" />
+          <Property Name="Peso" Type="Double" />
+          <Property Name="Alto" Type="Double" />
+          <Property Name="Ancho" Type="Double" />
+          <Property Name="OcurreForzoso" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Frecuencia" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CostoReexpedicion" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ExistenteSiglaOri" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ExistenteSiglaDes" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Lunes" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Martes" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Miercoles" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Jueves" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Viernes" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Sabado" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Domingo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="id_envio" Type="Int32" Nullable="false" />
+          <Property Name="FechaCotizacion" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="EstafetaTipoServicio">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_envio" Type="Int32" Nullable="false" />
+          <Property Name="DescripcionServicio" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TipoEnvioRes" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="AplicaCotizacion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TarifaBase" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="CCTarifaBase" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="CargosExtra" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="SobrePeso" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="CCSobrePeso" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="CostoTotal" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="Peso" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="AplicaServicio" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FechaCotizacion" Type="DateTime" Precision="3" />
+          <Property Name="Selecccionado" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="EstafetaLabel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_envio" Type="Int32" />
+          <Property Name="labelPDF" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="trackId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="fecha" Type="DateTime" Precision="3" />
+          <Property Name="relacion" Type="Guid" />
+        </EntityType>
+        <EntityType Name="EstadosGombar">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="siglas" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="destino" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="zona" Type="Int32" />
+          <Property Name="tiempo_transito" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Zonas">
+          <Key>
+            <PropertyRef Name="id_zona" />
+          </Key>
+          <Property Name="id_zona" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Descripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="usuario_estafeta" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Cobertura">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="codigo_postal" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="municipio" Type="String" MaxLength="90" FixedLength="false" Unicode="true" />
+          <Property Name="estado" Type="String" MaxLength="90" FixedLength="false" Unicode="true" />
+          <Property Name="siglas_plaza" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="lunes" Type="Boolean" Nullable="false" />
+          <Property Name="martes" Type="Boolean" Nullable="false" />
+          <Property Name="miercoles" Type="Boolean" Nullable="false" />
+          <Property Name="jueves" Type="Boolean" Nullable="false" />
+          <Property Name="viernes" Type="Boolean" Nullable="false" />
+          <Property Name="sabado" Type="Boolean" Nullable="false" />
+          <Property Name="domingo" Type="Boolean" Nullable="false" />
+          <Property Name="periodicidad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ocurre" Type="Boolean" Nullable="false" />
+          <Property Name="reexpedicion" Type="Boolean" Nullable="false" />
+          <Property Name="garantia_maxima" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ciudad" Type="String" MaxLength="90" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EstafetaRequestResponse">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="metodo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="request" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="response" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="fecha" Type="DateTime" Precision="3" />
+          <Property Name="cuenta" Type="Int32" />
+          <Property Name="imagenBase64" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="carrier" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Sepomex">
+          <Key>
+            <PropertyRef Name="d_codigo" />
+            <PropertyRef Name="d_asenta" />
+            <PropertyRef Name="d_tipo_asenta" />
+            <PropertyRef Name="D_mnpio" />
+            <PropertyRef Name="d_estado" />
+            <PropertyRef Name="d_CP" />
+            <PropertyRef Name="c_estado" />
+            <PropertyRef Name="c_oficina" />
+            <PropertyRef Name="c_tipo_asenta" />
+            <PropertyRef Name="c_mnpio" />
+            <PropertyRef Name="id_asenta_cpcons" />
+            <PropertyRef Name="d_zona" />
+            <PropertyRef Name="id_estado" />
+          </Key>
+          <Property Name="d_codigo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="d_asenta" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="d_tipo_asenta" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="D_mnpio" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="d_estado" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="d_ciudad" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="d_CP" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="c_estado" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="c_oficina" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="c_CP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="c_tipo_asenta" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="c_mnpio" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="id_asenta_cpcons" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="d_zona" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="c_cve_ciudad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="id_estado" Type="Int32" Nullable="false" />
+          <Property Name="estado_codigo" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MasupackModelStoreContainer" CdmEntityContainer="SiExProEntities">
+          <EntitySetMapping Name="C_AGENCIAS">
+            <EntityTypeMapping TypeName="MasupackModel.Agencias">
+              <MappingFragment StoreEntitySet="C_AGENCIAS">
+                <ScalarProperty Name="guia_estafeta" ColumnName="guia_estafeta" />
+                <ScalarProperty Name="costo_adicional" ColumnName="costo_adicional" />
+                <ScalarProperty Name="id_agencia" ColumnName="id_agencia" />
+                <ScalarProperty Name="id_corporativo" ColumnName="id_corporativo" />
+                <ScalarProperty Name="id_pais" ColumnName="id_pais" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="direccion" ColumnName="direccion" />
+                <ScalarProperty Name="estado_provincia" ColumnName="estado_provincia" />
+                <ScalarProperty Name="ciudad" ColumnName="ciudad" />
+                <ScalarProperty Name="telefono" ColumnName="telefono" />
+                <ScalarProperty Name="fecha_alta" ColumnName="fecha_alta" />
+                <ScalarProperty Name="fecha_termino" ColumnName="fecha_termino" />
+                <ScalarProperty Name="id_moneda" ColumnName="id_moneda" />
+                <ScalarProperty Name="limite_credito" ColumnName="limite_credito" />
+                <ScalarProperty Name="NIT" ColumnName="NIT" />
+                <ScalarProperty Name="requiere_asignacion" ColumnName="requiere_asignacion" />
+                <ScalarProperty Name="id_recibo" ColumnName="id_recibo" />
+                <ScalarProperty Name="factor" ColumnName="factor" />
+                <ScalarProperty Name="esquema_por_factor" ColumnName="esquema_por_factor" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="C_CLIENTES">
+            <EntityTypeMapping TypeName="MasupackModel.Cliente">
+              <MappingFragment StoreEntitySet="C_CLIENTES">
+                <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
+                <ScalarProperty Name="id_pais" ColumnName="id_pais" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="empresa" ColumnName="empresa" />
+                <ScalarProperty Name="apellidos" ColumnName="apellidos" />
+                <ScalarProperty Name="calle" ColumnName="calle" />
+                <ScalarProperty Name="noexterior" ColumnName="noexterior" />
+                <ScalarProperty Name="nointerior" ColumnName="nointerior" />
+                <ScalarProperty Name="direccion2" ColumnName="direccion2" />
+                <ScalarProperty Name="colonia" ColumnName="colonia" />
+                <ScalarProperty Name="ciudad" ColumnName="ciudad" />
+                <ScalarProperty Name="municipio" ColumnName="municipio" />
+                <ScalarProperty Name="estadoprovincia" ColumnName="estadoprovincia" />
+                <ScalarProperty Name="telefono" ColumnName="telefono" />
+                <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="NIT" ColumnName="NIT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="C_DESTINATARIOS">
+            <EntityTypeMapping TypeName="MasupackModel.Destinatario">
+              <MappingFragment StoreEntitySet="C_DESTINATARIOS">
+                <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
+                <ScalarProperty Name="id_pais" ColumnName="id_pais" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="empresa" ColumnName="empresa" />
+                <ScalarProperty Name="apellidos" ColumnName="apellidos" />
+                <ScalarProperty Name="calle" ColumnName="calle" />
+                <ScalarProperty Name="noexterior" ColumnName="noexterior" />
+                <ScalarProperty Name="nointerior" ColumnName="nointerior" />
+                <ScalarProperty Name="direccion2" ColumnName="direccion2" />
+                <ScalarProperty Name="colonia" ColumnName="colonia" />
+                <ScalarProperty Name="ciudad" ColumnName="ciudad" />
+                <ScalarProperty Name="municipio" ColumnName="municipio" />
+                <ScalarProperty Name="estadoprovincia" ColumnName="estadoprovincia" />
+                <ScalarProperty Name="telefono" ColumnName="telefono" />
+                <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+                <ScalarProperty Name="email" ColumnName="email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_ENVIOS">
+            <EntityTypeMapping TypeName="MasupackModel.Envio">
+              <MappingFragment StoreEntitySet="D_ENVIOS">
+                <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+                <ScalarProperty Name="precio" ColumnName="precio" />
+                <ScalarProperty Name="valor_seguro" ColumnName="valor_seguro" />
+                <ScalarProperty Name="id_tarifa_agencia" ColumnName="id_tarifa_agencia" />
+                <ScalarProperty Name="id_codigo_promocion" ColumnName="id_codigo_promocion" />
+                <ScalarProperty Name="total_envio" ColumnName="total_envio" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+                <ScalarProperty Name="fecha_corte" ColumnName="fecha_corte" />
+                <ScalarProperty Name="instrucciones_entrega" ColumnName="instrucciones_entrega" />
+                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+                <ScalarProperty Name="id_ruta" ColumnName="id_ruta" />
+                <ScalarProperty Name="largo" ColumnName="largo" />
+                <ScalarProperty Name="ancho" ColumnName="ancho" />
+                <ScalarProperty Name="alto" ColumnName="alto" />
+                <ScalarProperty Name="peso" ColumnName="peso" />
+                <ScalarProperty Name="Referencia1" ColumnName="Referencia1" />
+                <ScalarProperty Name="id_contenido" ColumnName="id_contenido" />
+                <ScalarProperty Name="id_status" ColumnName="id_status" />
+                <ScalarProperty Name="valor_aduana" ColumnName="valor_aduana" />
+                <ScalarProperty Name="Referencia_FedEx" ColumnName="Referencia_FedEx" />
+                <ScalarProperty Name="Referencia_USPS" ColumnName="Referencia_USPS" />
+                <ScalarProperty Name="id_subproducto" ColumnName="id_subproducto" />
+                <ScalarProperty Name="contenedores" ColumnName="contenedores" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_ENVIOS_DATOS">
+            <EntityTypeMapping TypeName="MasupackModel.EnvioDatos">
+              <MappingFragment StoreEntitySet="D_ENVIOS_DATOS">
+                <ScalarProperty Name="fecha_entrega" ColumnName="fecha_entrega" />
+                <ScalarProperty Name="entregado" ColumnName="entregado" />
+                <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+                <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
+                <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
+                <ScalarProperty Name="id_contenido" ColumnName="id_contenido" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+                <ScalarProperty Name="exportado" ColumnName="exportado" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_TARIFAS_AGENCIA">
+            <EntityTypeMapping TypeName="MasupackModel.TarifaAgencia">
+              <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA">
+                <ScalarProperty Name="Activado" ColumnName="Activado" />
+                <ScalarProperty Name="valor" ColumnName="valor" />
+                <ScalarProperty Name="id_tarifa" ColumnName="id_tarifa" />
+                <ScalarProperty Name="id_agencia" ColumnName="id_agencia" />
+                <ScalarProperty Name="id_tarifa_agencia" ColumnName="id_tarifa_agencia" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_ENVIO_COMENTARIOS">
+            <EntityTypeMapping TypeName="MasupackModel.EnvioComentario">
+              <MappingFragment StoreEntitySet="D_ENVIO_COMENTARIOS">
+                <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+                <ScalarProperty Name="tipo_comentario" ColumnName="tipo_comentario" />
+                <ScalarProperty Name="comentario" ColumnName="comentario" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+                <ScalarProperty Name="id_agente" ColumnName="id_agente" />
+                <ScalarProperty Name="id_comentario" ColumnName="id_comentario" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_Select_envios_comentarios_pendientes" FunctionName="MasupackModel.Store.sp_Select_envios_comentarios_pendientes">
+          <ResultMapping>
+              <ComplexTypeMapping TypeName="MasupackModel.SelectEnviosComentariosPendientesResult">
+                <ScalarProperty Name="id_comentario" ColumnName="id_comentario" />
+                <ScalarProperty Name="id_agente" ColumnName="id_agente" />
+                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+                <ScalarProperty Name="comentario" ColumnName="comentario" />
+                <ScalarProperty Name="tipo_comentario" ColumnName="tipo_comentario" />
+                <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="D_CIUDADES_RUTAS">
+            <EntityTypeMapping TypeName="MasupackModel.CiudadesRutas">
+              <MappingFragment StoreEntitySet="D_CIUDADES_RUTAS">
+                <ScalarProperty Name="id_ruta" ColumnName="id_ruta" />
+                <ScalarProperty Name="id_ciudad" ColumnName="id_ciudad" />
+                <ScalarProperty Name="id_ciudad_ruta" ColumnName="id_ciudad_ruta" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_ESTAFETA_FRECUENCIA_COTIZADOR">
+            <EntityTypeMapping TypeName="MasupackModel.EstafetaFrecuenciaCotizador">
+              <MappingFragment StoreEntitySet="D_ESTAFETA_FRECUENCIA_COTIZADOR">
+                <ScalarProperty Name="FechaCotizacion" ColumnName="FechaCotizacion" />
+                <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+                <ScalarProperty Name="Domingo" ColumnName="Domingo" />
+                <ScalarProperty Name="Sabado" ColumnName="Sabado" />
+                <ScalarProperty Name="Viernes" ColumnName="Viernes" />
+                <ScalarProperty Name="Jueves" ColumnName="Jueves" />
+                <ScalarProperty Name="Miercoles" ColumnName="Miercoles" />
+                <ScalarProperty Name="Martes" ColumnName="Martes" />
+                <ScalarProperty Name="Lunes" ColumnName="Lunes" />
+                <ScalarProperty Name="ExistenteSiglaDes" ColumnName="ExistenteSiglaDes" />
+                <ScalarProperty Name="ExistenteSiglaOri" ColumnName="ExistenteSiglaOri" />
+                <ScalarProperty Name="CostoReexpedicion" ColumnName="CostoReexpedicion" />
+                <ScalarProperty Name="Frecuencia" ColumnName="Frecuencia" />
+                <ScalarProperty Name="OcurreForzoso" ColumnName="OcurreForzoso" />
+                <ScalarProperty Name="Ancho" ColumnName="Ancho" />
+                <ScalarProperty Name="Alto" ColumnName="Alto" />
+                <ScalarProperty Name="Peso" ColumnName="Peso" />
+                <ScalarProperty Name="Largo" ColumnName="Largo" />
+                <ScalarProperty Name="EsPaquete" ColumnName="EsPaquete" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_ESTAFETA_TIPO_SERVICIO">
+            <EntityTypeMapping TypeName="MasupackModel.EstafetaTipoServicio">
+              <MappingFragment StoreEntitySet="D_ESTAFETA_TIPO_SERVICIO">
+                <ScalarProperty Name="Selecccionado" ColumnName="Selecccionado" />
+                <ScalarProperty Name="FechaCotizacion" ColumnName="FechaCotizacion" />
+                <ScalarProperty Name="AplicaServicio" ColumnName="AplicaServicio" />
+                <ScalarProperty Name="Peso" ColumnName="Peso" />
+                <ScalarProperty Name="CostoTotal" ColumnName="CostoTotal" />
+                <ScalarProperty Name="CCSobrePeso" ColumnName="CCSobrePeso" />
+                <ScalarProperty Name="SobrePeso" ColumnName="SobrePeso" />
+                <ScalarProperty Name="CargosExtra" ColumnName="CargosExtra" />
+                <ScalarProperty Name="CCTarifaBase" ColumnName="CCTarifaBase" />
+                <ScalarProperty Name="TarifaBase" ColumnName="TarifaBase" />
+                <ScalarProperty Name="AplicaCotizacion" ColumnName="AplicaCotizacion" />
+                <ScalarProperty Name="TipoEnvioRes" ColumnName="TipoEnvioRes" />
+                <ScalarProperty Name="DescripcionServicio" ColumnName="DescripcionServicio" />
+                <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_ESTAFETA_LABEL">
+            <EntityTypeMapping TypeName="MasupackModel.EstafetaLabel">
+              <MappingFragment StoreEntitySet="D_ESTAFETA_LABEL">
+                <ScalarProperty Name="relacion" ColumnName="relacion" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+                <ScalarProperty Name="trackId" ColumnName="trackId" />
+                <ScalarProperty Name="labelPDF" ColumnName="labelPDF" />
+                <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="C_ESTADOS_GOMBAR">
+            <EntityTypeMapping TypeName="MasupackModel.EstadosGombar">
+              <MappingFragment StoreEntitySet="C_ESTADOS_GOMBAR">
+                <ScalarProperty Name="tiempo_transito" ColumnName="tiempo_transito" />
+                <ScalarProperty Name="zona" ColumnName="zona" />
+                <ScalarProperty Name="destino" ColumnName="destino" />
+                <ScalarProperty Name="siglas" ColumnName="siglas" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="C_ZONAS">
+            <EntityTypeMapping TypeName="MasupackModel.Zonas">
+              <MappingFragment StoreEntitySet="C_ZONAS">
+                <ScalarProperty Name="usuario_estafeta" ColumnName="usuario_estafeta" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="id_zona" ColumnName="id_zona" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_COBERTURAS">
+            <EntityTypeMapping TypeName="MasupackModel.Cobertura">
+              <MappingFragment StoreEntitySet="D_COBERTURA">
+                <ScalarProperty Name="ciudad" ColumnName="ciudad" />
+                <ScalarProperty Name="garantia_maxima" ColumnName="garantia_maxima" />
+                <ScalarProperty Name="reexpedicion" ColumnName="reexpedicion" />
+                <ScalarProperty Name="ocurre" ColumnName="ocurre" />
+                <ScalarProperty Name="periodicidad" ColumnName="periodicidad" />
+                <ScalarProperty Name="domingo" ColumnName="domingo" />
+                <ScalarProperty Name="sabado" ColumnName="sabado" />
+                <ScalarProperty Name="viernes" ColumnName="viernes" />
+                <ScalarProperty Name="jueves" ColumnName="jueves" />
+                <ScalarProperty Name="miercoles" ColumnName="miercoles" />
+                <ScalarProperty Name="martes" ColumnName="martes" />
+                <ScalarProperty Name="lunes" ColumnName="lunes" />
+                <ScalarProperty Name="siglas_plaza" ColumnName="siglas_plaza" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="municipio" ColumnName="municipio" />
+                <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_ESTAFETA_REQUEST_RESPONSE">
+            <EntityTypeMapping TypeName="MasupackModel.EstafetaRequestResponse">
+              <MappingFragment StoreEntitySet="D_ESTAFETA_REQUEST_RESPONSE">
+                <ScalarProperty Name="carrier" ColumnName="carrier" />
+                <ScalarProperty Name="imagenBase64" ColumnName="imagenBase64" />
+                <ScalarProperty Name="cuenta" ColumnName="cuenta" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+                <ScalarProperty Name="response" ColumnName="response" />
+                <ScalarProperty Name="request" ColumnName="request" />
+                <ScalarProperty Name="metodo" ColumnName="metodo" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="C_SEPOMEX">
+            <EntityTypeMapping TypeName="MasupackModel.Sepomex">
+              <MappingFragment StoreEntitySet="C_SEPOMEX">
+                <ScalarProperty Name="estado_codigo" ColumnName="estado_codigo" />
+                <ScalarProperty Name="id_estado" ColumnName="id_estado" />
+                <ScalarProperty Name="c_cve_ciudad" ColumnName="c_cve_ciudad" />
+                <ScalarProperty Name="d_zona" ColumnName="d_zona" />
+                <ScalarProperty Name="id_asenta_cpcons" ColumnName="id_asenta_cpcons" />
+                <ScalarProperty Name="c_mnpio" ColumnName="c_mnpio" />
+                <ScalarProperty Name="c_tipo_asenta" ColumnName="c_tipo_asenta" />
+                <ScalarProperty Name="c_CP" ColumnName="c_CP" />
+                <ScalarProperty Name="c_oficina" ColumnName="c_oficina" />
+                <ScalarProperty Name="c_estado" ColumnName="c_estado" />
+                <ScalarProperty Name="d_CP" ColumnName="d_CP" />
+                <ScalarProperty Name="d_ciudad" ColumnName="d_ciudad" />
+                <ScalarProperty Name="d_estado" ColumnName="d_estado" />
+                <ScalarProperty Name="D_mnpio" ColumnName="D_mnpio" />
+                <ScalarProperty Name="d_tipo_asenta" ColumnName="d_tipo_asenta" />
+                <ScalarProperty Name="d_asenta" ColumnName="d_asenta" />
+                <ScalarProperty Name="d_codigo" ColumnName="d_codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

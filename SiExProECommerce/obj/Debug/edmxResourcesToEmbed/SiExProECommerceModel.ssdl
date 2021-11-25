@@ -1,0 +1,296 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="GombarECommerceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ActivityLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Comment" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="IpAddress" Type="nvarchar" MaxLength="200" />
+    <Property Name="EntityName" Type="nvarchar" MaxLength="400" />
+    <Property Name="ActivityLogTypeId" Type="int" Nullable="false" />
+    <Property Name="CustomerId" Type="int" Nullable="false" />
+    <Property Name="EntityId" Type="int" />
+    <Property Name="CreatedOnUtc" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ActivityLogType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SystemKeyword" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="Enabled" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Order">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CustomOrderNumber" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="BillingAddressId" Type="int" Nullable="false" />
+    <Property Name="CustomerId" Type="int" Nullable="false" />
+    <Property Name="PickupAddressId" Type="int" />
+    <Property Name="ShippingAddressId" Type="int" />
+    <Property Name="OrderGuid" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="StoreId" Type="int" Nullable="false" />
+    <Property Name="PickupInStore" Type="bit" Nullable="false" />
+    <Property Name="OrderStatusId" Type="int" Nullable="false" />
+    <Property Name="ShippingStatusId" Type="int" Nullable="false" />
+    <Property Name="PaymentStatusId" Type="int" Nullable="false" />
+    <Property Name="PaymentMethodSystemName" Type="nvarchar(max)" />
+    <Property Name="CustomerCurrencyCode" Type="nvarchar(max)" />
+    <Property Name="CurrencyRate" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="CustomerTaxDisplayTypeId" Type="int" Nullable="false" />
+    <Property Name="VatNumber" Type="nvarchar(max)" />
+    <Property Name="OrderSubtotalInclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="OrderSubtotalExclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="OrderSubTotalDiscountInclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="OrderSubTotalDiscountExclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="OrderShippingInclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="OrderShippingExclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="PaymentMethodAdditionalFeeInclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="PaymentMethodAdditionalFeeExclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="TaxRates" Type="nvarchar(max)" />
+    <Property Name="OrderTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="OrderDiscount" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="OrderTotal" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="RefundedAmount" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="RewardPointsHistoryEntryId" Type="int" />
+    <Property Name="CheckoutAttributeDescription" Type="nvarchar(max)" />
+    <Property Name="CheckoutAttributesXml" Type="nvarchar(max)" />
+    <Property Name="CustomerLanguageId" Type="int" Nullable="false" />
+    <Property Name="AffiliateId" Type="int" Nullable="false" />
+    <Property Name="CustomerIp" Type="nvarchar(max)" />
+    <Property Name="AllowStoringCreditCardNumber" Type="bit" Nullable="false" />
+    <Property Name="CardType" Type="nvarchar(max)" />
+    <Property Name="CardName" Type="nvarchar(max)" />
+    <Property Name="CardNumber" Type="nvarchar(max)" />
+    <Property Name="MaskedCreditCardNumber" Type="nvarchar(max)" />
+    <Property Name="CardCvv2" Type="nvarchar(max)" />
+    <Property Name="CardExpirationMonth" Type="nvarchar(max)" />
+    <Property Name="CardExpirationYear" Type="nvarchar(max)" />
+    <Property Name="AuthorizationTransactionId" Type="nvarchar(max)" />
+    <Property Name="AuthorizationTransactionCode" Type="nvarchar(max)" />
+    <Property Name="AuthorizationTransactionResult" Type="nvarchar(max)" />
+    <Property Name="CaptureTransactionId" Type="nvarchar(max)" />
+    <Property Name="CaptureTransactionResult" Type="nvarchar(max)" />
+    <Property Name="SubscriptionTransactionId" Type="nvarchar(max)" />
+    <Property Name="PaidDateUtc" Type="datetime2" Precision="7" />
+    <Property Name="ShippingMethod" Type="nvarchar(max)" />
+    <Property Name="ShippingRateComputationMethodSystemName" Type="nvarchar(max)" />
+    <Property Name="CustomValuesXml" Type="nvarchar(max)" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedOnUtc" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="RedeemedRewardPointsEntryId" Type="int" />
+  </EntityType>
+  <EntityType Name="OrderItem">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="OrderId" Type="int" Nullable="false" />
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="OrderItemGuid" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Quantity" Type="int" Nullable="false" />
+    <Property Name="UnitPriceInclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="UnitPriceExclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="PriceInclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="PriceExclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="DiscountAmountInclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="DiscountAmountExclTax" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="OriginalProductCost" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="AttributeDescription" Type="nvarchar(max)" />
+    <Property Name="AttributesXml" Type="nvarchar(max)" />
+    <Property Name="DownloadCount" Type="int" Nullable="false" />
+    <Property Name="IsDownloadActivated" Type="bit" Nullable="false" />
+    <Property Name="LicenseDownloadId" Type="int" />
+    <Property Name="ItemWeight" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="RentalStartDateUtc" Type="datetime2" Precision="7" />
+    <Property Name="RentalEndDateUtc" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="OrderNote">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Note" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="OrderId" Type="int" Nullable="false" />
+    <Property Name="DownloadId" Type="int" Nullable="false" />
+    <Property Name="DisplayToCustomer" Type="bit" Nullable="false" />
+    <Property Name="CreatedOnUtc" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Shipment">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="OrderId" Type="int" Nullable="false" />
+    <Property Name="TrackingNumber" Type="nvarchar(max)" />
+    <Property Name="TotalWeight" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="ShippedDateUtc" Type="datetime2" Precision="7" />
+    <Property Name="DeliveryDateUtc" Type="datetime2" Precision="7" />
+    <Property Name="AdminComment" Type="nvarchar(max)" />
+    <Property Name="CreatedOnUtc" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ShipmentItem">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ShipmentId" Type="int" Nullable="false" />
+    <Property Name="OrderItemId" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="int" Nullable="false" />
+    <Property Name="WarehouseId" Type="int" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'GombarECommerce.dbo.Orders_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="Orders_VW">
+    <Key>
+      <PropertyRef Name="Oderder_ID" />
+      <PropertyRef Name="Customer_id" />
+      <PropertyRef Name="Pais" />
+      <PropertyRef Name="Estado" />
+      <PropertyRef Name="Cantidad" />
+      <PropertyRef Name="Total" />
+      <PropertyRef Name="Total_Impuestos" />
+    </Key>
+    <Property Name="Items" Type="int" />
+    <Property Name="Oderder_ID" Type="int" Nullable="false" />
+    <Property Name="Customer_id" Type="int" Nullable="false" />
+    <Property Name="Nombre" Type="nvarchar(max)" />
+    <Property Name="Apellido" Type="nvarchar(max)" />
+    <Property Name="Pais" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Estado" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Empresa" Type="nvarchar(max)" />
+    <Property Name="Direccion" Type="nvarchar(max)" />
+    <Property Name="Colonia" Type="nvarchar(max)" />
+    <Property Name="CP" Type="nvarchar(max)" />
+    <Property Name="Telefono" Type="nvarchar(max)" />
+    <Property Name="Correo" Type="nvarchar(max)" />
+    <Property Name="Cantidad" Type="int" Nullable="false" />
+    <Property Name="Total" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="Total_Impuestos" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+    <Property Name="Ciudad" Type="nvarchar(max)" />
+  </EntityType>
+  <Association Name="FK_ActivityLog_ActivityLogTypeId_ActivityLogType_Id">
+    <End Role="ActivityLogType" Type="Self.ActivityLogType" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ActivityLog" Type="Self.ActivityLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ActivityLogType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ActivityLog">
+        <PropertyRef Name="ActivityLogTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderItem_OrderId_Order_Id">
+    <End Role="Order" Type="Self.Order" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="OrderItem" Type="Self.OrderItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Order">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OrderItem">
+        <PropertyRef Name="OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderNote_OrderId_Order_Id">
+    <End Role="Order" Type="Self.Order" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="OrderNote" Type="Self.OrderNote" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Order">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="OrderNote">
+        <PropertyRef Name="OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Shipment_OrderId_Order_Id">
+    <End Role="Order" Type="Self.Order" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Shipment" Type="Self.Shipment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Order">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Shipment">
+        <PropertyRef Name="OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ShipmentItem_ShipmentId_Shipment_Id">
+    <End Role="Shipment" Type="Self.Shipment" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ShipmentItem" Type="Self.ShipmentItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shipment">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ShipmentItem">
+        <PropertyRef Name="ShipmentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="GombarECommerceModelStoreContainer">
+    <EntitySet Name="ActivityLog" EntityType="Self.ActivityLog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ActivityLogType" EntityType="Self.ActivityLogType" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OrderItem" EntityType="Self.OrderItem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OrderNote" EntityType="Self.OrderNote" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Shipment" EntityType="Self.Shipment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ShipmentItem" EntityType="Self.ShipmentItem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Orders_VW" EntityType="Self.Orders_VW" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [Orders_VW].[Items] AS [Items], 
+    [Orders_VW].[Oderder_ID] AS [Oderder_ID], 
+    [Orders_VW].[Customer_id] AS [Customer_id], 
+    [Orders_VW].[Nombre] AS [Nombre], 
+    [Orders_VW].[Apellido] AS [Apellido], 
+    [Orders_VW].[Pais] AS [Pais], 
+    [Orders_VW].[Estado] AS [Estado], 
+    [Orders_VW].[Empresa] AS [Empresa], 
+    [Orders_VW].[Direccion] AS [Direccion], 
+    [Orders_VW].[Colonia] AS [Colonia], 
+    [Orders_VW].[CP] AS [CP], 
+    [Orders_VW].[Telefono] AS [Telefono], 
+    [Orders_VW].[Correo] AS [Correo], 
+    [Orders_VW].[Cantidad] AS [Cantidad], 
+    [Orders_VW].[Total] AS [Total], 
+    [Orders_VW].[Total_Impuestos] AS [Total_Impuestos], 
+    [Orders_VW].[Ciudad] AS [Ciudad]
+    FROM [dbo].[Orders_VW] AS [Orders_VW]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_ActivityLog_ActivityLogTypeId_ActivityLogType_Id" Association="Self.FK_ActivityLog_ActivityLogTypeId_ActivityLogType_Id">
+      <End Role="ActivityLogType" EntitySet="ActivityLogType" />
+      <End Role="ActivityLog" EntitySet="ActivityLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderItem_OrderId_Order_Id" Association="Self.FK_OrderItem_OrderId_Order_Id">
+      <End Role="Order" EntitySet="Order" />
+      <End Role="OrderItem" EntitySet="OrderItem" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderNote_OrderId_Order_Id" Association="Self.FK_OrderNote_OrderId_Order_Id">
+      <End Role="Order" EntitySet="Order" />
+      <End Role="OrderNote" EntitySet="OrderNote" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Shipment_OrderId_Order_Id" Association="Self.FK_Shipment_OrderId_Order_Id">
+      <End Role="Order" EntitySet="Order" />
+      <End Role="Shipment" EntitySet="Shipment" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ShipmentItem_ShipmentId_Shipment_Id" Association="Self.FK_ShipmentItem_ShipmentId_Shipment_Id">
+      <End Role="Shipment" EntitySet="Shipment" />
+      <End Role="ShipmentItem" EntitySet="ShipmentItem" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

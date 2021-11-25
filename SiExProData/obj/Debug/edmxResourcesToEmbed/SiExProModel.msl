@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MasupackModelStoreContainer" CdmEntityContainer="SiExProEntities">
+    <EntitySetMapping Name="C_AGENCIAS">
+      <EntityTypeMapping TypeName="MasupackModel.Agencias">
+        <MappingFragment StoreEntitySet="C_AGENCIAS">
+          <ScalarProperty Name="guia_estafeta" ColumnName="guia_estafeta" />
+          <ScalarProperty Name="costo_adicional" ColumnName="costo_adicional" />
+          <ScalarProperty Name="id_agencia" ColumnName="id_agencia" />
+          <ScalarProperty Name="id_corporativo" ColumnName="id_corporativo" />
+          <ScalarProperty Name="id_pais" ColumnName="id_pais" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="direccion" ColumnName="direccion" />
+          <ScalarProperty Name="estado_provincia" ColumnName="estado_provincia" />
+          <ScalarProperty Name="ciudad" ColumnName="ciudad" />
+          <ScalarProperty Name="telefono" ColumnName="telefono" />
+          <ScalarProperty Name="fecha_alta" ColumnName="fecha_alta" />
+          <ScalarProperty Name="fecha_termino" ColumnName="fecha_termino" />
+          <ScalarProperty Name="id_moneda" ColumnName="id_moneda" />
+          <ScalarProperty Name="limite_credito" ColumnName="limite_credito" />
+          <ScalarProperty Name="NIT" ColumnName="NIT" />
+          <ScalarProperty Name="requiere_asignacion" ColumnName="requiere_asignacion" />
+          <ScalarProperty Name="id_recibo" ColumnName="id_recibo" />
+          <ScalarProperty Name="factor" ColumnName="factor" />
+          <ScalarProperty Name="esquema_por_factor" ColumnName="esquema_por_factor" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="C_CLIENTES">
+      <EntityTypeMapping TypeName="MasupackModel.Cliente">
+        <MappingFragment StoreEntitySet="C_CLIENTES">
+          <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
+          <ScalarProperty Name="id_pais" ColumnName="id_pais" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="empresa" ColumnName="empresa" />
+          <ScalarProperty Name="apellidos" ColumnName="apellidos" />
+          <ScalarProperty Name="calle" ColumnName="calle" />
+          <ScalarProperty Name="noexterior" ColumnName="noexterior" />
+          <ScalarProperty Name="nointerior" ColumnName="nointerior" />
+          <ScalarProperty Name="direccion2" ColumnName="direccion2" />
+          <ScalarProperty Name="colonia" ColumnName="colonia" />
+          <ScalarProperty Name="ciudad" ColumnName="ciudad" />
+          <ScalarProperty Name="municipio" ColumnName="municipio" />
+          <ScalarProperty Name="estadoprovincia" ColumnName="estadoprovincia" />
+          <ScalarProperty Name="telefono" ColumnName="telefono" />
+          <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="NIT" ColumnName="NIT" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="C_DESTINATARIOS">
+      <EntityTypeMapping TypeName="MasupackModel.Destinatario">
+        <MappingFragment StoreEntitySet="C_DESTINATARIOS">
+          <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
+          <ScalarProperty Name="id_pais" ColumnName="id_pais" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="empresa" ColumnName="empresa" />
+          <ScalarProperty Name="apellidos" ColumnName="apellidos" />
+          <ScalarProperty Name="calle" ColumnName="calle" />
+          <ScalarProperty Name="noexterior" ColumnName="noexterior" />
+          <ScalarProperty Name="nointerior" ColumnName="nointerior" />
+          <ScalarProperty Name="direccion2" ColumnName="direccion2" />
+          <ScalarProperty Name="colonia" ColumnName="colonia" />
+          <ScalarProperty Name="ciudad" ColumnName="ciudad" />
+          <ScalarProperty Name="municipio" ColumnName="municipio" />
+          <ScalarProperty Name="estadoprovincia" ColumnName="estadoprovincia" />
+          <ScalarProperty Name="telefono" ColumnName="telefono" />
+          <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ENVIOS">
+      <EntityTypeMapping TypeName="MasupackModel.Envio">
+        <MappingFragment StoreEntitySet="D_ENVIOS">
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+          <ScalarProperty Name="precio" ColumnName="precio" />
+          <ScalarProperty Name="valor_seguro" ColumnName="valor_seguro" />
+          <ScalarProperty Name="id_tarifa_agencia" ColumnName="id_tarifa_agencia" />
+          <ScalarProperty Name="id_codigo_promocion" ColumnName="id_codigo_promocion" />
+          <ScalarProperty Name="total_envio" ColumnName="total_envio" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="fecha_corte" ColumnName="fecha_corte" />
+          <ScalarProperty Name="instrucciones_entrega" ColumnName="instrucciones_entrega" />
+          <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+          <ScalarProperty Name="id_ruta" ColumnName="id_ruta" />
+          <ScalarProperty Name="largo" ColumnName="largo" />
+          <ScalarProperty Name="ancho" ColumnName="ancho" />
+          <ScalarProperty Name="alto" ColumnName="alto" />
+          <ScalarProperty Name="peso" ColumnName="peso" />
+          <ScalarProperty Name="Referencia1" ColumnName="Referencia1" />
+          <ScalarProperty Name="id_contenido" ColumnName="id_contenido" />
+          <ScalarProperty Name="id_status" ColumnName="id_status" />
+          <ScalarProperty Name="valor_aduana" ColumnName="valor_aduana" />
+          <ScalarProperty Name="Referencia_FedEx" ColumnName="Referencia_FedEx" />
+          <ScalarProperty Name="Referencia_USPS" ColumnName="Referencia_USPS" />
+          <ScalarProperty Name="id_subproducto" ColumnName="id_subproducto" />
+          <ScalarProperty Name="contenedores" ColumnName="contenedores" />
+          <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ENVIOS_DATOS">
+      <EntityTypeMapping TypeName="MasupackModel.EnvioDatos">
+        <MappingFragment StoreEntitySet="D_ENVIOS_DATOS">
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+          <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
+          <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
+          <ScalarProperty Name="id_contenido" ColumnName="id_contenido" />
+          <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="exportado" ColumnName="exportado" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_TARIFAS_AGENCIA">
+      <EntityTypeMapping TypeName="MasupackModel.TarifaAgencia">
+        <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA">
+          <ScalarProperty Name="Activado" ColumnName="Activado" />
+          <ScalarProperty Name="valor" ColumnName="valor" />
+          <ScalarProperty Name="id_tarifa" ColumnName="id_tarifa" />
+          <ScalarProperty Name="id_agencia" ColumnName="id_agencia" />
+          <ScalarProperty Name="id_tarifa_agencia" ColumnName="id_tarifa_agencia" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ENVIO_COMENTARIOS">
+      <EntityTypeMapping TypeName="MasupackModel.EnvioComentario">
+        <MappingFragment StoreEntitySet="D_ENVIO_COMENTARIOS">
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+          <ScalarProperty Name="tipo_comentario" ColumnName="tipo_comentario" />
+          <ScalarProperty Name="comentario" ColumnName="comentario" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+          <ScalarProperty Name="id_agente" ColumnName="id_agente" />
+          <ScalarProperty Name="id_comentario" ColumnName="id_comentario" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="sp_Select_envios_comentarios_pendientes" FunctionName="MasupackModel.Store.sp_Select_envios_comentarios_pendientes">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MasupackModel.SelectEnviosComentariosPendientesResult">
+          <ScalarProperty Name="id_comentario" ColumnName="id_comentario" />
+          <ScalarProperty Name="id_agente" ColumnName="id_agente" />
+          <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="comentario" ColumnName="comentario" />
+          <ScalarProperty Name="tipo_comentario" ColumnName="tipo_comentario" />
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <EntitySetMapping Name="D_CIUDADES_RUTAS">
+      <EntityTypeMapping TypeName="MasupackModel.CiudadesRutas">
+        <MappingFragment StoreEntitySet="D_CIUDADES_RUTAS">
+          <ScalarProperty Name="id_ruta" ColumnName="id_ruta" />
+          <ScalarProperty Name="id_ciudad" ColumnName="id_ciudad" />
+          <ScalarProperty Name="id_ciudad_ruta" ColumnName="id_ciudad_ruta" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ESTAFETA_FRECUENCIA_COTIZADOR">
+      <EntityTypeMapping TypeName="MasupackModel.EstafetaFrecuenciaCotizador">
+        <MappingFragment StoreEntitySet="D_ESTAFETA_FRECUENCIA_COTIZADOR">
+          <ScalarProperty Name="FechaCotizacion" ColumnName="FechaCotizacion" />
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+          <ScalarProperty Name="Domingo" ColumnName="Domingo" />
+          <ScalarProperty Name="Sabado" ColumnName="Sabado" />
+          <ScalarProperty Name="Viernes" ColumnName="Viernes" />
+          <ScalarProperty Name="Jueves" ColumnName="Jueves" />
+          <ScalarProperty Name="Miercoles" ColumnName="Miercoles" />
+          <ScalarProperty Name="Martes" ColumnName="Martes" />
+          <ScalarProperty Name="Lunes" ColumnName="Lunes" />
+          <ScalarProperty Name="ExistenteSiglaDes" ColumnName="ExistenteSiglaDes" />
+          <ScalarProperty Name="ExistenteSiglaOri" ColumnName="ExistenteSiglaOri" />
+          <ScalarProperty Name="CostoReexpedicion" ColumnName="CostoReexpedicion" />
+          <ScalarProperty Name="Frecuencia" ColumnName="Frecuencia" />
+          <ScalarProperty Name="OcurreForzoso" ColumnName="OcurreForzoso" />
+          <ScalarProperty Name="Ancho" ColumnName="Ancho" />
+          <ScalarProperty Name="Alto" ColumnName="Alto" />
+          <ScalarProperty Name="Peso" ColumnName="Peso" />
+          <ScalarProperty Name="Largo" ColumnName="Largo" />
+          <ScalarProperty Name="EsPaquete" ColumnName="EsPaquete" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ESTAFETA_TIPO_SERVICIO">
+      <EntityTypeMapping TypeName="MasupackModel.EstafetaTipoServicio">
+        <MappingFragment StoreEntitySet="D_ESTAFETA_TIPO_SERVICIO">
+          <ScalarProperty Name="Selecccionado" ColumnName="Selecccionado" />
+          <ScalarProperty Name="FechaCotizacion" ColumnName="FechaCotizacion" />
+          <ScalarProperty Name="AplicaServicio" ColumnName="AplicaServicio" />
+          <ScalarProperty Name="Peso" ColumnName="Peso" />
+          <ScalarProperty Name="CostoTotal" ColumnName="CostoTotal" />
+          <ScalarProperty Name="CCSobrePeso" ColumnName="CCSobrePeso" />
+          <ScalarProperty Name="SobrePeso" ColumnName="SobrePeso" />
+          <ScalarProperty Name="CargosExtra" ColumnName="CargosExtra" />
+          <ScalarProperty Name="CCTarifaBase" ColumnName="CCTarifaBase" />
+          <ScalarProperty Name="TarifaBase" ColumnName="TarifaBase" />
+          <ScalarProperty Name="AplicaCotizacion" ColumnName="AplicaCotizacion" />
+          <ScalarProperty Name="TipoEnvioRes" ColumnName="TipoEnvioRes" />
+          <ScalarProperty Name="DescripcionServicio" ColumnName="DescripcionServicio" />
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ESTAFETA_LABEL">
+      <EntityTypeMapping TypeName="MasupackModel.EstafetaLabel">
+        <MappingFragment StoreEntitySet="D_ESTAFETA_LABEL">
+          <ScalarProperty Name="relacion" ColumnName="relacion" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="trackId" ColumnName="trackId" />
+          <ScalarProperty Name="labelPDF" ColumnName="labelPDF" />
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="C_ESTADOS_GOMBAR">
+      <EntityTypeMapping TypeName="MasupackModel.EstadosGombar">
+        <MappingFragment StoreEntitySet="C_ESTADOS_GOMBAR">
+          <ScalarProperty Name="tiempo_transito" ColumnName="tiempo_transito" />
+          <ScalarProperty Name="zona" ColumnName="zona" />
+          <ScalarProperty Name="destino" ColumnName="destino" />
+          <ScalarProperty Name="siglas" ColumnName="siglas" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="C_ZONAS">
+      <EntityTypeMapping TypeName="MasupackModel.Zonas">
+        <MappingFragment StoreEntitySet="C_ZONAS">
+          <ScalarProperty Name="usuario_estafeta" ColumnName="usuario_estafeta" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="id_zona" ColumnName="id_zona" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_COBERTURAS">
+      <EntityTypeMapping TypeName="MasupackModel.Cobertura">
+        <MappingFragment StoreEntitySet="D_COBERTURA">
+          <ScalarProperty Name="ciudad" ColumnName="ciudad" />
+          <ScalarProperty Name="garantia_maxima" ColumnName="garantia_maxima" />
+          <ScalarProperty Name="reexpedicion" ColumnName="reexpedicion" />
+          <ScalarProperty Name="ocurre" ColumnName="ocurre" />
+          <ScalarProperty Name="periodicidad" ColumnName="periodicidad" />
+          <ScalarProperty Name="domingo" ColumnName="domingo" />
+          <ScalarProperty Name="sabado" ColumnName="sabado" />
+          <ScalarProperty Name="viernes" ColumnName="viernes" />
+          <ScalarProperty Name="jueves" ColumnName="jueves" />
+          <ScalarProperty Name="miercoles" ColumnName="miercoles" />
+          <ScalarProperty Name="martes" ColumnName="martes" />
+          <ScalarProperty Name="lunes" ColumnName="lunes" />
+          <ScalarProperty Name="siglas_plaza" ColumnName="siglas_plaza" />
+          <ScalarProperty Name="estado" ColumnName="estado" />
+          <ScalarProperty Name="municipio" ColumnName="municipio" />
+          <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ESTAFETA_REQUEST_RESPONSE">
+      <EntityTypeMapping TypeName="MasupackModel.EstafetaRequestResponse">
+        <MappingFragment StoreEntitySet="D_ESTAFETA_REQUEST_RESPONSE">
+          <ScalarProperty Name="carrier" ColumnName="carrier" />
+          <ScalarProperty Name="imagenBase64" ColumnName="imagenBase64" />
+          <ScalarProperty Name="cuenta" ColumnName="cuenta" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="response" ColumnName="response" />
+          <ScalarProperty Name="request" ColumnName="request" />
+          <ScalarProperty Name="metodo" ColumnName="metodo" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="C_SEPOMEX">
+      <EntityTypeMapping TypeName="MasupackModel.Sepomex">
+        <MappingFragment StoreEntitySet="C_SEPOMEX">
+          <ScalarProperty Name="estado_codigo" ColumnName="estado_codigo" />
+          <ScalarProperty Name="id_estado" ColumnName="id_estado" />
+          <ScalarProperty Name="c_cve_ciudad" ColumnName="c_cve_ciudad" />
+          <ScalarProperty Name="d_zona" ColumnName="d_zona" />
+          <ScalarProperty Name="id_asenta_cpcons" ColumnName="id_asenta_cpcons" />
+          <ScalarProperty Name="c_mnpio" ColumnName="c_mnpio" />
+          <ScalarProperty Name="c_tipo_asenta" ColumnName="c_tipo_asenta" />
+          <ScalarProperty Name="c_CP" ColumnName="c_CP" />
+          <ScalarProperty Name="c_oficina" ColumnName="c_oficina" />
+          <ScalarProperty Name="c_estado" ColumnName="c_estado" />
+          <ScalarProperty Name="d_CP" ColumnName="d_CP" />
+          <ScalarProperty Name="d_ciudad" ColumnName="d_ciudad" />
+          <ScalarProperty Name="d_estado" ColumnName="d_estado" />
+          <ScalarProperty Name="D_mnpio" ColumnName="D_mnpio" />
+          <ScalarProperty Name="d_tipo_asenta" ColumnName="d_tipo_asenta" />
+          <ScalarProperty Name="d_asenta" ColumnName="d_asenta" />
+          <ScalarProperty Name="d_codigo" ColumnName="d_codigo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
