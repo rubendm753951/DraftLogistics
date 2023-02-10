@@ -1,4 +1,4 @@
-﻿    <%@ Page Language="VB" MasterPageFile="~/DefaultMasterPage.master" AutoEventWireup="false" CodeFile="acceso.aspx.vb" Inherits="acceso" title="Acceso" %>
+﻿    <%@ Page Language="VB" MasterPageFile="~/DefaultMasterPage.master" AutoEventWireup="false" CodeFile="acceso.aspx.vb" Inherits="acceso" title="Acceso SiExPro" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="DefaultContent" Runat="Server">
     <div style="width:36%; margin: 0 auto; text-align:left; left: 362px; position: absolute; top: 150px;" >
     <br />
