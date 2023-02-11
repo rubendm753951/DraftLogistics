@@ -284,7 +284,7 @@ Public Class seguimiento_envios
     '    End Try
     'End Function
 
-    Public Function costo_estafeta_gombar(ByVal cp_destino As String, id_agencia As Integer, peso_vol As Decimal) As EstafetaPrecio
+    Public Function costo_estafeta_gombar(ByVal cp_destino As String, id_agencia As Integer, peso_vol As Decimal, area_extendida_express_saver As Decimal, area_extendida_standard_overnight As Decimal, peso As Decimal, valorAreaExtendida As Decimal, valorDeclarado As Decimal) As EstafetaPrecio
 
         Try
             Dim MyConnection As ConnectionStringSettings
@@ -311,6 +311,31 @@ Public Class seguimiento_envios
             parm3.Value = peso_vol
             cmd.Parameters.Add(parm3)
 
+            Dim parm4 As Data.Common.DbParameter = cmd.CreateParameter()
+            parm4.ParameterName = "@AreaExtendidaExpressSaver"
+            parm4.Value = area_extendida_express_saver
+            cmd.Parameters.Add(parm4)
+
+            Dim parm5 As Data.Common.DbParameter = cmd.CreateParameter()
+            parm5.ParameterName = "@AreaExtendidaStandardOvernight"
+            parm5.Value = area_extendida_standard_overnight
+            cmd.Parameters.Add(parm5)
+
+            Dim parm6 As Data.Common.DbParameter = cmd.CreateParameter()
+            parm6.ParameterName = "@Weight"
+            parm6.Value = peso
+            cmd.Parameters.Add(parm6)
+
+            Dim parm7 As Data.Common.DbParameter = cmd.CreateParameter()
+            parm7.ParameterName = "@costo_ea_pe"
+            parm7.Value = valorAreaExtendida
+            cmd.Parameters.Add(parm7)
+
+            Dim parm8 As Data.Common.DbParameter = cmd.CreateParameter()
+            parm8.ParameterName = "@valor_declarado"
+            parm8.Value = valorDeclarado
+            cmd.Parameters.Add(parm8)
+
             connection.Open()
 
             Dim reader As Data.SqlClient.SqlDataReader = cmd.ExecuteReader()
@@ -328,6 +353,24 @@ Public Class seguimiento_envios
                 estafetaPrecios.CuentaLtl = reader.GetValue(6)
                 estafetaPrecios.Ltl = reader.GetValue(7)
                 estafetaPrecios.Ocurre = reader.GetValue(8)
+                estafetaPrecios.ExpressSaverAmount = reader.GetValue(9)
+                estafetaPrecios.ExpressSaverUser = reader.GetValue(10)
+                estafetaPrecios.StandardOvernightAmount = reader.GetValue(11)
+                estafetaPrecios.StandardOvernightUser = reader.GetValue(12)
+                estafetaPrecios.PaqueteExpressEconomic = reader.GetValue(13)
+                estafetaPrecios.PaqueteExpressNextDay = reader.GetValue(14)
+                estafetaPrecios.UserAccountPe = reader.GetValue(15)
+                estafetaPrecios.AmountGombarExpress = reader.GetValue(16)
+                estafetaPrecios.AmountGombarTarima = reader.GetValue(17)
+                estafetaPrecios.AmountGombarNacional = reader.GetValue(18)
+                estafetaPrecios.AmountGombarDLRutaLeonPueCdmx = reader.GetValue(19)
+                estafetaPrecios.AmountGombarDLTarimasRutaLeonPueCdmx = reader.GetValue(20)
+                estafetaPrecios.AmountGombarDLRutaPacifico = reader.GetValue(21)
+                estafetaPrecios.AmountGombarDLTarimasRutaPacifico = reader.GetValue(22)
+                estafetaPrecios.AmountGombarDLTarimasOcurreRutaPacifico = reader.GetValue(23)
+                estafetaPrecios.AmountEcoExpressRedPack = reader.GetValue(24)
+                estafetaPrecios.AmountEcoExpressRedPackUser = reader.GetValue(25)
+                estafetaPrecios.AmountGombarDLRutaNorte = reader.GetValue(26)
             End If
             connection.Close()
 

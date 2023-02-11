@@ -28,10 +28,10 @@ Partial Class ops_pages_consulta_envio
 
         Dim usuarioId As Integer = Integer.Parse(CType(HttpContext.Current.Session("id_usuario"), String))
 
-        'Dim tracking As New FedEx_TrackService
-        'Dim trackRecords As ArrayList
+        Dim tracking As New FedEx_TrackService
+        Dim trackRecords As ArrayList
 
-        'trackRecords = tracking.Track_FedEx("780630705350")
+        trackRecords = tracking.Track_FedEx("780630705350")
 
         Dim control As New seguimiento_envios
         'validar si el código proporcionado es refeencia o guía interna

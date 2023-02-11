@@ -1,9 +1,7 @@
 ﻿Imports System.Data
 Imports System.Web.Services
 Imports System.Data.OleDb
-Imports System.Data.Entity
 Imports SiExProData
-Imports System.Security.Cryptography
 
 Partial Class Punto_Venta
     Inherits BasePage
@@ -26,8 +24,31 @@ Partial Class Punto_Venta
             DropDownColonia.Visible = False
         End If
 
-        '****************************************************************
+        If DropDownColoniaRem.Items.Count > 0 Then
+            TxtCol.Visible = False
+            DropDownColoniaRem.Visible = True
+        Else
+            TxtCol.Visible = True
+            DropDownColoniaRem.Visible = False
+        End If
 
+        If Not IsPostBack Then
+            contenidosDesc.Visible = False
+            contenidosCampos.Visible = False
+            contenidosGrid.Visible = False
+            tipopaquete.Visible = False
+            remButton.Visible = False
+            remControl.Visible = False
+            remText.Visible = False
+            datosRemitente.Visible = False
+            'tipopaquetedraft.Visible = False
+            tipopaqueteredpack.Visible = False
+        End If
+
+        '        ScriptManager.RegisterStartupScript(UpdatePanel1, Me.GetType(), "AutoCompleteDropDowns", "$(function () {  $('input[id$=btnCheckOut]').click(function () { $('input[id$=btnAceptar]').removeAttr('disabled'); });  $('input[id$=btnAceptar]').click(function () { $('input[id$=btnAceptar]').attr('disabled', 'disabled'); }); });", True)
+
+        '****************************************************************
+        DaspackDALC.ActualizaCodigosBarras()
     End Sub
 
     Protected Sub GridView2_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles GridView2.PageIndexChanging
@@ -39,9 +60,20 @@ Partial Class Punto_Venta
         GetColonias(cp)
     End Sub
 
+    Protected Sub TxtCP_TextChanged(sender As Object, e As EventArgs)
+        Dim cp = DirectCast(sender, TextBox).Text
+        GetColoniasRem(cp)
+    End Sub
+
     Private Sub btnActualizar_Click(sender As Object, e As EventArgs) Handles btnActualizar.Click
         If TxtCP2.Text <> "" And TxtCP2.Text.Length >= 5 Then
             GetColonias(TxtCP2.Text)
+        End If
+    End Sub
+
+    Private Sub btnActualizarCpRem_Click(sender As Object, e As EventArgs) Handles btnActualizarCpRem.Click
+        If TxtCP.Text <> "" And TxtCP.Text.Length >= 5 Then
+            GetColoniasRem(TxtCP.Text)
         End If
     End Sub
 
@@ -66,6 +98,26 @@ Partial Class Punto_Venta
         Else
             TxtCol2.Visible = True
             DropDownColonia.Visible = False
+        End If
+    End Sub
+
+    Private Sub GetColoniasRem(cp As String)
+        Dim sepomexResult = DaspackDALC.GetSearchZipCode(cp)
+        If sepomexResult IsNot Nothing And sepomexResult.Count > 0 Then
+            TxtCol.Visible = False
+            DropDownColoniaRem.Visible = True
+            DropDownColoniaRem.DataSource = sepomexResult
+            DropDownColoniaRem.DataBind()
+
+            'DropDownPais2.SelectedValue = 52
+            txtCiudad.Visible = True
+            'txtEdo2.DataBind()
+            txtEdo.SelectedValue = sepomexResult(0).estado_codigo
+            txtCiudad.Text = sepomexResult(0).d_ciudad
+            TxtMpio.Text = sepomexResult(0).D_mnpio
+        Else
+            TxtCol.Visible = True
+            DropDownColoniaRem.Visible = False
         End If
     End Sub
 
@@ -122,6 +174,7 @@ Partial Class Punto_Venta
 
             Dim Crear_Envio As New Insertar_Envios
             Dim coloniaDesc = ""
+            Label2.Text = ""
 
             If TxtCol2.Visible = False Then
                 coloniaDesc = DropDownColonia.SelectedItem.Text
@@ -144,6 +197,10 @@ Partial Class Punto_Venta
             Datos_Dest.estadoprovincia = txtEdo2.Text
             Datos_Dest.telefono = txtTelefono2.Text
             Datos_Dest.email = txtEmail2.Text
+            Datos_Dest.rfc = txtRFC.Text
+            Datos_Dest.registro_tributario = txtRFC.Text
+            Datos_Dest.residencia_fiscal = "MEX"
+
             If Not IsNothing(TxtCP2.Text) And Len(TxtCP2.Text) = 5 Then
                 Datos_Dest.codigo_postal = TxtCP2.Text
             Else
@@ -166,14 +223,26 @@ Partial Class Punto_Venta
             If Not guia_por_caja.Checked Then
                 ReDim envios(0)
             End If
+
+            Dim id_envio_imp = IIf(String.IsNullOrWhiteSpace(txtIdEnvioPreAsignado.Text), 0, txtIdEnvioPreAsignado.Text)
+            If id_envio_imp > 0 Then
+                Dim verificaEnvioResponse = DaspackDALC.VarificaEnvioPreAsignado(id_envio_imp, DropDownAgentes.Text)
+                If verificaEnvioResponse <> "" Then
+                    Label2.Text = "Ocurrió un error, por favor revise los datos ---> " + verificaEnvioResponse
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
+            End If
+
             Dim db As New SiExProEntities
+            Dim proveedor = DropDownProveedores.SelectedValue
 
             Do While cajas_count < envios.Length()
 
                 'Insertar el Envío
                 Dim id_envio As Integer
                 datos_envio.id_agente = DropDownAgentes.Text 'it's an argument calling the method
-                datos_envio.precio = TxtTarifa.value
+                datos_envio.precio = TxtTarifa.Value
                 datos_envio.valor_seguro = TxtSeguro.Text
                 datos_envio.id_tarifa_agencia = DropDownProduct.SelectedValue
 
@@ -187,6 +256,21 @@ Partial Class Punto_Venta
                     datos_envio.valor_aduana = TxtAduana.Text
                 Else
                     datos_envio.valor_aduana = Nothing
+                End If
+
+                'estafeta o fedex
+                If proveedor = 30 Or proveedor = 10 Then
+                    Dim largo = IIf(String.IsNullOrWhiteSpace(txtLargo.Text), 0, txtLargo.Text)
+                    Dim alto = IIf(String.IsNullOrWhiteSpace(txtAlto.Text), 0, txtAlto.Text)
+                    Dim ancho = IIf(String.IsNullOrWhiteSpace(txtAncho.Text), 0, txtAncho.Text)
+
+                    If largo = 0 Or largo > 150 Or alto = 0 Or alto > 150 Or ancho = 0 Or ancho > 150 Then
+                        Label2.Text = "Las dimensiones del paquete deben ser mayor a cero y menor igual a 150 cms"
+                        ModalPopupExtender3.Show()
+                        Mensaje = ""
+                        Exit Sub
+                    End If
+
                 End If
 
                 datos_envio.total_envio = datos_envio.precio + datos_envio.valor_seguro
@@ -205,6 +289,8 @@ Partial Class Punto_Venta
                 datos_envio.contenido = DropDownContenidos.Text
                 datos_envio.dimension_peso = Session("dimension_peso")
                 datos_envio.contenedores = TxtCajas.Text
+
+
 
                 'PreRegistor del Envío
                 Mensaje = Crear_Envio.valida_preregistro(datos_envio)
@@ -235,64 +321,664 @@ Partial Class Punto_Venta
                 .Ancho = txtAncho.Text
                 .Peso = txtPeso.Text
             End With
-            'Dim clienteId As Integer = 0
+
             Dim seguimiento As New seguimiento_envios
+            Dim area_extendida_express_saver As Decimal = 0
+            Dim area_extendida_standard_overnight As Decimal = 0
             Dim pesoVol As Decimal = (envioExportar.Alto * envioExportar.Ancho * envioExportar.Largo) / 5000
             Dim pesoVolumetrico = IIf(envioExportar.Peso > pesoVol, envioExportar.Peso, pesoVol)
-            Dim estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, id_agencia, pesoVolumetrico)
+            Dim estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, id_agencia, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, envioExportar.Peso, 0, 0)
 
-            Dim respuestaFrecuenciaCotizador As FrecuenciaCotizadorRespuesta = estafetaWrapper.FrecuenciaCotizadorSingle(envioExportar, estafetaPrecios)
+            rbTerrestre.Checked = False
+            rbDiaSiguiente.Checked = False
+            rbLtl.Checked = False
+            rbFedexExpress.Checked = False
+            rbFedexStandard.Checked = False
+            rbPaqueteExpressEconomic.Checked = False
+            rbPaqueteExpressNextDay.Checked = False
+            rbRedPackEcoExpress.Checked = False
 
-            If respuestaFrecuenciaCotizador.Respuesta.Length > 0 Then
-                If respuestaFrecuenciaCotizador.Respuesta(0).MensajeError <> "" Then
-                    Label2.Text = respuestaFrecuenciaCotizador.Respuesta(0).MensajeError
+            rbTerrestre.Visible = False
+            rbDiaSiguiente.Visible = False
+            rbLtl.Visible = False
+            rbFedexExpress.Visible = False
+            rbFedexStandard.Visible = False
+            rbPaqueteExpressEconomic.Visible = False
+            rbPaqueteExpressNextDay.Visible = False
+            rbRedPackEcoExpress.Visible = False
+            rbGombarExpress.Visible = False
+            rbGombarTarima.Visible = False
+            rbGombarNacional.Visible = False
+            rbCosto.Visible = False
+            rbGombarLeonPueCdmx.Visible = False
+            rbGombarRutaNorte.Visible = False
+            rbGombarTarimasLeonPueCdmx.Visible = False
+            rbRutaPacifico.Visible = False
+            rbTarimasRutaPacifico.Visible = False
+            rbTarimasOcurreRutaPacifico.Visible = False
+
+            brTerrestre.Visible = False
+            brDiaSiguiente.Visible = False
+            brLtl.Visible = False
+            brFedexExpress.Visible = False
+            brFedexStandard.Visible = False
+            brPaqueteExpressEconomic.Visible = False
+            brPaqueteExpressNextDay.Visible = False
+            brGombarExpress.Visible = False
+            brGombarTarima.Visible = False
+            brGombarNacional.Visible = False
+            brCosto.Visible = False
+            brGombarLeonPueCdmx.Visible = False
+            brGombarRutaNorte.Visible = False
+            brGombarTarimasLeonPueCdmx.Visible = False
+            brRutaPacifico.Visible = False
+            brTarimasRutaPacifico.Visible = False
+            brTarimasOcurreRutaPacifico.Visible = False
+            brRedPackEcoExpress.Visible = False
+
+            '************ FEDEX  **************
+            If proveedor = 10 Then
+                If String.IsNullOrWhiteSpace(txtFedexServicioSat.Text) Then
+                    Label2.Text = "El codigo SAT ingresado no existe"
                     ModalPopupExtender3.Show()
-                    Mensaje = ""
                     Exit Sub
-                Else
-
-                    rbCosto.Text = "DraftLogistic: " & FormatCurrency(estafetaPrecios.Gombar.ToString(), 2)
-                    rbCosto.Checked = True
-
-                    lblOcurre.Visible = estafetaPrecios.Ocurre
-
-                    Dim sGUID As String
-                    sGUID = System.Guid.NewGuid.ToString()
-                    estafetaTipoServicio.Value = sGUID
-                    Session(sGUID) = respuestaFrecuenciaCotizador
-
-                    rbTerrestre.Visible = False
-                    rbDiaSiguiente.Visible = False
-                    rbLtl.Visible = False
-
-                    For Each tipoServicio As Estafeta.Frecuenciacotizador.TipoServicio In respuestaFrecuenciaCotizador.Respuesta(0).TipoServicio
-                        If tipoServicio.DescripcionServicio = "Terrestre" Then
-                            estafetaTerrestre.Value = estafetaPrecios.Terrestre
-                            rbTerrestre.Text = "Terrestre: " & FormatCurrency(estafetaPrecios.Terrestre.ToString(), 2)
-                            rbTerrestre.Visible = True
-                        End If
-
-                        If tipoServicio.DescripcionServicio = "Dia Sig." Then
-                            estafetaDiaSig.Value = estafetaPrecios.DiaSiguiente
-                            rbDiaSiguiente.Text = "Dia Siguiente: " & FormatCurrency(estafetaPrecios.DiaSiguiente.ToString(), 2)
-                            rbDiaSiguiente.Visible = True
-                        End If
-
-                        If tipoServicio.DescripcionServicio = "LTL" Then
-                            estafetaLtl.Value = estafetaPrecios.Ltl
-                            rbLtl.Text = "Tarimas: " & FormatCurrency(estafetaPrecios.Ltl.ToString(), 2)
-                            rbLtl.Visible = True
-                        End If
-                    Next
                 End If
-            Else
-                Label2.Text = "Ocurrió un error al cotizar su envio"
-                ModalPopupExtender3.Show()
-                Mensaje = ""
-                Exit Sub
+
+                If datos_envio.largo = 0 Or datos_envio.alto = 0 Or datos_envio.peso = 0 Or datos_envio.ancho = 0 Then
+                    Label2.Text = "Ocurrió un error, por favor revise los datos ---> Valores de dimensiones y peso no pueden ser cero"
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
+
+                If (estafetaPrecios.StandardOvernightUser > 0 Or estafetaPrecios.ExpressSaverUser > 0) Then
+                    Dim shipmentRequest As New ShipmentRequestDto()
+                    With shipmentRequest
+                        .AgentId = id_agencia
+                        .ShipmentId = 1
+                        .AccountId = 1
+                        .CarrierId = 2
+                        .ClientId = ConfigurationManager.AppSettings("PaqueteExpress.ClientId")
+                        .DeliveryInstructions = datos_envio.instrucciones_entrega
+                        .FedexExpressSaver = estafetaPrecios.ExpressSaverUser > 0
+                        .FedexStandardOvernight = estafetaPrecios.StandardOvernightUser > 0
+                        .MultipleLabels = envios.Length() > 1
+                        .ProductId = datos_envio.id_tarifa_agencia
+                        .PromoId = datos_envio.id_codigo_promocion
+                        .Reference = datos_envio.referencia
+                    End With
+
+                    Dim codigoSat = DaspackDALC.BuscarCodigoSat(txtFedexServicioSat.Text)
+                    If codigoSat Is Nothing Then
+                        Label2.Text = "El codigo SAT ingresado no existe"
+                        ModalPopupExtender3.Show()
+                        Exit Sub
+                    Else
+                        Dim shipmentItems As New List(Of ShipmentRequestItemDto)
+                        Dim shipmentItem As New ShipmentRequestItemDto()
+                        With shipmentItem
+                            .Content = datos_envio.contenido
+                            .Height = datos_envio.alto
+                            .Length = datos_envio.largo
+                            .Quantity = envios.Length()
+                            .Weight = datos_envio.peso
+                            .Width = datos_envio.ancho
+                            .ShpCode = ""
+                            .Insurance = datos_envio.valor_seguro
+                            .SatService = codigoSat.codigo_servicio_id
+                            .SatServiceDesc = codigoSat.descripcion
+                        End With
+
+                        shipmentItems.Add(shipmentItem)
+                        shipmentRequest.ShipmentItems = shipmentItems
+                    End If
+
+                    Dim destinatary As New DestinataryDto()
+                    With destinatary
+                        .Address = Datos_Dest.direccion
+                        .City = Datos_Dest.ciudad
+                        .Company = Datos_Dest.empresa
+                        .CountryCode = "MX"
+                        .CountryId = 52
+                        .DestinataryId = id_destinatario
+                        .DownTown = Datos_Dest.colonia
+                        .Email = Datos_Dest.email
+                        .LastName = Datos_Dest.apellidos
+                        .Name = Datos_Dest.nombre
+                        .NoExt = Datos_Dest.noexterior
+                        .NoInt = Datos_Dest.nointerior
+                        .PhoneNumber = Datos_Dest.telefono
+                        .State = Datos_Dest.estadoprovincia
+                        .Street = Datos_Dest.calle
+                        .Town = Datos_Dest.municipio
+                        .ZipCode = Datos_Dest.codigo_postal
+                        .Rfc = Datos_Dest.rfc
+                    End With
+
+                    Dim fedexShipRequest As New ShipRequestDto()
+                    With fedexShipRequest
+                        .Destinatary = destinatary
+                        .ShipmentRequest = shipmentRequest
+                    End With
+
+                    Dim fedexResponse = DaspackDALC.FedexRate(fedexShipRequest)
+
+                    If fedexResponse.Success AndAlso fedexResponse.Data IsNot Nothing Then
+                        area_extendida_standard_overnight = fedexResponse.Data.StandardOvernight.Amount
+                        area_extendida_express_saver = fedexResponse.Data.ExpressSaver.Amount
+                    End If
+
+                    estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, id_agencia, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, envioExportar.Peso, 0, 0)
+
+                    If fedexResponse.Data.ExpressSaver.Supported = False Then
+                        estafetaPrecios.ExpressSaverUser = 0
+                    End If
+
+                    If fedexResponse.Data.StandardOvernight.Supported = False Then
+                        estafetaPrecios.StandardOvernightUser = 0
+                    End If
+                End If
+
+                If estafetaPrecios.ExpressSaverUser > 0 And estafetaPrecios.ExpressSaverAmount > 0 Then
+                    fedexExpress.Value = estafetaPrecios.ExpressSaverAmount
+                    rbFedexExpress.Text = " Fedex Económico: " & FormatCurrency(estafetaPrecios.ExpressSaverAmount.ToString(), 2)
+                    rbFedexExpress.Visible = True
+                    brFedexExpress.Visible = True
+                End If
+
+                If estafetaPrecios.StandardOvernightUser > 0 And estafetaPrecios.StandardOvernightAmount > 0 Then
+                    fedexStandard.Value = estafetaPrecios.StandardOvernightAmount
+                    rbFedexStandard.Text = " Fedex Standar Overnight: " & FormatCurrency(estafetaPrecios.StandardOvernightAmount.ToString(), 2)
+                    rbFedexStandard.Visible = True
+                    brFedexStandard.Visible = True
+                End If
+
+                If rbFedexStandard.Visible = False And rbFedexExpress.Visible = False Then
+                    Label2.Text = "El servicio no está disponible para el destino o agente seleccionado"
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
             End If
 
-            ModalPopupExtender7.Show()
+            '************ ESTAFETA  **************
+            If proveedor = 30 Then
+                If datos_envio.largo = 0 Or datos_envio.alto = 0 Or datos_envio.peso = 0 Or datos_envio.ancho = 0 Then
+                    Label2.Text = "Ocurrió un error, por favor revise los datos ---> Valores de dimensiones y peso no pueden ser cero"
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
+                Dim respuestaFrecuenciaCotizador As FrecuenciaCotizadorRespuesta = estafetaWrapper.FrecuenciaCotizadorSingle(envioExportar, estafetaPrecios)
+
+                If respuestaFrecuenciaCotizador.Respuesta IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta.Length > 0 Then
+                    If respuestaFrecuenciaCotizador.Respuesta(0).MensajeError <> "" Then
+                        Label2.Text = respuestaFrecuenciaCotizador.Respuesta(0).MensajeError
+                        ModalPopupExtender3.Show()
+                        Mensaje = ""
+                        Exit Sub
+                    Else
+                        Dim sGUID As String
+                        sGUID = System.Guid.NewGuid.ToString()
+                        EstafetaTipoServicio.Value = sGUID
+                        Session(sGUID) = respuestaFrecuenciaCotizador
+
+                        For Each tipoServicio As Estafeta.Frecuenciacotizador.TipoServicio In respuestaFrecuenciaCotizador.Respuesta(0).TipoServicio
+                            If tipoServicio.DescripcionServicio.ToLower = "terrestre" And estafetaPrecios.Terrestre > 0 Then
+                                estafetaTerrestre.Value = estafetaPrecios.Terrestre
+                                rbTerrestre.Text = " Terrestre: " & FormatCurrency(estafetaPrecios.Terrestre.ToString(), 2)
+                                rbTerrestre.Visible = True
+                                brTerrestre.Visible = True
+                            End If
+
+                            If tipoServicio.DescripcionServicio.ToLower = "dia sig." And estafetaPrecios.DiaSiguiente > 0 Then
+                                estafetaDiaSig.Value = estafetaPrecios.DiaSiguiente
+                                rbDiaSiguiente.Text = " Dia Siguiente: " & FormatCurrency(estafetaPrecios.DiaSiguiente.ToString(), 2)
+                                rbDiaSiguiente.Visible = True
+                                brDiaSiguiente.Visible = True
+                            End If
+
+                            If tipoServicio.DescripcionServicio.ToLower = "ltl" And estafetaPrecios.Ltl > 0 Then
+                                estafetaLtl.Value = estafetaPrecios.Ltl
+                                rbLtl.Text = " Tarimas: " & FormatCurrency(estafetaPrecios.Ltl.ToString(), 2)
+                                rbLtl.Visible = True
+                                brLtl.Visible = True
+                            End If
+                        Next
+
+                        If rbLtl.Visible = False And rbDiaSiguiente.Visible = False And rbTerrestre.Visible = False Then
+                            Label2.Text = "El servicio no está disponible para el destino o agente seleccionado"
+                            ModalPopupExtender3.Show()
+                            Exit Sub
+                        End If
+                    End If
+                End If
+            End If
+
+            '************ PAQUETE EXPRESS  **************
+            If proveedor = 40 Then
+                If (estafetaPrecios.PaqueteExpressEconomic > 0 Or estafetaPrecios.PaqueteExpressNextDay > 0) Then
+                    Dim shipmentRequest As New ShipmentRequestDto()
+                    With shipmentRequest
+                        .AgentId = id_agencia
+                        .ShipmentId = 1
+                        .AccountId = estafetaPrecios.UserAccountPe
+                        .CarrierId = 2
+                        .ClientId = ConfigurationManager.AppSettings("PaqueteExpress.ClientId")
+                        .DeliveryInstructions = datos_envio.instrucciones_entrega
+                        .FedexExpressSaver = estafetaPrecios.ExpressSaverUser > 0
+                        .FedexStandardOvernight = estafetaPrecios.StandardOvernightUser > 0
+                        .MultipleLabels = envios.Length() > 1
+                        .ProductId = datos_envio.id_tarifa_agencia
+                        .PromoId = datos_envio.id_codigo_promocion
+                        .Reference = datos_envio.referencia
+                        .IsOcurre = IIf(chkOcurre.Checked, 1, 0)
+                    End With
+
+                    Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+                    Dim valorTotalDeclarado As Double = 0
+                    Dim paqueteExpressEconomic As Decimal = 0
+                    Dim paqueteExpressNextDay As Decimal = 0
+
+                    If dtgridview IsNot Nothing Then
+                        Dim shipmentItems As New List(Of ShipmentRequestItemDto)
+
+                        For Each row As DataRow In dtgridview.Rows
+                            Dim shipmentItem As New ShipmentRequestItemDto()
+                            With shipmentItem
+                                .Content = row("Contenido")
+                                .Height = row("Alto")
+                                .Length = row("Largo")
+                                .Quantity = row("Cantidad")
+                                .Weight = row("Peso")
+                                .Width = row("Ancho")
+                                .ShpCode = row("TipoClave")
+                                .Insurance = row("Seguro")
+                                .SatService = row("ServicioSAT")
+                                .SatServiceDesc = row("ServicioSATDesc")
+                            End With
+
+                            valorTotalDeclarado = valorTotalDeclarado + row("Seguro")
+                            shipmentItems.Add(shipmentItem)
+                        Next row
+                        shipmentRequest.ShipmentItems = shipmentItems
+                    End If
+                    shipmentRequest.TotlDeclVlue = valorTotalDeclarado
+                    hdnValorTotalDeclarado.Value = valorTotalDeclarado
+
+                    Dim destinatary As New DestinataryDto()
+                    With destinatary
+                        .Address = Datos_Dest.direccion
+                        .City = Datos_Dest.ciudad
+                        .Company = Datos_Dest.empresa
+                        .CountryCode = "MX"
+                        .CountryId = 52
+                        .DestinataryId = id_destinatario
+                        .DownTown = Datos_Dest.colonia
+                        .Email = IIf(String.IsNullOrWhiteSpace(Datos_Dest.email), "embarqueahora@hotmail.com", Datos_Dest.email)
+                        .LastName = Datos_Dest.apellidos
+                        .Name = Datos_Dest.nombre
+                        .NoExt = Datos_Dest.noexterior
+                        .NoInt = Datos_Dest.nointerior
+                        .PhoneNumber = Datos_Dest.telefono
+                        .State = Datos_Dest.estadoprovincia
+                        .Street = Datos_Dest.calle
+                        .Town = Datos_Dest.municipio
+                        .ZipCode = Datos_Dest.codigo_postal
+                        .Rfc = Datos_Dest.rfc
+                    End With
+
+                    Dim paqueteExpressQuoteRequest As New ShipRequestDto()
+                    With paqueteExpressQuoteRequest
+                        .Destinatary = destinatary
+                        .ShipmentRequest = shipmentRequest
+                    End With
+
+                    Dim paqueteExpressResponse = DaspackDALC.PaqueteExpressQuote(paqueteExpressQuoteRequest)
+
+                    If paqueteExpressResponse.Success Then
+                        If paqueteExpressResponse.Data IsNot Nothing AndAlso paqueteExpressResponse.Data.Quotations.Count > 0 Then
+                            Dim economico = paqueteExpressResponse.Data.Quotations.FirstOrDefault(Function(x) x.ServiceType = "ST")
+
+                            If estafetaPrecios.PaqueteExpressEconomic > 0 And economico IsNot Nothing Then
+                                Dim areaExtendida = economico.OtherServices.otherServices.FirstOrDefault(Function(x) x.Id = "EXT-1")
+                                Dim valorAreaExtendida As Double = 0
+
+                                If areaExtendida IsNot Nothing Then
+                                    valorAreaExtendida = areaExtendida.Amt + areaExtendida.AmtTax
+                                End If
+
+                                If dtgridview IsNot Nothing Then
+                                    Dim numeroCajas = dtgridview.Rows.Count()
+                                    For Each row As DataRow In dtgridview.Rows
+                                        pesoVol = (row("Alto") * row("Ancho") * row("Largo")) / 5000
+                                        estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, id_agencia, pesoVol, area_extendida_express_saver, area_extendida_standard_overnight, row("Peso"), valorAreaExtendida / numeroCajas, valorTotalDeclarado)
+
+                                        paqueteExpressEconomic = paqueteExpressEconomic + (estafetaPrecios.PaqueteExpressEconomic * row("Cantidad"))
+                                        row("PrecioPEEconomic") = estafetaPrecios.PaqueteExpressEconomic
+                                        row("AreaExtendida") = valorAreaExtendida
+                                    Next row
+                                    estafetaPrecios.PaqueteExpressEconomic = paqueteExpressEconomic
+                                End If
+
+                                hdnValorAreaExtendida.Value = valorAreaExtendida
+                                hdnPaqueteExpressEconomic.Value = estafetaPrecios.PaqueteExpressEconomic
+                                rbPaqueteExpressEconomic.Text = " Paquete Express Economico: " & FormatCurrency(estafetaPrecios.PaqueteExpressEconomic.ToString(), 2)
+                                rbPaqueteExpressEconomic.Visible = True
+                                brPaqueteExpressEconomic.Visible = True
+                            End If
+
+                            Dim diaSiguiente = paqueteExpressResponse.Data.Quotations.FirstOrDefault(Function(x) x.ServiceType = "DS")
+                            If estafetaPrecios.PaqueteExpressNextDay > 0 And diaSiguiente IsNot Nothing Then
+                                Dim areaExtendida = diaSiguiente.OtherServices.otherServices.FirstOrDefault(Function(x) x.Id = "EXT-1")
+                                Dim valorAreaExtendida As Double = 0
+
+                                If areaExtendida IsNot Nothing Then
+                                    valorAreaExtendida = areaExtendida.Amt + areaExtendida.AmtTax
+                                End If
+
+                                If dtgridview IsNot Nothing Then
+                                    Dim numeroCajas = dtgridview.Rows.Count()
+                                    For Each row As DataRow In dtgridview.Rows
+                                        pesoVol = (row("Alto") * row("Ancho") * row("Largo")) / 5000
+                                        estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, id_agencia, pesoVol, area_extendida_express_saver, area_extendida_standard_overnight, row("Peso"), valorAreaExtendida / numeroCajas, valorTotalDeclarado)
+                                        paqueteExpressNextDay = paqueteExpressNextDay + (estafetaPrecios.PaqueteExpressNextDay * row("Cantidad"))
+                                        row("PrecioPENextDay") = estafetaPrecios.PaqueteExpressNextDay
+                                        row("AreaExtendida") = valorAreaExtendida
+                                    Next row
+                                    estafetaPrecios.PaqueteExpressNextDay = paqueteExpressNextDay
+                                End If
+
+                                hdnPaqueteExpressNextDay.Value = estafetaPrecios.PaqueteExpressNextDay
+                                hdnValorAreaExtendida.Value = valorAreaExtendida
+                                rbPaqueteExpressNextDay.Text = " Paquete Express Dia Siguiente: " & FormatCurrency(estafetaPrecios.PaqueteExpressNextDay.ToString(), 2)
+                                rbPaqueteExpressNextDay.Visible = True
+                                brPaqueteExpressNextDay.Visible = True
+                            End If
+                        Else
+                            Label2.Text = "Servicio no disponible"
+                            ModalPopupExtender3.Show()
+                        End If
+
+                    Else
+                        Label2.Text = "Ocurrió un error, por favor revise los datos -->" + paqueteExpressResponse.ErrorMessage
+                        ModalPopupExtender3.Show()
+                    End If
+                End If
+            End If
+
+            '************ DRAFT  **************
+
+            If proveedor = 50 Then
+                Dim datos_cliente As New ObjCliente
+                Dim id_cliente As Integer
+                datos_cliente.id_pais = DropDownPais.SelectedValue
+                datos_cliente.nombre = txtNombre.Text
+                'datos_cliente.apellidos = TxtApellidos.Text
+                datos_cliente.empresa = txtEmpresa.Text
+                datos_cliente.calle = txtCalle.Text
+                datos_cliente.noexterior = 0 ' Estamos pasando la dirección completa en el campo de calle.
+                datos_cliente.nointerior = Nothing
+                datos_cliente.direccion2 = Nothing
+                datos_cliente.colonia = TxtCol.Text
+                datos_cliente.ciudad = txtCiudad.Text
+                datos_cliente.municipio = TxtMpio.Text
+                datos_cliente.estadoprovincia = txtEdo.Text
+                datos_cliente.telefono = txtTelefono.Text
+                datos_cliente.codigo_postal = TxtCP.Text
+                datos_cliente.email = txtEmail.Text
+                datos_cliente.rfc = txtRemRfc.Text
+                datos_cliente.registro_tributario = txtRemRfc.Text
+                datos_cliente.residencia_fiscal = "MEX"
+
+                If Session("id_cliente") = 0 Then
+                    Mensaje = Crear_Envio.valida_datos_cliente(datos_cliente)
+                    If Mensaje = "OK" Then
+                        id_cliente = Crear_Envio.crea_cliente(datos_cliente)
+                        Session("id_cliente") = id_cliente
+                    Else
+                        Label2.Text = "Ocurrió un error, por favor revise los datos ---> " + Mensaje
+                        ModalPopupExtender3.Show()
+                        Mensaje = ""
+                        Exit Sub
+                    End If
+                Else
+                    id_cliente = Session("id_cliente")
+                End If
+
+
+                Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+                Dim precioDLGombar As Decimal = 0
+                Dim precioDLGombarExpress As Decimal = 0
+                Dim precioDLGombarTarima As Decimal = 0
+                Dim precioDLGombarNacional As Decimal = 0
+                Dim precioDLRutaLeonPueCdmx As Decimal = 0
+                Dim precioDLRutaNorte As Decimal = 0
+                Dim precioDLTarimasRutaLeonPueCdmx As Decimal = 0
+                Dim precioDLRutaPacifico As Decimal = 0
+                Dim precioDLTarimasRutaPacifico As Decimal = 0
+                Dim precioDLTarimasOcurreRutaPacifico As Decimal = 0
+
+                If dtgridview IsNot Nothing Then
+                    Dim numeroCajas = dtgridview.Rows.Count()
+
+                    For Each row As DataRow In dtgridview.Rows
+                        pesoVol = (row("Alto") * row("Ancho") * row("Largo")) / 5000
+                        estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, id_agencia, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, row("Peso"), 0, 0)
+                        row("AreaExtendida") = 0
+
+                        precioDLGombar = precioDLGombar + (estafetaPrecios.Gombar * row("Cantidad"))
+                        row("PrecioDLGombar") = estafetaPrecios.Gombar
+
+                        precioDLGombarExpress = precioDLGombarExpress + (estafetaPrecios.AmountGombarExpress * row("Cantidad"))
+                        row("PrecioDLGombarExpress") = estafetaPrecios.AmountGombarExpress
+
+                        precioDLGombarTarima = precioDLGombarTarima + (estafetaPrecios.AmountGombarTarima * row("Cantidad"))
+                        row("PrecioDLGombarTarima") = estafetaPrecios.AmountGombarTarima
+
+                        precioDLGombarNacional = precioDLGombarNacional + (estafetaPrecios.AmountGombarNacional * row("Cantidad"))
+                        row("PrecioDLGombarNacional") = estafetaPrecios.AmountGombarNacional
+
+                        precioDLRutaLeonPueCdmx = precioDLRutaLeonPueCdmx + (estafetaPrecios.AmountGombarDLRutaLeonPueCdmx * row("Cantidad"))
+                        row("PrecioDLRutaLeonPueCdmx") = estafetaPrecios.AmountGombarDLRutaLeonPueCdmx
+
+                        precioDLRutaNorte = precioDLRutaNorte + (estafetaPrecios.AmountGombarDLRutaNorte * row("Cantidad"))
+                        row("PrecioDLRutaNorte") = estafetaPrecios.AmountGombarDLRutaNorte
+
+                        precioDLTarimasRutaLeonPueCdmx = precioDLTarimasRutaLeonPueCdmx + (estafetaPrecios.AmountGombarDLTarimasRutaLeonPueCdmx * row("Cantidad"))
+                        row("PrecioDLTarimasRutaLeonPueCdmx") = estafetaPrecios.AmountGombarDLTarimasRutaLeonPueCdmx
+
+                        precioDLRutaPacifico = precioDLRutaPacifico + (estafetaPrecios.AmountGombarDLRutaPacifico * row("Cantidad"))
+                        row("PrecioDLRutaPacifico") = estafetaPrecios.AmountGombarDLRutaPacifico
+
+                        precioDLTarimasRutaPacifico = precioDLTarimasRutaPacifico + (estafetaPrecios.AmountGombarDLTarimasRutaPacifico * row("Cantidad"))
+                        row("PrecioDLTarimasRutaPacifico") = estafetaPrecios.AmountGombarDLTarimasRutaPacifico
+
+                        precioDLTarimasOcurreRutaPacifico = precioDLTarimasOcurreRutaPacifico + (estafetaPrecios.AmountGombarDLTarimasOcurreRutaPacifico * row("Cantidad"))
+                        row("PrecioDLTarimasOcurreRutaPacifico") = estafetaPrecios.AmountGombarDLTarimasOcurreRutaPacifico
+                    Next row
+
+                    If precioDLGombar > 0 Then
+                        rbCosto.Text = "DL Ruta Gdl León Ags: " & FormatCurrency(precioDLGombar.ToString(), 2)
+                        rbCosto.Visible = True
+                        brCosto.Visible = True
+                    End If
+
+                    If precioDLGombarExpress > 0 Then
+                        rbGombarExpress.Text = "DL Express: " & FormatCurrency(precioDLGombarExpress.ToString(), 2)
+                        rbGombarExpress.Visible = True
+                        brGombarExpress.Visible = True
+                    End If
+
+                    If precioDLGombarTarima > 0 Then
+                        rbGombarTarima.Text = "DL Tarimas: " & FormatCurrency(precioDLGombarTarima.ToString(), 2)
+                        rbGombarTarima.Visible = True
+                        brGombarTarima.Visible = True
+                    End If
+
+                    If precioDLGombarNacional > 0 Then
+                        rbGombarNacional.Text = "DL Paqueteria Nacional: " & FormatCurrency(precioDLGombarNacional.ToString(), 2)
+                        rbGombarNacional.Visible = True
+                        brGombarNacional.Visible = True
+                    End If
+
+                    If precioDLRutaLeonPueCdmx > 0 Then
+                        rbGombarLeonPueCdmx.Text = "DL Ruta León-Pue-CDMX: " & FormatCurrency(precioDLRutaLeonPueCdmx.ToString(), 2)
+                        rbGombarLeonPueCdmx.Visible = True
+                        brGombarLeonPueCdmx.Visible = True
+                    End If
+
+                    If precioDLRutaNorte > 0 Then
+                        rbGombarRutaNorte.Text = "DL Ruta Norte: " & FormatCurrency(precioDLRutaNorte.ToString(), 2)
+                        rbGombarRutaNorte.Visible = True
+                        brGombarRutaNorte.Visible = True
+                    End If
+
+                    If precioDLTarimasRutaLeonPueCdmx > 0 Then
+                        rbGombarTarimasLeonPueCdmx.Text = "DL Tarimas Ruta León-Pue-CDMX: " & FormatCurrency(precioDLTarimasRutaLeonPueCdmx.ToString(), 2)
+                        rbGombarTarimasLeonPueCdmx.Visible = True
+                        brGombarTarimasLeonPueCdmx.Visible = True
+                    End If
+
+                    If precioDLRutaPacifico > 0 Then
+                        rbRutaPacifico.Text = "DL Ruta Pacífico: " & FormatCurrency(precioDLRutaPacifico.ToString(), 2)
+                        rbRutaPacifico.Visible = True
+                        brRutaPacifico.Visible = True
+                    End If
+
+                    If precioDLTarimasRutaPacifico > 0 Then
+                        rbTarimasRutaPacifico.Text = "DL Tarimas Ruta Pacífico: " & FormatCurrency(precioDLTarimasRutaPacifico.ToString(), 2)
+                        rbTarimasRutaPacifico.Visible = True
+                        brTarimasRutaPacifico.Visible = True
+                    End If
+
+                    If precioDLTarimasOcurreRutaPacifico > 0 Then
+                        rbTarimasOcurreRutaPacifico.Text = "DL Tarimas Ocurre Ruta Pacífico: " & FormatCurrency(precioDLTarimasOcurreRutaPacifico.ToString(), 2)
+                        rbTarimasOcurreRutaPacifico.Visible = True
+                        brTarimasOcurreRutaPacifico.Visible = True
+                    End If
+                End If
+
+                If precioDLGombar <= 0 And precioDLGombarExpress <= 0 And precioDLGombarTarima <= 0 And
+                   precioDLGombarNacional <= 0 And precioDLRutaLeonPueCdmx <= 0 And
+                   precioDLRutaNorte <= 0 And precioDLTarimasRutaLeonPueCdmx <= 0 And
+                   precioDLRutaPacifico <= 0 And precioDLTarimasRutaPacifico <= 0 And
+                   precioDLTarimasOcurreRutaPacifico <= 0 Then
+                    Label2.Text = "El servicio no está disponible para el destino o agente seleccionado"
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
+
+            End If
+
+            '************ REDPACK  **************
+            If proveedor = 230 Then
+                If String.IsNullOrWhiteSpace(txtRedPackServicioSat.Text) Then
+                    Label2.Text = "El codigo SAT ingresado no existe"
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
+
+                If datos_envio.largo = 0 Or datos_envio.alto = 0 Or datos_envio.peso = 0 Or datos_envio.ancho = 0 Then
+                    Label2.Text = "Ocurrió un error, por favor revise los datos ---> Valores de dimensiones y peso no pueden ser cero"
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
+
+                If estafetaPrecios.AmountEcoExpressRedPack > 0 Then
+                    Dim shipmentRequest As New ShipmentRequestDto()
+                    With shipmentRequest
+                        .AgentId = id_agencia
+                        .ShipmentId = 1
+                        .AccountId = 1
+                        .CarrierId = 2
+                        .ClientId = ConfigurationManager.AppSettings("PaqueteExpress.ClientId")
+                        .DeliveryInstructions = datos_envio.instrucciones_entrega
+                        .FedexExpressSaver = False
+                        .FedexStandardOvernight = False
+                        .MultipleLabels = envios.Length() > 1
+                        .ProductId = datos_envio.id_tarifa_agencia
+                        .PromoId = datos_envio.id_codigo_promocion
+                        .Reference = datos_envio.referencia
+                    End With
+
+                    Dim codigoSat = DaspackDALC.BuscarCodigoSat(txtRedPackServicioSat.Text)
+                    If codigoSat Is Nothing Then
+                        Label2.Text = "El codigo SAT ingresado no existe"
+                        ModalPopupExtender3.Show()
+                        Exit Sub
+                    Else
+                        Dim shipmentItems As New List(Of ShipmentRequestItemDto)
+                        Dim shipmentItem As New ShipmentRequestItemDto()
+                        With shipmentItem
+                            .Content = datos_envio.contenido
+                            .Height = datos_envio.alto
+                            .Length = datos_envio.largo
+                            .Quantity = envios.Length()
+                            .Weight = datos_envio.peso
+                            .Width = datos_envio.ancho
+                            .ShpCode = ""
+                            .Insurance = datos_envio.valor_seguro
+                            .SatService = codigoSat.codigo_servicio_id
+                            .SatServiceDesc = codigoSat.descripcion
+                        End With
+
+                        shipmentItems.Add(shipmentItem)
+                        shipmentRequest.ShipmentItems = shipmentItems
+                    End If
+
+                    Dim destinatary As New DestinataryDto()
+                    With destinatary
+                        .Address = Datos_Dest.direccion
+                        .City = Datos_Dest.ciudad
+                        .Company = Datos_Dest.empresa
+                        .CountryCode = "MX"
+                        .CountryId = 52
+                        .DestinataryId = id_destinatario
+                        .DownTown = Datos_Dest.colonia
+                        .Email = Datos_Dest.email
+                        .LastName = Datos_Dest.apellidos
+                        .Name = Datos_Dest.nombre
+                        .NoExt = Datos_Dest.noexterior
+                        .NoInt = Datos_Dest.nointerior
+                        .PhoneNumber = Datos_Dest.telefono
+                        .State = Datos_Dest.estadoprovincia
+                        .Street = Datos_Dest.calle
+                        .Town = Datos_Dest.municipio
+                        .ZipCode = Datos_Dest.codigo_postal
+                        .Rfc = Datos_Dest.rfc
+                    End With
+
+                    Dim redPackQuoteRequest As New ShipRequestDto()
+                    With redPackQuoteRequest
+                        .Destinatary = destinatary
+                        .ShipmentRequest = shipmentRequest
+                    End With
+
+                    Dim redPAckResponse = DaspackDALC.RedPackRate(redPackQuoteRequest)
+                    'If redPAckResponse IsNot Nothing Then
+                    '    estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, id_agencia, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, envioExportar.Peso, 0, 0)
+                    'End If
+
+                    If estafetaPrecios.ExpressSaverUser > 0 And redPAckResponse IsNot Nothing And redPAckResponse.Success = True And redPAckResponse.Data IsNot Nothing Then
+                        redPackEcoExpress.Value = estafetaPrecios.AmountEcoExpressRedPack
+                        rbRedPackEcoExpress.Text = " RedPack Economico: " & FormatCurrency(estafetaPrecios.AmountEcoExpressRedPack.ToString(), 2)
+                        rbRedPackEcoExpress.Visible = True
+                        brRedPackEcoExpress.Visible = True
+                    End If
+
+                End If
+
+                If rbRedPackEcoExpress.Visible = False Then
+                    Label2.Text = "El servicio no está disponible para el destino o agente seleccionado"
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
+            End If
+
+
+            lblOcurre.Visible = estafetaPrecios.Ocurre
+
+            If Label2.Text = "" Then
+                ModalPopupExtender7.Show()
+            End If
         Catch ex As Exception
             Label2.Text = "Ocurrió un error, por favor revise los datos -->" + ex.Message.ToString
             ModalPopupExtender3.Show()
@@ -300,10 +986,45 @@ Partial Class Punto_Venta
 
     End Sub
 
+    Protected Sub Button1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button1.Click
+        GridView3.DataBind()
+        ModalPopupExtender1.Show()
+    End Sub
+
+    Protected Sub GridView3_SelectedIndexChanged1(ByVal sender As Object, ByVal e As System.EventArgs) Handles GridView3.SelectedIndexChanged
+        Try
+            If Not (GridView3.SelectedIndex = 0 And GridView3.PageIndex = 0) Then
+                Dim row As GridViewRow = GridView3.SelectedRow
+                txtNombre.Text = row.Cells(2).Text
+                'TxtApellidos.Text = row.Cells(3).Text
+                txtEmpresa.Text = row.Cells(4).Text
+                txtCalle.Text = row.Cells(5).Text
+                txtCiudad.Text = row.Cells(6).Text
+                txtEdo.SelectedValue = row.Cells(7).Text
+                txtTelefono.Text = row.Cells(8).Text
+                txtEmail.Text = row.Cells(9).Text
+                TxtCP.Text = row.Cells(10).Text
+                txtRemRfc.Text = row.Cells(12).Text
+                TxtCol.Text = row.Cells(13).Text
+                TxtMpio.Text = row.Cells(14).Text
+
+                Session("id_cliente") = row.Cells(1).Text
+                TextBox1.Text = ""
+                GridView3.DataBind()
+            Else
+                Panel2.Enabled = True
+                txtNombre.Focus()
+                TextBox1.Text = ""
+                GridView3.DataBind()
+                Session("id_cliente") = 0
+            End If
+        Catch ex As Exception
+            Label2.Text = "Ocurrió un error, por favor revise los datos -->" + ex.Message.ToString
+            ModalPopupExtender3.Show()
+        End Try
+    End Sub
+
     Protected Sub Button2_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button2.Click
-        'If Panel3.Enabled = False Then
-        '    Panel3.Enabled = True
-        'End If
         GridView2.DataBind()
         ModalPopupExtender2.Show()
     End Sub
@@ -347,13 +1068,14 @@ Partial Class Punto_Venta
         End Try
     End Sub
 
-    Protected Sub Inserta_Click(ByVal sender As Object, ByVal e As System.EventArgs, Optional ByVal id_envio_imp As Integer = 0, Optional ByVal genera_guia As Boolean = True) 'Handles Inserta.Click
+    Protected Sub Inserta_Click(ByVal sender As Object, ByVal e As System.EventArgs, Optional ByVal id_envio_imp As Integer = 0, Optional ByVal genera_guia As Boolean = True) Handles btnAceptar.Click
         Try
             Dim Mensaje As String = "" 'para devolver resultado de validación de mensajes
             Dim datos_cliente As New ObjCliente
             Dim Datos_Dest As New ObjDestinatario
             Dim datos_envio As New ObjEnvio
             Dim Crear_Envio As New Insertar_Envios
+            Dim codigoSat As CodigosServiciosSat
 
             Dim coloniaDesc = ""
 
@@ -379,6 +1101,20 @@ Partial Class Punto_Venta
             Datos_Dest.estadoprovincia = txtEdo2.Text
             Datos_Dest.telefono = txtTelefono2.Text
             Datos_Dest.email = txtEmail2.Text
+            Datos_Dest.registro_tributario = txtRFC.Text
+            Datos_Dest.rfc = txtRFC.Text
+            Datos_Dest.residencia_fiscal = "MEX"
+
+            id_envio_imp = IIf(String.IsNullOrWhiteSpace(txtIdEnvioPreAsignado.Text), 0, txtIdEnvioPreAsignado.Text)
+            If id_envio_imp > 0 Then
+                Dim verificaEnvioResponse = DaspackDALC.VarificaEnvioPreAsignado(id_envio_imp, DropDownAgentes.Text)
+                If verificaEnvioResponse <> "" Then
+                    Label2.Text = "Ocurrió un error, por favor revise los datos ---> " + verificaEnvioResponse
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
+            End If
+
             If Not IsNothing(TxtCP2.Text) And Len(TxtCP2.Text) = 5 Then
                 Datos_Dest.codigo_postal = TxtCP2.Text
             Else
@@ -395,6 +1131,28 @@ Partial Class Punto_Venta
                 Exit Sub
             End If
 
+            Dim destinatary As New DestinataryDto()
+            With destinatary
+                .Address = Datos_Dest.direccion
+                .City = Datos_Dest.ciudad
+                .Company = Datos_Dest.empresa
+                .CountryCode = "MX"
+                .CountryId = 52
+                .DestinataryId = id_destinatario
+                .DownTown = Datos_Dest.colonia
+                .Email = Datos_Dest.email
+                .LastName = Datos_Dest.apellidos
+                .Name = Datos_Dest.nombre
+                .NoExt = Datos_Dest.noexterior
+                .NoInt = Datos_Dest.nointerior
+                .PhoneNumber = Datos_Dest.telefono
+                .State = Datos_Dest.estadoprovincia
+                .Street = Datos_Dest.calle
+                .Town = Datos_Dest.municipio
+                .ZipCode = Datos_Dest.codigo_postal
+                .Rfc = Datos_Dest.rfc
+            End With
+
             Dim cajas_count As Integer = 0
             Dim envios(CInt(TxtCajas.Text) - 1) As Integer
 
@@ -403,8 +1161,12 @@ Partial Class Punto_Venta
             End If
 
             Dim estafetaWrapper As New EstafetaWrapper()
-            Dim respuestaFrecuenciaCotizador = CType(Session(estafetaTipoServicio.Value), FrecuenciaCotizadorRespuesta)
-            Dim sessionTipoServico = respuestaFrecuenciaCotizador.Respuesta(0).TipoServicio
+            Dim respuestaFrecuenciaCotizador = CType(Session(EstafetaTipoServicio.Value), FrecuenciaCotizadorRespuesta)
+            Dim sessionTipoServico As Estafeta.Frecuenciacotizador.TipoServicio()
+            If respuestaFrecuenciaCotizador IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta IsNot Nothing Then
+                sessionTipoServico = respuestaFrecuenciaCotizador.Respuesta(0).TipoServicio
+            End If
+
             Dim tipoServicio As Estafeta.Frecuenciacotizador.TipoServicio = New Estafeta.Frecuenciacotizador.TipoServicio()
             Dim envioEstafeta As Boolean = False
             Dim cuentaServicio As New EstafetaCuentaServicio
@@ -424,47 +1186,420 @@ Partial Class Punto_Venta
                 .Ancho = txtAncho.Text
                 .Peso = txtPeso.Text
             End With
+
+            Dim shipmentRequest As New ShipmentRequestDto()
+            Dim fedexShipRequest As New ShipRequestDto()
+
+            Dim area_extendida_express_saver As Decimal = 0
+            Dim area_extendida_standard_overnight As Decimal = 0
             Dim pesoVol As Decimal = (envioExportar.Alto * envioExportar.Ancho * envioExportar.Largo) / 5000
             Dim pesoVolumetrico = IIf(envioExportar.Peso > pesoVol, envioExportar.Peso, pesoVol)
-            Dim estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, DropDownAgentes.Text, pesoVolumetrico)
+            Dim estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, DropDownAgentes.Text, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, envioExportar.Peso, 0, 0)
 
             Do While cajas_count < envios.Length()
                 Dim cliente As Cliente = Nothing
-                cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.Where(Function(x) x.Seleccionada = True).FirstOrDefault()
-                Dim valor_envio = estafetaPrecios.Gombar
-                Dim total_envio As Decimal = estafetaPrecios.Gombar
+                If respuestaFrecuenciaCotizador IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta IsNot Nothing Then
+                    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.Where(Function(x) x.Seleccionada = True).FirstOrDefault()
+                End If
+
+                Dim valor_envio = 0
+                Dim total_envio As Decimal = 0
 
                 If rbTerrestre.Checked Then
-                    tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio = "Terrestre")
+                    tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio.ToLower = "terrestre")
                     valor_envio = tipoServicio.CostoTotal
                     envioEstafeta = True
                     datos_envio.observaciones = "Terrestre"
-                    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio = "Terrestre")
+                    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "terrestre")
                     total_envio = estafetaPrecios.Terrestre
                     id_cliente = cuentaServicio.Cliente.id_cliente
                     cliente = cuentaServicio.Cliente
                 End If
 
                 If rbDiaSiguiente.Checked Then
-                    tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio = "Dia Sig.")
+                    tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio.ToLower = "dia sig.")
                     valor_envio = tipoServicio.CostoTotal
                     datos_envio.observaciones = "Dia Sig."
                     envioEstafeta = True
-                    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio = "Dia Sig.")
+                    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "dia sig.")
                     total_envio = estafetaPrecios.DiaSiguiente
                     id_cliente = cuentaServicio.Cliente.id_cliente
                     cliente = cuentaServicio.Cliente
                 End If
 
                 If rbLtl.Checked Then
-                    tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio = "LTL")
+                    tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio.ToLower = "ltl")
                     valor_envio = tipoServicio.CostoTotal
                     datos_envio.observaciones = "LTL"
                     envioEstafeta = True
-                    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio = "LTL")
+                    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "ltl")
                     total_envio = estafetaPrecios.Ltl
                     id_cliente = cuentaServicio.Cliente.id_cliente
                     cliente = cuentaServicio.Cliente
+                End If
+
+                Dim proveedor = DropDownProveedores.SelectedValue
+                If proveedor = 50 Then
+                    datos_cliente.id_pais = DropDownPais.SelectedValue
+                    datos_cliente.nombre = txtNombre.Text
+                    'datos_cliente.apellidos = TxtApellidos.Text
+                    datos_cliente.empresa = txtEmpresa.Text
+                    datos_cliente.calle = txtCalle.Text
+                    datos_cliente.noexterior = 0 ' Estamos pasando la dirección completa en el campo de calle.
+                    datos_cliente.nointerior = Nothing
+                    datos_cliente.direccion2 = Nothing
+                    datos_cliente.colonia = TxtCol.Text
+                    datos_cliente.ciudad = txtCiudad.Text
+                    datos_cliente.municipio = TxtMpio.Text
+                    datos_cliente.estadoprovincia = txtEdo.Text
+                    datos_cliente.telefono = txtTelefono.Text
+                    datos_cliente.codigo_postal = TxtCP.Text
+                    datos_cliente.email = txtEmail.Text
+                    datos_cliente.rfc = txtRemRfc.Text
+                    datos_cliente.registro_tributario = txtRemRfc.Text
+                    datos_cliente.residencia_fiscal = "MEX"
+
+                    'codigoSat = DaspackDALC.BuscarCodigoSat(txtDraftServicioSat.Text)
+                    'If codigoSat Is Nothing Then
+                    '    Label2.Text = "El codigo SAT ingresado no existe"
+                    '    ModalPopupExtender3.Show()
+                    '    Exit Sub
+                    'End If
+                    If Session("id_cliente") = 0 Then
+                        Mensaje = Crear_Envio.valida_datos_cliente(datos_cliente)
+                        If Mensaje = "OK" Then
+                            id_cliente = Crear_Envio.crea_cliente(datos_cliente)
+                            Session("id_cliente") = id_cliente
+                        Else
+                            Label2.Text = "Ocurrió un error, por favor revise los datos ---> " + Mensaje
+                            ModalPopupExtender3.Show()
+                            Mensaje = ""
+                            Exit Sub
+                        End If
+                    Else
+                        id_cliente = Session("id_cliente")
+                    End If
+
+                    If rbCosto.Checked Then
+                        valor_envio = estafetaPrecios.Gombar
+                        total_envio = estafetaPrecios.Gombar
+                        datos_envio.observaciones = "Gombar"
+                    End If
+
+                    If rbGombarExpress.Checked Then
+                        valor_envio = estafetaPrecios.AmountGombarExpress
+                        total_envio = estafetaPrecios.AmountGombarExpress
+                        datos_envio.observaciones = "GombarExpress"
+                    End If
+
+                    If rbGombarTarima.Checked Then
+                        valor_envio = estafetaPrecios.AmountGombarTarima
+                        total_envio = estafetaPrecios.AmountGombarTarima
+                        datos_envio.observaciones = "GombarTarima"
+                    End If
+
+                    If rbGombarNacional.Checked Then
+                        valor_envio = estafetaPrecios.AmountGombarNacional
+                        total_envio = estafetaPrecios.AmountGombarNacional
+                        datos_envio.observaciones = "GombarNacional"
+                    End If
+
+                    If rbGombarLeonPueCdmx.Checked Then
+                        valor_envio = estafetaPrecios.AmountGombarDLRutaLeonPueCdmx
+                        total_envio = estafetaPrecios.AmountGombarDLRutaLeonPueCdmx
+                        datos_envio.observaciones = "GombarRutaLeonPueCDMX"
+                    End If
+
+                    If rbGombarRutaNorte.Checked Then
+                        valor_envio = estafetaPrecios.AmountGombarDLRutaNorte
+                        total_envio = estafetaPrecios.AmountGombarDLRutaNorte
+                        datos_envio.observaciones = "GombarRutaNorte"
+                    End If
+
+                    If rbGombarTarimasLeonPueCdmx.Checked Then
+                        valor_envio = estafetaPrecios.AmountGombarDLTarimasRutaLeonPueCdmx
+                        total_envio = estafetaPrecios.AmountGombarDLTarimasRutaLeonPueCdmx
+                        datos_envio.observaciones = "GombarTarimasRutaLeonPueCDMX"
+                    End If
+                End If
+
+                If rbFedexExpress.Checked Or rbFedexStandard.Checked Then
+                    With shipmentRequest
+                        .AgentId = agente.id_agencia
+                        .ShipmentId = 1
+                        .AccountId = 1
+                        .CarrierId = 2
+                        .DeliveryInstructions = datos_envio.instrucciones_entrega
+                        .FedexExpressSaver = rbFedexExpress.Checked
+                        .FedexStandardOvernight = rbFedexStandard.Checked
+                        .MultipleLabels = envios.Length() > 1
+                        .ProductId = DropDownProduct.SelectedValue
+                        .PromoId = datos_envio.id_codigo_promocion
+                        .Reference = TxtRef.Text
+                    End With
+
+                    If rbFedexExpress.Checked Then
+                        cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.ExpressSaverUser)
+                        shipmentRequest.AccountId = estafetaPrecios.ExpressSaverUser
+                        shipmentRequest.ClientId = cliente.id_cliente
+                    End If
+
+                    If rbFedexStandard.Checked Then
+                        cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.StandardOvernightUser)
+                        shipmentRequest.AccountId = IIf(estafetaPrecios.StandardOvernightUser = 5, 2, estafetaPrecios.StandardOvernightUser)
+                        shipmentRequest.ClientId = cliente.id_cliente
+                    End If
+
+                    codigoSat = DaspackDALC.BuscarCodigoSat(txtFedexServicioSat.Text)
+                    If codigoSat Is Nothing Then
+                        Label2.Text = "El codigo SAT ingresado no existe"
+                        ModalPopupExtender3.Show()
+                        Exit Sub
+                    Else
+                        Dim shipmentItems As New List(Of ShipmentRequestItemDto)
+                        Dim shipmentItem As New ShipmentRequestItemDto()
+                        With shipmentItem
+                            .Content = DropDownContenidos.Text
+                            .Height = txtAlto.Text
+                            .Length = txtLargo.Text
+                            .Quantity = envios.Length()
+                            .Weight = txtPeso.Text
+                            .Width = txtAncho.Text
+                            .ShpCode = ""
+                            .Insurance = TxtSeguro.Text
+                            .SatService = codigoSat.codigo_servicio_id
+                            .SatServiceDesc = codigoSat.descripcion
+                        End With
+
+                        shipmentItems.Add(shipmentItem)
+                        shipmentRequest.ShipmentItems = shipmentItems
+                    End If
+
+                    With fedexShipRequest
+                        .Destinatary = destinatary
+                        .ShipmentRequest = shipmentRequest
+                    End With
+
+                    Dim fedexRateResponse = DaspackDALC.FedexRate(fedexShipRequest)
+                    If fedexRateResponse.Success AndAlso fedexRateResponse.Data IsNot Nothing Then
+                        area_extendida_standard_overnight = fedexRateResponse.Data.StandardOvernight.Amount
+                        area_extendida_express_saver = fedexRateResponse.Data.ExpressSaver.Amount
+                    End If
+
+                    estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, DropDownAgentes.Text, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, envioExportar.Peso, 0, 0)
+
+                    If rbFedexExpress.Checked Then
+                        valor_envio = estafetaPrecios.ExpressSaverAmount
+                        datos_envio.observaciones = "FedexExpressSaver"
+                        envioEstafeta = False
+                        total_envio = estafetaPrecios.ExpressSaverAmount
+                        cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.ExpressSaverUser)
+                        shipmentRequest.ServiceTypeId = 1
+                        shipmentRequest.AccountId = estafetaPrecios.ExpressSaverUser
+                        shipmentRequest.ClientId = cliente.id_cliente
+                        datos_envio.id_cliente = cliente.id_cliente
+                        id_cliente = cliente.id_cliente
+
+                        'If estafetaPrecios.ExpressSaverUser <> ConfigurationManager.AppSettings("FedEx.ExpressSaverAccountId") Then
+                        '    Label2.Text = "Existe un error en la configuracion del producto seleccionado"
+                        '    ModalPopupExtender3.Show()
+                        '    Exit Sub
+                        'End If
+
+                    End If
+
+                    If rbFedexStandard.Checked Then
+                        valor_envio = estafetaPrecios.StandardOvernightAmount
+                        datos_envio.observaciones = "FedexStandardOvernight"
+                        envioEstafeta = False
+                        total_envio = estafetaPrecios.StandardOvernightAmount
+                        cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.StandardOvernightUser)
+                        shipmentRequest.ServiceTypeId = 2
+                        shipmentRequest.AccountId = estafetaPrecios.StandardOvernightUser
+                        shipmentRequest.ClientId = cliente.id_cliente
+                        datos_envio.id_cliente = cliente.id_cliente
+                        id_cliente = cliente.id_cliente
+
+                        'If estafetaPrecios.StandardOvernightUser <> ConfigurationManager.AppSettings("FedEx.StandardOvernightAccountId") Then
+                        '    Label2.Text = "Existe un error en la configuracion del producto seleccionado"
+                        '    ModalPopupExtender3.Show()
+                        '    Exit Sub
+                        'End If
+                    End If
+                End If
+
+                If (estafetaPrecios.PaqueteExpressEconomic > 0 Or estafetaPrecios.PaqueteExpressNextDay > 0) Then
+                    If rbPaqueteExpressEconomic.Checked Or rbPaqueteExpressNextDay.Checked Then
+                        shipmentRequest = New ShipmentRequestDto()
+
+                        With shipmentRequest
+                            .AgentId = agente.id_agencia
+                            .ShipmentId = 1
+                            .CarrierId = 2
+                            .DeliveryInstructions = datos_envio.instrucciones_entrega
+                            .FedexExpressSaver = estafetaPrecios.ExpressSaverUser > 0
+                            .FedexStandardOvernight = estafetaPrecios.StandardOvernightUser > 0
+                            .MultipleLabels = envios.Length() > 1
+                            .ProductId = DropDownProduct.SelectedValue
+                            .PromoId = datos_envio.id_codigo_promocion
+                            .Reference = datos_envio.referencia
+                            .IsOcurre = IIf(chkOcurre.Checked, 1, 0)
+                        End With
+
+                        If rbPaqueteExpressEconomic.Checked Then
+                            cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.UserAccountPe)
+                            shipmentRequest.ClientId = cliente.id_cliente
+                            datos_envio.id_cliente = cliente.id_cliente
+                            id_cliente = cliente.id_cliente
+                            shipmentRequest.AccountId = estafetaPrecios.UserAccountPe
+                        End If
+
+                        If rbPaqueteExpressNextDay.Checked Then
+                            cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.UserAccountPe)
+                            shipmentRequest.ClientId = cliente.id_cliente
+                            datos_envio.id_cliente = cliente.id_cliente
+                            id_cliente = cliente.id_cliente
+                            shipmentRequest.AccountId = estafetaPrecios.UserAccountPe
+                        End If
+
+                        Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+                        If dtgridview IsNot Nothing Then
+                            Dim shipmentItems As New List(Of ShipmentRequestItemDto)
+                            Dim paqueteExpressEconomic As Decimal = 0
+                            Dim paqueteExpressNextDay As Decimal = 0
+
+                            For Each row As DataRow In dtgridview.Rows
+                                Dim shipmentItem As New ShipmentRequestItemDto()
+                                With shipmentItem
+                                    .Content = row("Contenido")
+                                    .Height = row("Alto")
+                                    .Length = row("Largo")
+                                    .Quantity = row("Cantidad")
+                                    .Weight = row("Peso")
+                                    .Width = row("Ancho")
+                                    .ShpCode = row("TipoClave")
+                                    .ShpCodeDesc = row("Tipo")
+                                    .Insurance = row("Seguro")
+                                    .SatService = row("ServicioSAT")
+                                    .SatServiceDesc = row("ServicioSATDesc")
+                                End With
+
+                                shipmentItems.Add(shipmentItem)
+                            Next row
+                            shipmentRequest.TotlDeclVlue = hdnValorTotalDeclarado.Value
+                            shipmentRequest.ShipmentItems = shipmentItems
+                        End If
+
+                        destinatary = New DestinataryDto()
+                        With destinatary
+                            .Address = Datos_Dest.direccion
+                            .City = Datos_Dest.ciudad
+                            .Company = Datos_Dest.empresa
+                            .CountryCode = "MX"
+                            .CountryId = 52
+                            .DestinataryId = id_destinatario
+                            .DownTown = Datos_Dest.colonia
+                            .Email = Datos_Dest.email
+                            .LastName = Datos_Dest.apellidos
+                            .Name = Datos_Dest.nombre
+                            .NoExt = Datos_Dest.noexterior
+                            .NoInt = Datos_Dest.nointerior
+                            .PhoneNumber = Datos_Dest.telefono
+                            .State = Datos_Dest.estadoprovincia
+                            .Street = Datos_Dest.calle
+                            .Town = Datos_Dest.municipio
+                            .ZipCode = Datos_Dest.codigo_postal
+                            .Rfc = Datos_Dest.rfc
+                        End With
+
+                        Dim paqueteExpressQuoteRequest As New ShipRequestDto()
+                        With paqueteExpressQuoteRequest
+                            .Destinatary = destinatary
+                            .ShipmentRequest = shipmentRequest
+                        End With
+
+                        If rbPaqueteExpressEconomic.Checked Then
+                            valor_envio = hdnPaqueteExpressEconomic.Value
+                            datos_envio.observaciones = "PaqueteExpressEconomic"
+                            envioEstafeta = False
+                            total_envio = hdnPaqueteExpressEconomic.Value
+                        End If
+
+                        If rbPaqueteExpressNextDay.Checked Then
+                            valor_envio = hdnPaqueteExpressNextDay.Value
+                            datos_envio.observaciones = "PaqueteExpressNextDay"
+                            envioEstafeta = False
+                            total_envio = hdnPaqueteExpressNextDay.Value
+                        End If
+                    End If
+
+                End If
+
+                If proveedor = 230 Then
+
+                    If rbRedPackEcoExpress.Checked Then
+                        With shipmentRequest
+                            .AgentId = agente.id_agencia
+                            .ShipmentId = 1
+                            .AccountId = 1
+                            .CarrierId = 2
+                            .DeliveryInstructions = datos_envio.instrucciones_entrega
+                            .FedexExpressSaver = False
+                            .FedexStandardOvernight = False
+                            .MultipleLabels = envios.Length() > 1
+                            .ProductId = DropDownProduct.SelectedValue
+                            .PromoId = datos_envio.id_codigo_promocion
+                            .Reference = TxtRef.Text
+                        End With
+
+                        If rbRedPackEcoExpress.Checked Then
+                            cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.AmountEcoExpressRedPackUser)
+                            shipmentRequest.AccountId = 2
+                            shipmentRequest.ClientId = cliente.id_cliente
+                        End If
+
+                        codigoSat = DaspackDALC.BuscarCodigoSat(txtRedPackServicioSat.Text)
+                        If codigoSat Is Nothing Then
+                            Label2.Text = "El codigo SAT ingresado no existe"
+                            ModalPopupExtender3.Show()
+                            Exit Sub
+                        Else
+                            Dim shipmentItems As New List(Of ShipmentRequestItemDto)
+                            Dim shipmentItem As New ShipmentRequestItemDto()
+                            With shipmentItem
+                                .Content = DropDownContenidos.Text
+                                .Height = txtAlto.Text
+                                .Length = txtLargo.Text
+                                .Quantity = envios.Length()
+                                .Weight = txtPeso.Text
+                                .Width = txtAncho.Text
+                                .ShpCode = ""
+                                .Insurance = TxtSeguro.Text
+                                .SatService = codigoSat.codigo_servicio_id
+                                .SatServiceDesc = codigoSat.descripcion
+                            End With
+
+                            shipmentItems.Add(shipmentItem)
+                            shipmentRequest.ShipmentItems = shipmentItems
+                        End If
+
+                        With fedexShipRequest
+                            .Destinatary = destinatary
+                            .ShipmentRequest = shipmentRequest
+                        End With
+
+                        If rbRedPackEcoExpress.Checked Then
+                            valor_envio = estafetaPrecios.AmountEcoExpressRedPack
+                            datos_envio.observaciones = "RedPAckEcoExpress"
+                            envioEstafeta = False
+                            total_envio = estafetaPrecios.AmountEcoExpressRedPack
+                            cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.AmountEcoExpressRedPackUser)
+                            shipmentRequest.AccountId = 5
+                            shipmentRequest.ClientId = cliente.id_cliente
+                            datos_envio.id_cliente = cliente.id_cliente
+                            id_cliente = cliente.id_cliente
+                        End If
+                    End If
                 End If
 
                 If cliente IsNot Nothing And (rbTerrestre.Checked Or rbDiaSiguiente.Checked Or rbLtl.Checked) Then
@@ -484,11 +1619,6 @@ Partial Class Punto_Venta
                     datos_cliente.telefono = cliente.telefono
                     datos_cliente.email = cliente.email
                     datos_cliente.codigo_postal = cliente.codigo_postal
-                End If
-
-                If rbCosto.Checked Then
-                    Dim clienteGombar = DaspackDALC.GetGombarSender(4)
-                    id_cliente = clienteGombar.id_cliente
                 End If
 
                 'Insertar el Envío
@@ -538,8 +1668,13 @@ Partial Class Punto_Venta
                     Exit Sub
                 End If
 
+                Dim strCodigoSat = ""
                 'Registro de Envíos (Detalles)
-                Crear_Envio.Detalle_Envios(id_envio, datos_envio, 0, TxtObservaciones.Text)
+                If codigoSat IsNot Nothing Then
+                    strCodigoSat = codigoSat.codigo_servicio_id
+                End If
+
+                Crear_Envio.Detalle_Envios(id_envio, datos_envio, 0, TxtObservaciones.Text, strCodigoSat)
                 TextBox2.Text = id_envio.ToString
 
                 Guia.DataBind()
@@ -558,7 +1693,7 @@ Partial Class Punto_Venta
             Loop
 
             If envioEstafeta = True Then
-                Dim respuestaLabel As String = estafetaWrapper.Label(datos_envio, datos_cliente, Datos_Dest, tipoServicio, respuestaFrecuenciaCotizador.Respuesta, cuentaServicio.Cuenta, envios)
+                Dim respuestaLabel As String = estafetaWrapper.Label(datos_envio, datos_cliente, Datos_Dest, tipoServicio, respuestaFrecuenciaCotizador.Respuesta, cuentaServicio.Cuenta, envios, ddlTipoImpresion.SelectedValue)
 
                 If agente.guia_estafeta = True And respuestaLabel = "Envio Exportado" Then
                     Dim sjscript2 As String = "<script language=""javascript"">" &
@@ -572,20 +1707,193 @@ Partial Class Punto_Venta
                     Else
 
                         Dim sjscript2 As String = "<script language=""javascript"">" &
-                        " window.open('guia_individual.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                        " window.open('guia_individual.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "&id_proveedor=" & DropDownProveedores.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
                         "</script>"
                         ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
                     End If
                 End If
             Else
-                Dim sjscript2 As String = "<script language=""javascript"">" &
-                        " window.open('guia_individual.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                If rbFedexStandard.Checked Or rbFedexExpress.Checked Then
+                    With shipmentRequest
+                        .AgentId = agente.id_agencia
+                        .ShipmentId = envios(0)
+                        .CarrierId = 2
+                        .DeliveryInstructions = datos_envio.instrucciones_entrega
+                        .FedexExpressSaver = rbFedexExpress.Checked
+                        .FedexStandardOvernight = rbFedexStandard.Checked
+                        .MultipleLabels = envios.Length() > 1
+                        .ProductId = DropDownProduct.SelectedValue
+                        .PromoId = datos_envio.id_codigo_promocion
+                        .Reference = TxtRef.Text
+                        .PaperType = ddlTipoImpresion.SelectedValue
+                        .ClientId = id_cliente
+                        .IsOcurre = IIf(chkOcurre.Checked Or estafetaPrecios.Ocurre, 1, 0)
+                    End With
+
+                    codigoSat = DaspackDALC.BuscarCodigoSat(txtFedexServicioSat.Text)
+                    If codigoSat Is Nothing Then
+                        Label2.Text = "El codigo SAT ingresado no existe"
+                        ModalPopupExtender3.Show()
+                        Exit Sub
+                    Else
+                        Dim shipmentItems As New List(Of ShipmentRequestItemDto)
+                        Dim shipmentItem As New ShipmentRequestItemDto()
+                        With shipmentItem
+                            .Content = datos_envio.contenido
+                            .Height = datos_envio.alto
+                            .Length = datos_envio.largo
+                            .Quantity = envios.Length()
+                            .Weight = datos_envio.peso
+                            .Width = datos_envio.ancho
+                            .ShpCode = ""
+                            .Insurance = datos_envio.valor_seguro
+                            .SatService = codigoSat.codigo_servicio_id
+                            .SatServiceDesc = codigoSat.descripcion
+                        End With
+
+                        shipmentItems.Add(shipmentItem)
+                        fedexShipRequest.ShipmentRequest.ShipmentItems = shipmentItems
+                    End If
+
+                    fedexShipRequest.ShipmentRequest = shipmentRequest
+                    fedexShipRequest.Destinatary = destinatary
+
+                    Dim fedexResponse = DaspackDALC.FedexShipment(fedexShipRequest)
+                    If fedexResponse.Success Then
+                        Dim sjscript2 As String = "<script language=""javascript"">" &
+                        " window.open('../Reports/PrintFedexLabel.aspx?id_envio=" & envios(0).ToString & "&tipo_impresion=" & ddlTipoImpresion.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
                         "</script>"
-                ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
+                        'Dim sjscript2 As String = "<script language=""javascript"">" &
+                        '" window.open('../Reports/PrintFedexLabel.aspx?id_envio=" & envios(0).ToString & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                        '"</script>"
+                        ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
+                    Else
+                        Label2.Text = "Ocurrió un error, por favor revise los datos ---> Error al crear etiqueta " + fedexResponse.ErrorMessage
+                        ModalPopupExtender3.Show()
+                    End If
+                Else
+                    If rbPaqueteExpressEconomic.Checked Or rbPaqueteExpressNextDay.Checked Then
+                        With shipmentRequest
+                            .AgentId = agente.id_agencia
+                            .ShipmentId = envios(0)
+                            .CarrierId = 2
+                            .DeliveryInstructions = datos_envio.instrucciones_entrega
+                            .FedexExpressSaver = rbFedexExpress.Checked
+                            .FedexStandardOvernight = rbFedexStandard.Checked
+                            .MultipleLabels = envios.Length() > 1
+                            .ProductId = DropDownProduct.SelectedValue
+                            .PromoId = datos_envio.id_codigo_promocion
+                            .Reference = TxtRef.Text
+                            .TypeSrvcId = IIf(rbPaqueteExpressEconomic.Checked, "STD-T", "SEG-DS")
+                            .PaperType = ddlTipoImpresion.SelectedValue
+                            .ClientId = id_cliente
+                            .IsOcurre = IIf(chkOcurre.Checked Or estafetaPrecios.Ocurre, 1, 0)
+                        End With
+
+                        fedexShipRequest.ShipmentRequest = shipmentRequest
+                        fedexShipRequest.Destinatary = destinatary
+
+                        Dim peResponse = DaspackDALC.PaqueteExpressShip(fedexShipRequest)
+                        If peResponse.Success Then
+                            If String.IsNullOrEmpty(peResponse.ErrorMessage) Then
+                                Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+                                If dtgridview IsNot Nothing Then
+                                    DaspackDALC.AddPaqueteExpressTipoPaquetes(dtgridview, envios(0), 3, IIf(rbPaqueteExpressEconomic.Checked, 1, 2))
+                                End If
+
+                                Dim impresion = ""
+                                If ddlTipoImpresion.SelectedValue = 2 Then
+                                    impresion = "&measure=4x6"
+                                End If
+
+                                Dim sjscript2 As String = "<script language=""javascript"">" &
+                                " window.open('" & ConfigurationManager.AppSettings("PaqueteExpress.Label") & peResponse.Data & impresion & "', '_blank')" &
+                                "</script>"
+
+                                ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
+
+                                ViewState("Data") = Nothing
+                                BindGridView()
+                            Else
+                                Label2.Text = "Ocurrió un error, por favor revise los datos -->" + peResponse.ErrorMessage
+                                ModalPopupExtender3.Show()
+                            End If
+                        Else
+                            Label2.Text = "Ocurrió un error, por favor revise los datos -->" + peResponse.ErrorMessage
+                            ModalPopupExtender3.Show()
+                        End If
+
+                    Else
+                        If rbRedPackEcoExpress.Checked Then
+                            With shipmentRequest
+                                .AgentId = agente.id_agencia
+                                .ShipmentId = envios(0)
+                                .CarrierId = 2
+                                .DeliveryInstructions = datos_envio.instrucciones_entrega
+                                .FedexExpressSaver = rbFedexExpress.Checked
+                                .FedexStandardOvernight = rbFedexStandard.Checked
+                                .MultipleLabels = envios.Length() > 1
+                                .ProductId = DropDownProduct.SelectedValue
+                                .PromoId = datos_envio.id_codigo_promocion
+                                .Reference = TxtRef.Text
+                                .PaperType = ddlTipoImpresion.SelectedValue
+                                .ClientId = id_cliente
+                                .IsOcurre = IIf(chkOcurre.Checked Or estafetaPrecios.Ocurre, 1, 0)
+                            End With
+
+                            codigoSat = DaspackDALC.BuscarCodigoSat(txtRedPackServicioSat.Text)
+                            If codigoSat Is Nothing Then
+                                Label2.Text = "El codigo SAT ingresado no existe"
+                                ModalPopupExtender3.Show()
+                                Exit Sub
+                            Else
+                                Dim shipmentItems As New List(Of ShipmentRequestItemDto)
+                                Dim shipmentItem As New ShipmentRequestItemDto()
+                                With shipmentItem
+                                    .Content = datos_envio.contenido
+                                    .Height = datos_envio.alto
+                                    .Length = datos_envio.largo
+                                    .Quantity = envios.Length()
+                                    .Weight = datos_envio.peso
+                                    .Width = datos_envio.ancho
+                                    .ShpCode = ""
+                                    .Insurance = datos_envio.valor_seguro
+                                    .SatService = codigoSat.codigo_servicio_id
+                                    .SatServiceDesc = codigoSat.descripcion
+                                End With
+
+                                shipmentItems.Add(shipmentItem)
+                                fedexShipRequest.ShipmentRequest.ShipmentItems = shipmentItems
+                            End If
+
+                            fedexShipRequest.ShipmentRequest = shipmentRequest
+                            fedexShipRequest.Destinatary = destinatary
+
+                            Dim redPAckShipResponse = DaspackDALC.RedPackShip(fedexShipRequest)
+                            If redPAckShipResponse.Success AndAlso redPAckShipResponse.Data IsNot Nothing Then
+                                Dim sjscript2 As String = "<script language=""javascript"">" &
+                               " window.open('../Reports/PrintFedexLabel.aspx?id_envio=" & envios(0).ToString & "&tipo_impresion=" & ddlTipoImpresion.SelectedValue & "&providerId=4','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                               "</script>"
+                                ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
+                            End If
+                        Else
+                            Dim sjscript2 As String = "<script language=""javascript"">" &
+                            " window.open('guia_individual.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "&id_proveedor=" & DropDownProveedores.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                            "</script>"
+                            ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
+                        End If
+                    End If
+                End If
             End If
 
             Dim Ctrl As Control
             For Each Ctrl In Panel3.Controls
+                If (Ctrl.GetType() Is GetType(TextBox)) Then
+                    Dim txt As TextBox = CType(Ctrl, TextBox)
+                    txt.Text = ""
+                End If
+            Next
+            For Each Ctrl In Panel2.Controls
                 If (Ctrl.GetType() Is GetType(TextBox)) Then
                     Dim txt As TextBox = CType(Ctrl, TextBox)
                     txt.Text = ""
@@ -618,32 +1926,10 @@ Partial Class Punto_Venta
             TxtCajas.Text = "1"
             TxtSeguro.Text = "0"
             txtPeso.Text = "1"
+            txtFedexServicioSat.Text = ""
             guia_por_caja.Checked = False
 
-
-            Dim MyConnection As ConnectionStringSettings
-            MyConnection = ConfigurationManager.ConnectionStrings("paqueteriaDB_ConnectionString")
-            Dim connection As Data.Common.DbConnection = New Data.SqlClient.SqlConnection()
-            connection.ConnectionString = MyConnection.ConnectionString
-            connection.Open()
-
-            Dim cmd2 As Data.IDbCommand = connection.CreateCommand()
-            cmd2.CommandType = Data.CommandType.StoredProcedure
-            cmd2.CommandText = "sp_Select_Envios_Pendientes_Uso"
-
-            Dim parm2 As Data.Common.DbParameter = cmd2.CreateParameter()
-            parm2.ParameterName = "@id_agencia"
-            parm2.Value = DropDownAgentes.SelectedValue
-            cmd2.Parameters.Add(parm2)
-
-            Dim reader2 As Data.SqlClient.SqlDataReader = cmd2.ExecuteReader()
-            If reader2.HasRows Then
-                reader2.Read()
-                EnviosAsignados.Text = Format(reader2.GetValue(0), "#,##;(#,##);0")
-            End If
-            reader2.Close()
-            connection.Close()
-
+            VerificaEnviosPreAsignados(DropDownAgentes.SelectedValue)
 
         Catch ex As Exception
             Label2.Text = "Ocurrió un error, por favor revise los datos -->" + ex.Message.ToString
@@ -662,6 +1948,7 @@ Partial Class Punto_Venta
                     DropDownAgentes.SelectedValue = tarifaAgencia.id_agencia
                     DropDownProduct.DataBind()
                     DropDownProduct.SelectedValue = tarifaAgencia.id_tarifa_agencia
+                    VerificaEnviosPreAsignados(tarifaAgencia.id_agencia)
                 End If
 
                 With envio
@@ -700,8 +1987,26 @@ Partial Class Punto_Venta
                         txtTelefono2.Text = .telefono
                         txtEmail2.Text = .email
                         TxtCP2.Text = .codigo_postal
+                        txtRFC.Text = .RFC
                     End With
                 End If
+
+                Dim cliente As Cliente = DaspackDALC.GetDatosCliente(envio.id_envio)
+
+                If cliente IsNot Nothing Then
+                    txtNombre.Text = cliente.nombre
+                    txtEmpresa.Text = ""
+                    txtCalle.Text = cliente.calle
+                    TxtCol.Text = cliente.colonia
+                    txtCiudad.Text = cliente.ciudad
+                    TxtMpio.Text = cliente.municipio
+                    txtEdo.Text = cliente.estadoprovincia
+                    txtTelefono.Text = cliente.telefono
+                    TxtCP.Text = cliente.codigo_postal
+                    txtEmail.Text = cliente.email
+                    txtRemRfc.Text = cliente.RFC
+                End If
+
             Else
                 mensaje = "El usuario no tiene envios creados."
             End If
@@ -800,7 +2105,7 @@ Partial Class Punto_Venta
                     End If
 
                     'Registro de Envíos (Detalles)
-                    Crear_Envio.Detalle_Envios(id_envio, requestEnvio, 0, "")
+                    Crear_Envio.Detalle_Envios(id_envio, requestEnvio, 0, "", "")
                     'Insertar SobreCargos
                     Crear_Envio.inserta_SobreCargos(id_envio)
                     'Inserta seguimiento
@@ -854,28 +2159,14 @@ Partial Class Punto_Venta
             If reader.HasRows Then
                 reader.Read()
 
+                DropDownPais.SelectedValue = reader.GetInt32(1)
                 DropDownPais2.SelectedValue = reader.GetInt32(1) ' For masupack
                 txtCiudad2.Visible = True
             End If
             reader.Close()
-
-            Dim cmd2 As Data.IDbCommand = connection.CreateCommand()
-            cmd2.CommandType = Data.CommandType.StoredProcedure
-            cmd2.CommandText = "sp_Select_Envios_Pendientes_Uso"
-
-            Dim parm2 As Data.Common.DbParameter = cmd2.CreateParameter()
-            parm2.ParameterName = "@id_agencia"
-            parm2.Value = DropDownAgentes.SelectedValue
-            cmd2.Parameters.Add(parm2)
-
-            Dim reader2 As Data.SqlClient.SqlDataReader = cmd2.ExecuteReader()
-            If reader2.HasRows Then
-                reader2.Read()
-                EnviosAsignados.Text = Format(reader2.GetValue(0), "#,##;(#,##);0")
-
-            End If
-            reader2.Close()
             connection.Close()
+
+            VerificaEnviosPreAsignados(DropDownAgentes.SelectedValue)
             TxtTarifa.value = 0
 
             Dim idAgente As Integer = 0
@@ -886,12 +2177,57 @@ Partial Class Punto_Venta
             Else
                 TxtSeguro.Text = "0"
             End If
+
+            Dim db As New SiExProEntities
+            Dim agente = db.C_AGENCIAS.FirstOrDefault(Function(x) x.id_agencia = DropDownAgentes.SelectedValue)
+
+            If agente IsNot Nothing Then
+                txtNombre.Text = agente.nombre
+                'TxtApellidos.Text = ""
+                txtEmpresa.Text = ""
+                txtCalle.Text = agente.direccion
+                'noexterior = 0 ' Estamos pasando la dirección completa en el campo de calle.
+                TxtCol.Text = agente.colonia
+                txtCiudad.Text = agente.ciudad
+                TxtMpio.Text = agente.municipio
+                txtEdo.Text = agente.estado_provincia
+                txtTelefono.Text = agente.telefono
+                TxtCP.Text = agente.codigo_postal
+                txtEmail.Text = agente.email
+                txtRemRfc.Text = agente.RFC
+            End If
+
         Catch ex As Exception
             'MsgBox("Ocurrió un error, por favor revise los datos ---> " + ex.Message.ToString)
             'Button3.Visible = True
             Label2.Text = "Ocurrió un error, por favor revise los datos -->" + ex.Message.ToString
             ModalPopupExtender3.Show()
         End Try
+    End Sub
+
+    Private Sub VerificaEnviosPreAsignados(IdAgencia As Integer)
+        Dim MyConnection As ConnectionStringSettings
+        MyConnection = ConfigurationManager.ConnectionStrings("paqueteriaDB_ConnectionString")
+        Dim connection As Data.Common.DbConnection = New Data.SqlClient.SqlConnection()
+        connection.ConnectionString = MyConnection.ConnectionString
+        connection.Open()
+        Dim cmd2 As Data.IDbCommand = connection.CreateCommand()
+        cmd2.CommandType = Data.CommandType.StoredProcedure
+        cmd2.CommandText = "sp_Select_Envios_Pendientes_Uso"
+
+        Dim parm2 As Data.Common.DbParameter = cmd2.CreateParameter()
+        parm2.ParameterName = "@id_agencia"
+        parm2.Value = IdAgencia
+        cmd2.Parameters.Add(parm2)
+
+        Dim reader2 As Data.SqlClient.SqlDataReader = cmd2.ExecuteReader()
+        If reader2.HasRows Then
+            reader2.Read()
+            EnviosAsignados.Text = Format(reader2.GetValue(0), "#,##;(#,##);0")
+
+        End If
+        reader2.Close()
+        connection.Close()
     End Sub
     Protected Sub Button4_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         'Genera Guía FedEX en otra ventana y desactiva botón
@@ -954,6 +2290,165 @@ Partial Class Punto_Venta
             Label2.Text = "Ocurrió un error, por favor revise los datos -->" + ex.Message.ToString
             ModalPopupExtender3.Show()
         End Try
+    End Sub
+
+    Protected Sub OnAdd(ByVal sender As Object, ByVal e As EventArgs)
+        Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+
+        If dtgridview Is Nothing Then
+            dtgridview = New DataTable()
+            dtgridview.Columns.Add("Cantidad", GetType(Integer))
+            dtgridview.Columns.Add("Contenido", GetType(String))
+            dtgridview.Columns.Add("Ancho", GetType(Decimal))
+            dtgridview.Columns.Add("Largo", GetType(Decimal))
+            dtgridview.Columns.Add("Alto", GetType(Decimal))
+            dtgridview.Columns.Add("Peso", GetType(Decimal))
+            dtgridview.Columns.Add("TipoClave", GetType(String))
+            dtgridview.Columns.Add("Tipo", GetType(String))
+            dtgridview.Columns.Add("Seguro", GetType(String))
+            dtgridview.Columns.Add("ServicioSAT", GetType(String))
+            dtgridview.Columns.Add("ServicioSATDesc", GetType(String))
+            dtgridview.Columns.Add("AreaExtendida", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioPENextDay", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioPEEconomic", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLGombar", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLGombarExpress", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLGombarTarima", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLGombarNacional", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLRutaLeonPueCdmx", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLRutaNorte", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLTarimasRutaLeonPueCdmx", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLRutaPacifico", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLTarimasRutaPacifico", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLTarimasOcurreRutaPacifico", GetType(Decimal))
+        End If
+        Dim tipoPaqueteAgregado = False
+        For Each row As DataRow In dtgridview.Rows
+            If ddlTiposPaquete.SelectedValue = row("TipoClave") Then
+                tipoPaqueteAgregado = True
+            End If
+        Next row
+
+        If String.IsNullOrWhiteSpace(txtServicioSat.Text) Then
+            Label2.Text = "Debe ingresa un Codigo de Servicio SAT"
+            ModalPopupExtender3.Show()
+        Else
+            Dim codigoSat = DaspackDALC.BuscarCodigoSat(txtServicioSat.Text)
+            If codigoSat Is Nothing Then
+                Label2.Text = "El codigo ingresado no existe"
+                ModalPopupExtender3.Show()
+            Else
+                Dim dr2 As DataRow = dtgridview.NewRow()
+
+                If txtContLargo.Text = 0 Or txtContLargo.Text = "0" Or String.IsNullOrWhiteSpace(txtContLargo.Text) Or
+                   txtContAlto.Text = 0 Or txtContAlto.Text = "0" Or String.IsNullOrWhiteSpace(txtContAlto.Text) Or
+                   txtContPeso.Text = 0 Or txtContPeso.Text = "0" Or String.IsNullOrWhiteSpace(txtContPeso.Text) Or
+                   txtContAncho.Text = 0 Or txtContAncho.Text = "0" Or String.IsNullOrWhiteSpace(txtContAncho.Text) Then
+                    Label2.Text = "Ocurrió un error, por favor revise los datos ---> Valores de dimensiones y peso no pueden ser cero"
+                    ModalPopupExtender3.Show()
+                Else
+                    dr2("Cantidad") = txtContCant.Text
+                    dr2("Contenido") = txtContCont.Text
+                    dr2("Ancho") = txtContAncho.Text
+                    dr2("Largo") = txtContLargo.Text
+                    dr2("Alto") = txtContAlto.Text
+                    dr2("Peso") = txtContPeso.Text
+                    dr2("TipoClave") = ddlTiposPaquete.SelectedValue
+                    dr2("Tipo") = ddlTiposPaquete.SelectedItem.Text
+                    dr2("Seguro") = txtPESeguro.Text
+                    dr2("ServicioSAT") = codigoSat.codigo_servicio_id
+                    dr2("ServicioSATDesc") = codigoSat.descripcion
+                    dr2("PrecioPENextDay") = 0
+                    dr2("PrecioPEEconomic") = 0
+                    dr2("AreaExtendida") = 0
+                    dr2("PrecioDLGombar") = 0
+                    dr2("PrecioDLGombarExpress") = 0
+                    dr2("PrecioDLGombarTarima") = 0
+                    dr2("PrecioDLGombarNacional") = 0
+                    dr2("PrecioDLRutaLeonPueCdmx") = 0
+                    dr2("PrecioDLRutaNorte") = 0
+                    dr2("PrecioDLTarimasRutaLeonPueCdmx") = 0
+                    dr2("PrecioDLRutaPacifico") = 0
+                    dr2("PrecioDLTarimasRutaPacifico") = 0
+                    dr2("PrecioDLTarimasOcurreRutaPacifico") = 0
+
+                    dtgridview.Rows.Add(dr2)
+                    ViewState("Data") = dtgridview
+                    BindGridView()
+
+                    txtContCant.Text = ""
+                    txtContCont.Text = ""
+                    txtContAncho.Text = ""
+                    txtContLargo.Text = ""
+                    txtContAlto.Text = ""
+                    txtContPeso.Text = ""
+                    txtPESeguro.Text = "0"
+                    txtServicioSat.Text = ""
+                End If
+            End If
+        End If
+    End Sub
+    Protected Sub GridView1_RowDeleting(ByVal sender As Object, ByVal e As GridViewDeleteEventArgs)
+        Dim dt As DataTable = CType(ViewState("Data"), DataTable)
+        Dim index As Integer = Convert.ToInt32(e.RowIndex)
+        ' Delete from ViewState.
+        dt.Rows(index).Delete()
+        ViewState("Data") = dt
+        If Not IsDBNull(GridView1.DataKeys(e.RowIndex).Value) Then
+            'Dim id As Integer = Convert.ToInt32(GridView1.DataKeys(e.RowIndex).Value)
+            '' Delete from Database.
+            'Dim constr As String = ConfigurationManager.ConnectionStrings("conString").ConnectionString
+            'Using con As SqlConnection = New SqlConnection(constr)
+            '    Dim query As String = "DELETE FROM Customers WHERE CustomerId = @Id"
+            '    Using cmd As SqlCommand = New SqlCommand(query)
+            '        cmd.Connection = con
+            '        cmd.Parameters.AddWithValue("@Id", id)
+            '        con.Open()
+            '        cmd.ExecuteNonQuery()
+            '        con.Close()
+            '    End Using
+            'End Using
+        End If
+        BindGridView()
+    End Sub
+    Private Sub BindGridView()
+        GridView1.DataSource = TryCast(ViewState("Data"), DataTable)
+        GridView1.DataBind()
+    End Sub
+    Private Sub PopulateData()
+        Dim constr As String = ConfigurationManager.ConnectionStrings("conString").ConnectionString
+
+        Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+        If dtgridview Is Nothing Then
+            dtgridview = New DataTable()
+            dtgridview.Columns.Add("Cantidad", GetType(Integer))
+            dtgridview.Columns.Add("Contenido", GetType(String))
+            dtgridview.Columns.Add("Ancho", GetType(Decimal))
+            dtgridview.Columns.Add("Largo", GetType(Decimal))
+            dtgridview.Columns.Add("Alto", GetType(Decimal))
+            dtgridview.Columns.Add("Peso", GetType(Decimal))
+            dtgridview.Columns.Add("TipoClave", GetType(String))
+            dtgridview.Columns.Add("Tipo", GetType(String))
+            dtgridview.Columns.Add("Seguro", GetType(String))
+            dtgridview.Columns.Add("ServicioSAT", GetType(String))
+            dtgridview.Columns.Add("ServicioSATDesc", GetType(String))
+            dtgridview.Columns.Add("AreaExtendida", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioPENextDay", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioPEEconomic", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLGombar", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLGombarExpress", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLGombarTarima", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLGombarNacional", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLRutaLeonPueCdmx", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLRutaNorte", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLTarimasRutaLeonPueCdmx", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLRutaPacifico", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLTarimasRutaPacifico", GetType(Decimal))
+            dtgridview.Columns.Add("PrecioDLTarimasOcurreRutaPacifico", GetType(Decimal))
+
+            ViewState("Data") = dtgridview
+            BindGridView()
+        End If
     End Sub
 
     <WebMethod()>
@@ -1367,6 +2862,90 @@ Partial Class Punto_Venta
             response = Nothing
         End Try
     End Function
+
+
+    Protected Sub DropDownProveedores_SelectedIndexChanged(sender As Object, e As EventArgs) Handles DropDownProveedores.SelectedIndexChanged
+        Dim proveedor = DropDownProveedores.SelectedValue
+
+        txtContCant.Text = ""
+        txtContCont.Text = ""
+        txtContAncho.Text = ""
+        txtContLargo.Text = ""
+        txtContAlto.Text = ""
+        txtContPeso.Text = ""
+        txtPESeguro.Text = "0"
+        txtServicioSat.Text = ""
+        txtFedexServicioSat.Text = ""
+        'txtDraftServicioSat.Text = ""
+        txtRedPackServicioSat.Text = ""
+
+        remButton.Visible = False
+        remControl.Visible = False
+        remText.Visible = False
+        datosRemitente.Visible = False
+
+        ViewState("Data") = Nothing
+        BindGridView()
+
+        If proveedor = 40 Or proveedor = 50 Then
+            contenidosDesc.Visible = True
+            contenidosCampos.Visible = True
+            contenidosGrid.Visible = True
+            tipopaquete.Visible = True
+            tipopaquetefedex.Visible = False
+            'tipopaquetedraft.Visible = False
+            tipopaqueteredpack.Visible = False
+            txtLargo.Text = 1
+            txtAncho.Text = 1
+            txtAlto.Text = 1
+            txtPeso.Text = 1
+        End If
+
+        If proveedor = 10 Then
+            contenidosDesc.Visible = False
+            contenidosCampos.Visible = False
+            contenidosGrid.Visible = False
+            tipopaquete.Visible = False
+            tipopaquetefedex.Visible = True
+            'tipopaquetedraft.Visible = False
+            tipopaqueteredpack.Visible = False
+        End If
+
+        If proveedor = 30 Then
+            contenidosDesc.Visible = False
+            contenidosCampos.Visible = False
+            contenidosGrid.Visible = False
+            tipopaquete.Visible = False
+            tipopaquetefedex.Visible = False
+            'tipopaquetedraft.Visible = False
+            tipopaqueteredpack.Visible = False
+        End If
+
+        If proveedor = 50 Then
+            remButton.Visible = True
+            remControl.Visible = True
+            remText.Visible = True
+            datosRemitente.Visible = True
+            tipopaqueteredpack.Visible = False
+        End If
+
+        If proveedor = 230 Then
+            contenidosDesc.Visible = False
+            contenidosCampos.Visible = False
+            contenidosGrid.Visible = False
+            tipopaquete.Visible = False
+            tipopaquetefedex.Visible = False
+            'tipopaquetedraft.Visible = False
+            tipopaqueteredpack.Visible = True
+        End If
+    End Sub
+
+    Private Sub DropDownProduct_DataBound(sender As Object, e As EventArgs) Handles DropDownProduct.DataBound
+
+        If DropDownProduct.Items.Count() > 1 Then
+            DropDownProduct.SelectedIndex = 1
+        End If
+    End Sub
 
 
 End Class

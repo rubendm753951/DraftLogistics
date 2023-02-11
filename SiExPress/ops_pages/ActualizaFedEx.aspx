@@ -35,7 +35,7 @@
                                     <td>&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 143px">Referencia Estafeta</td>
+                                    <td style="width: 143px">Referencia FedEx</td>
                                     <td style="width: 184px">
                                         <asp:textbox cssclass="form-control" height="27px" id="txtReferencia" runat="server" width="233px"></asp:textbox>
                                     </td>

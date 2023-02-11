@@ -59,6 +59,7 @@
               <Mapping SourceColumn="iva" DataSetColumn="iva1" />
               <Mapping SourceColumn="sobrepeso" DataSetColumn="sobrepeso1" />
               <Mapping SourceColumn="EstafetaStatus" DataSetColumn="EstafetaStatus" />
+              <Mapping SourceColumn="tipo_de_pago" DataSetColumn="tipo_de_pago" />
             </Mappings>
             <Sources>
               <DbSource ConnectionRef="paqueteriaDB_ConnectionString (Web.config)" DbObjectName="PaqueteriaDB.dbo.sp_select_reporte_venta_dia" DbObjectType="StoredProcedure" FillMethodModifier="Public" FillMethodName="FillBy" GenerateMethods="Both" GenerateShortCommands="true" GeneratorGetMethodName="GetDataBy" GeneratorSourceName="FillBy" GetMethodModifier="Public" GetMethodName="GetDataBy" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetDataBy" UserSourceName="FillBy">
@@ -321,6 +322,13 @@
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="413" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="tipo_de_pago" msprop:Generator_ColumnVarNameInTable="columntipo_de_pago" msprop:Generator_ColumnPropNameInRow="tipo_de_pago" msprop:Generator_ColumnPropNameInTable="tipo_de_pagoColumn" msprop:Generator_UserColumnName="tipo_de_pago" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="20" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>

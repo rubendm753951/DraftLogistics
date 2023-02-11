@@ -19,5 +19,7 @@ Partial Public Class EstafetaRequestResponse
     Public Property cuenta As Nullable(Of Integer)
     Public Property imagenBase64 As String
     Public Property carrier As Nullable(Of Integer)
+    Public Property identificador As Nullable(Of System.Guid)
+    Public Property idenvio As Nullable(Of Integer)
 
 End Class

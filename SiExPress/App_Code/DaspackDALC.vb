@@ -1,8 +1,14 @@
-﻿Imports System.Data.Entity
-Imports Microsoft.VisualBasic
+﻿Imports System.Data
+Imports System.Data.Entity
+Imports System.Net
 Imports SiExProData
+Imports iTextSharp.text.pdf
+Imports System.Drawing
+Imports System.Drawing.Imaging
 
 Public Class DaspackDALC
+    Public Shared Property JsonConvert As Object
+
     Public Shared Function GetModuloPrivilegio(ByVal idModulo As Integer, ByVal idUsuario As Integer, ByVal privilegio As Integer) As Boolean
         Dim db As New DaspackDataContext
         Dim tienePermiso As Boolean = False
@@ -173,6 +179,11 @@ Public Class DaspackDALC
         Return dbContext.D_ESTAFETA_LABEL.FirstOrDefault(Function(x) x.id_envio = id_envio)
     End Function
 
+    Public Shared Function ProviderLabel(id_envio As Integer, providerId As Integer) As ProviderLabel
+        Dim dbContext As New SiExProEntities
+        Return dbContext.D_PROVIDER_LABEL.FirstOrDefault(Function(x) x.ShipmentId = id_envio And x.ProviderId = providerId)
+    End Function
+
     Public Shared Function InsEstafetaLabel(id_envio As Integer, labelPDF As Byte(), referencia As String, resultDescription As String, identificador As Guid) As Boolean
         Dim dbContext As New SiExProEntities
 
@@ -180,6 +191,12 @@ Public Class DaspackDALC
 
         envio.Referencia_FedEx = referencia
         envio.id_status = 300
+        dbContext.SaveChanges()
+
+        Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        envioDato.id_proveedor = 1
+
         dbContext.SaveChanges()
 
         Dim estafetaLabel As EstafetaLabel = dbContext.D_ESTAFETA_LABEL.FirstOrDefault(Function(x) x.id_envio = id_envio)
@@ -380,4 +397,506 @@ Public Class DaspackDALC
         End If
     End Function
 
+    Public Shared Function FedexShipment(ByVal fedexShipRequest As ShipRequestDto) As ResponseData
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New ResponseData()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(fedexShipRequest)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("EstafetaService.Ship"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of ResponseData)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function FedexRate(ByVal fedexShipRequest As ShipRequestDto) As RateResponseData
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New RateResponseData()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(fedexShipRequest)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("EstafetaService.Rate"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of RateResponseData)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function PaqueteExpressQuote(ByVal fedexShipRequest As ShipRequestDto) As PaqueteExpressQuoteServiceResponse
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New PaqueteExpressQuoteServiceResponse()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(fedexShipRequest)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("PaqueteExpress.Quote"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of PaqueteExpressQuoteServiceResponse)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function PaqueteExpressShip(ByVal fedexShipRequest As ShipRequestDto) As PaqueteExpressShipResponse
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New PaqueteExpressShipResponse()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(fedexShipRequest)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("PaqueteExpress.Ship"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of PaqueteExpressShipResponse)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function AddPaqueteExpressTipoPaquetes(dtgridview As DataTable, idEnvio As Integer, idProveedor As Integer, servicio As Integer) As Boolean
+        Dim dbContext As New SiExProEntities
+
+        For Each row As DataRow In dtgridview.Rows
+            Dim tipoPaquete As New PaqueteExpressTipoPaquete()
+
+            With tipoPaquete
+                .id_envio = idEnvio
+                .cantidad = row("Cantidad")
+                .contenido = row("Contenido")
+                .tipoId = row("TipoClave")
+                .tipo = row("Tipo")
+                .alto = row("Alto")
+                .largo = row("Largo")
+                .ancho = row("Ancho")
+                .peso = row("Peso")
+                .fecha = DateTime.Now
+                .seguro = row("Seguro")
+                .servicioSat = row("ServicioSAT")
+                .areaExtendida = row("AreaExtendida")
+                .idProveedor = idProveedor
+            End With
+
+            If idProveedor = 3 Then
+                If servicio = 1 Then
+                    tipoPaquete.Precio = row("PrecioPEEconomic")
+                    tipoPaquete.total = row("PrecioPEEconomic") * row("Cantidad")
+                Else
+                    tipoPaquete.Precio = row("PrecioPENextDay")
+                    tipoPaquete.total = row("PrecioPENextDay") * row("Cantidad")
+                End If
+            End If
+
+
+            dbContext.D_ENVIOS_PE_TIPO_PAQUETES.Add(tipoPaquete)
+        Next row
+
+        Return dbContext.SaveChanges() > 0
+
+    End Function
+
+    Public Shared Function BuscarCodigoSat(codigoSat As String) As CodigosServiciosSat
+        Dim dbContext As New SiExProEntities
+
+        Return dbContext.D_CODIGOS_SERVICIOS_SAT.FirstOrDefault(Function(x) x.codigo_servicio_id = codigoSat)
+    End Function
+
+    Public Shared Function ActualizaCodigosBarras() As Boolean
+        Dim dbContext As New SiExProEntities
+
+        Dim envios = dbContext.D_ENVIOS_DATOS.Where(Function(x) x.codigo_barras Is Nothing).OrderByDescending(Function(x) x.id_envio).Take(100)
+        For Each envio As EnvioDatos In envios
+            Dim barcodeBm As Bitmap = Nothing
+            barcodeBm = DaspackDALC.codigo128("A" + envio.id_envio.ToString + "B", False, 20)
+            Dim bitmapBytes As Byte()
+
+            Using stream As New System.IO.MemoryStream
+                barcodeBm.Save(stream, ImageFormat.Png)
+                bitmapBytes = stream.GetBuffer()
+            End Using
+
+            envio.codigo_barras = bitmapBytes
+        Next
+
+        dbContext.SaveChanges()
+
+        Return True
+    End Function
+
+    Public Shared Function codigo128(ByVal _code As String, Optional ByVal vertexto As Boolean = False, Optional ByVal Height As Single = 0)
+        Dim barcode As New BarcodeCodabar
+        barcode.StartStopText = True
+        If Height <> 0 Then
+            barcode.BarHeight = Height
+        End If
+        barcode.Code = _code
+        Try
+            Dim bm As New System.Drawing.Bitmap(barcode.CreateDrawingImage(Color.Black, Color.White))
+            If vertexto = False Then
+                Return bm
+            Else
+                'generando el texto
+                Dim bmT As Image
+                bmT = New Bitmap(bm.Width, bm.Height + 14)
+                Dim g As Graphics = Graphics.FromImage(bmT)
+                g.FillRectangle(New SolidBrush(Color.White), 0, 0, bm.Width, bm.Height + 14)
+
+                Dim pintarTexto As New Font("Arial", 8)
+                Dim brocha As New SolidBrush(Color.Black)
+
+                Dim stringSize As New SizeF
+                stringSize = g.MeasureString(_code, pintarTexto)
+                Dim centrox As Single = (bm.Width - stringSize.Width) / 2
+                Dim x As Single = centrox
+                Dim y As Single = bm.Height
+
+                Dim drawformat As New StringFormat
+                drawformat.FormatFlags = StringFormatFlags.NoWrap
+                g.DrawImage(bm, 0, 0)
+
+                Dim ncode As String = _code.Substring(1, _code.Length - 2)
+                g.DrawString(ncode, pintarTexto, brocha, x, y, drawformat)
+                Return bmT
+
+            End If
+        Catch ex As Exception
+            Throw New Exception("Error al generar el codigo" & ex.ToString)
+        End Try
+    End Function
+
+    Public Shared Function GetDeliveryConfirmationImage(shipmentId As Integer) As DeliveryConfirmation
+        Dim dbContext As New SiExProEntities
+
+        Return dbContext.D_DELIVERY_CONFIRMATION.OrderByDescending(Function(x) x.DeliveryConfirmationId).FirstOrDefault(Function(x) x.ShipmentId = shipmentId)
+    End Function
+
+    Public Shared Function ActualizaTarifas(nuevasTarifas As List(Of TarifaAgenciaFedex), idAgente As Integer) As String
+        Dim response As String = ""
+        Dim dbContext As New SiExProEntities
+        Try
+            Dim tarifas = dbContext.D_TARIFAS_AGENCIA_FEDEX.Where(Function(x) x.ID_AGENCIA = idAgente)
+            dbContext.D_TARIFAS_AGENCIA_FEDEX.RemoveRange(tarifas)
+            dbContext.SaveChanges()
+
+            dbContext.D_TARIFAS_AGENCIA_FEDEX.AddRange(nuevasTarifas)
+            dbContext.SaveChanges()
+
+            response = "Tarifas actualizadas"
+        Catch ex As Exception
+            response = "No se pudieron actualizar tarifas"
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function ActualizaTarifas(nuevasTarifas As List(Of TarifaAgenciaDraft), idAgente As Integer) As String
+        Dim response As String = ""
+        Dim dbContext As New SiExProEntities
+        Try
+            Dim tarifas = dbContext.D_TARIFAS_AGENCIA_DRAFT.Where(Function(x) x.ID_AGENCIA = idAgente)
+            dbContext.D_TARIFAS_AGENCIA_DRAFT.RemoveRange(tarifas)
+            dbContext.SaveChanges()
+
+            dbContext.D_TARIFAS_AGENCIA_DRAFT.AddRange(nuevasTarifas)
+            dbContext.SaveChanges()
+
+            response = "Tarifas actualizadas"
+        Catch ex As Exception
+            response = "No se pudieron actualizar tarifas"
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function ActualizaTarifas(nuevasTarifas As List(Of TarifaAgenciaPaqueteExpress), idAgente As Integer) As String
+        Dim response As String = ""
+        Dim dbContext As New SiExProEntities
+        Try
+            Dim tarifas = dbContext.D_TARIFAS_AGENCIA_PAQUETE_EXPRESS.Where(Function(x) x.ID_AGENCIA = idAgente)
+            dbContext.D_TARIFAS_AGENCIA_PAQUETE_EXPRESS.RemoveRange(tarifas)
+            dbContext.SaveChanges()
+
+            dbContext.D_TARIFAS_AGENCIA_PAQUETE_EXPRESS.AddRange(nuevasTarifas)
+            dbContext.SaveChanges()
+
+            response = "Tarifas actualizadas"
+        Catch ex As Exception
+            response = "No se pudieron actualizar tarifas"
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function ActualizaTarifas(nuevasTarifas As List(Of TarifaAgenciaEstafeta), idAgente As Integer) As String
+        Dim response As String = ""
+        Dim dbContext As New SiExProEntities
+        Try
+            Dim tarifas = dbContext.D_TARIFAS_AGENCIA_ESTAFETA.Where(Function(x) x.ID_AGENCIA = idAgente)
+            dbContext.D_TARIFAS_AGENCIA_ESTAFETA.RemoveRange(tarifas)
+            dbContext.SaveChanges()
+
+            dbContext.D_TARIFAS_AGENCIA_ESTAFETA.AddRange(nuevasTarifas)
+            dbContext.SaveChanges()
+
+            response = "Tarifas actualizadas"
+        Catch ex As Exception
+            response = "No se pudieron actualizar tarifas"
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function ActualizaTarifas(nuevasTarifas As List(Of TarifaAgenciaDliverExpress), idAgente As Integer) As String
+        Dim response As String = ""
+        Dim dbContext As New SiExProEntities
+        Try
+            Dim tarifas = dbContext.D_TARIFAS_AGENCIA_DLIVER_EXPRESS.Where(Function(x) x.ID_AGENCIA = idAgente)
+            dbContext.D_TARIFAS_AGENCIA_DLIVER_EXPRESS.RemoveRange(tarifas)
+            dbContext.SaveChanges()
+
+            dbContext.D_TARIFAS_AGENCIA_DLIVER_EXPRESS.AddRange(nuevasTarifas)
+            dbContext.SaveChanges()
+
+            response = "Tarifas actualizadas"
+        Catch ex As Exception
+            response = "No se pudieron actualizar tarifas"
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function AgentesPorUsuario(ByVal idUsuario As String) As List(Of Agente)
+
+        Try
+            Dim MyConnection As ConnectionStringSettings
+            MyConnection = ConfigurationManager.ConnectionStrings("paqueteriaDB_ConnectionString")
+            Dim connection As Data.Common.DbConnection = New Data.SqlClient.SqlConnection()
+            connection.ConnectionString = MyConnection.ConnectionString
+
+            Dim cmd As Data.IDbCommand = connection.CreateCommand()
+            cmd.CommandType = Data.CommandType.StoredProcedure
+            cmd.CommandText = "dbo.sp_Select_Agentes_por_usuarios"
+
+            Dim parm1 As Data.Common.DbParameter = cmd.CreateParameter()
+            parm1.ParameterName = "@id_usuario"
+            parm1.Value = idUsuario
+            cmd.Parameters.Add(parm1)
+
+            connection.Open()
+
+            Dim reader As Data.SqlClient.SqlDataReader = cmd.ExecuteReader()
+
+            Dim agentes As New List(Of Agente)
+            If reader.HasRows Then
+                While reader.Read()
+                    Dim agente As New Agente()
+
+                    With agente
+                        .IdUsuario = reader.GetValue(0)
+                        .IdAgente = reader.GetValue(1)
+                        .Nombre = reader.GetValue(2)
+                        .Orden = reader.GetValue(3)
+                    End With
+
+                    agentes.Add(agente)
+                End While
+            End If
+            connection.Close()
+
+            Return agentes.OrderBy(Function(x) x.Orden).ToList()
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Public Shared Function VarificaEnvioPreAsignado(idEnvio As Integer, idAgencia As Integer) As String
+        Dim response As String = ""
+        Dim dbContext As New SiExProEntities
+        Try
+            response = ""
+            Dim envio = dbContext.D_ENVIOS_PREASIGNADOS.FirstOrDefault(Function(x) x.id_envio = idEnvio)
+            If envio Is Nothing Then
+                response = "Envio no esta asignado a agencia"
+            Else
+                If envio.id_agencia <> idAgencia Then
+                    response = "Envio no esta asignado a agencia"
+                End If
+            End If
+
+        Catch ex As Exception
+            response = "No se pudo verificar envio"
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function ModificacionEnvioProveedor(id_envio As Integer, comentarios As String, idProveedor As Integer, idUsuario As Integer) As Boolean
+        Dim dbContext As New SiExProEntities
+
+        InsComenatrio(id_envio, idUsuario, "Proveedor Envio Modificado: " + comentarios)
+        Dim auditLogEnvio = New AuditLog
+
+        Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+        Dim auditLogEnvioDatos = New AuditLog
+        auditLogEnvioDatos.Columna = "id_proveedor"
+        auditLogEnvioDatos.Fecha = DateTime.Now
+        auditLogEnvioDatos.Tabla = "D_ENVIOS_DATOS"
+        auditLogEnvioDatos.Usuario = idUsuario
+        auditLogEnvioDatos.ValorAnterior = envioDato.id_proveedor.ToString
+        auditLogEnvioDatos.ValorActual = idProveedor.ToString
+        auditLogEnvioDatos.IdEnvio = id_envio
+
+        envioDato.id_proveedor = idProveedor
+        dbContext.SaveChanges()
+
+        dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatos)
+        dbContext.SaveChanges()
+
+        Return True
+
+    End Function
+
+    Public Shared Function ModificacionTotalEnvio(id_envio As Integer, totalEnvio As Double, comentarios As String, idUsuario As Integer) As Boolean
+        Dim dbContext As New SiExProEntities
+
+        InsComenatrio(id_envio, idUsuario, "Total Envio Modificado: " + comentarios)
+        Dim auditLogEnvio = New AuditLog
+
+        Dim envio As Envio = dbContext.D_ENVIOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        auditLogEnvio.Columna = "total_envio"
+        auditLogEnvio.Fecha = DateTime.Now
+        auditLogEnvio.Tabla = "D_ENVIOS"
+        auditLogEnvio.Usuario = idUsuario
+        auditLogEnvio.ValorAnterior = envio.total_envio.ToString
+        auditLogEnvio.ValorActual = totalEnvio.ToString
+        auditLogEnvio.IdEnvio = id_envio
+
+        envio.observaciones = envio.observaciones + " -- " + comentarios
+        envio.total_envio = totalEnvio
+
+        dbContext.SaveChanges()
+
+        dbContext.D_AUDIT_LOG.Add(auditLogEnvio)
+        dbContext.SaveChanges()
+
+        Return True
+
+    End Function
+
+    Public Shared Function ModificacionReferenciaFedex(id_envio As Integer, referenciaFedex As String, comentarios As String, idUsuario As Integer) As Boolean
+
+        Dim dbContext As New SiExProEntities
+        InsComenatrio(id_envio, idUsuario, "Referencia Fedex Modificado: " + comentarios)
+        Dim auditLogEnvio = New AuditLog
+        Dim envio As Envio = dbContext.D_ENVIOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        Dim control As New seguimiento_envios
+        'validar si el código proporcionado es refeencia o guía interna
+        control.actualiza_FedEx(id_envio, referenciaFedex)
+
+        auditLogEnvio.Columna = "ReferenciaFedex"
+        auditLogEnvio.Fecha = DateTime.Now
+        auditLogEnvio.Tabla = "D_ENVIOS"
+        auditLogEnvio.Usuario = idUsuario
+        auditLogEnvio.ValorAnterior = envio.Referencia_FedEx
+        auditLogEnvio.ValorActual = referenciaFedex
+        auditLogEnvio.IdEnvio = id_envio
+
+        envio.observaciones = envio.observaciones + " -- " + comentarios
+        dbContext.SaveChanges()
+
+        dbContext.D_AUDIT_LOG.Add(auditLogEnvio)
+        dbContext.SaveChanges()
+
+        Return True
+
+    End Function
+
+    Public Shared Function RedPackRate(ByVal redPackShipRequest As ShipRequestDto) As RedPackQuoteServiceResponse
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New RedPackQuoteServiceResponse()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(redPackShipRequest)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("RedPAck.Rate"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of RedPackQuoteServiceResponse)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function RedPackShip(ByVal redPackShipRequest As ShipRequestDto) As RedPackShipServiceResponse
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New RedPackShipServiceResponse()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(redPackShipRequest)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("RedPAck.Ship"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of RedPackShipServiceResponse)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
 End Class

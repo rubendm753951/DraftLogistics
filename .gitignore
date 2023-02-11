@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/SiExpress/Scripts/uploads
+/SiExpress/Bin
+/SiExpress/.vs
+/SiExProData/bin
+/SiExProData/obj
+/SiExProECommerce/obj
+/SiExProECommerce/bin
+/SiExpress/packages
+/SiExpress/SiExpress.v11.suo

@@ -15,8 +15,8 @@
             <br />
             <table style="width: 375px; left: 227px; position: absolute; top: -5px;">
                 <tr>
-                    <td colspan="2" style="height: 12px; text-align: center;">
-                        <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/Gombar.JPG" Style="text-align: center" />
+                    <td colspan="2" style="height: 46px; text-align: center;">
+                        <asp:Image ID="Image1" runat="server"  Style="text-align: center" />
                     </td>
                 </tr>
                 <tr>
@@ -38,5 +38,6 @@
             <br />
         </div>
     </form>
+    <asp:ContentPlaceHolder ID="ScriptSection" runat="server" />
 </body>
 </html>

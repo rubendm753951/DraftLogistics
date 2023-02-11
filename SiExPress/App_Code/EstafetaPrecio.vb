@@ -10,6 +10,24 @@ Public Class EstafetaPrecio
     Public Property Zona() As Integer
     Public Property ZonaLtl() As Integer
     Public Property Ocurre() As Boolean
+    Public Property ExpressSaverAmount() As Decimal
+    Public Property ExpressSaverUser() As Integer
+    Public Property StandardOvernightAmount() As Decimal
+    Public Property StandardOvernightUser() As Integer
+    Public Property PaqueteExpressEconomic() As Decimal
+    Public Property PaqueteExpressNextDay() As Decimal
+    Public Property UserAccountPe() As Integer
+    Public Property AmountGombarExpress() As Decimal
+    Public Property AmountGombarTarima() As Decimal
+    Public Property AmountGombarNacional() As Decimal
+    Public Property AmountGombarDLRutaLeonPueCdmx() As Decimal
+    Public Property AmountGombarDLTarimasRutaLeonPueCdmx() As Decimal
+    Public Property AmountGombarDLRutaPacifico() As Decimal
+    Public Property AmountGombarDLTarimasRutaPacifico() As Decimal
+    Public Property AmountGombarDLTarimasOcurreRutaPacifico() As Decimal
+    Public Property AmountEcoExpressRedPack() As Decimal
+    Public Property AmountEcoExpressRedPackUser() As Integer
+    Public Property AmountGombarDLRutaNorte() As Decimal
 End Class
 
 Public Class EstafetaTarimas
