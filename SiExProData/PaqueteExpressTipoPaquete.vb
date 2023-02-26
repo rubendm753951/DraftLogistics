@@ -28,5 +28,6 @@ Partial Public Class PaqueteExpressTipoPaquete
     Public Property total As Nullable(Of Decimal)
     Public Property areaExtendida As Nullable(Of Decimal)
     Public Property idProveedor As Nullable(Of Integer)
+    Public Property servicio As Nullable(Of Integer)
 
 End Class

@@ -31,3 +31,15 @@ C:\MySites\SiExProEstafetaProd\SiExProData\obj\Debug\SiExProData.vbproj.Generate
 C:\MySites\SiExProEstafetaProd\SiExProData\obj\Debug\SiExProData.dll
 C:\MySites\SiExProEstafetaProd\SiExProData\obj\Debug\SiExProData.xml
 C:\MySites\SiExProEstafetaProd\SiExProData\obj\Debug\SiExProData.pdb
+C:\MySites\DraftLogistics\SiExProData\bin\Debug\SiExProData.dll.config
+C:\MySites\DraftLogistics\SiExProData\bin\Debug\SiExProData.dll
+C:\MySites\DraftLogistics\SiExProData\bin\Debug\SiExProData.pdb
+C:\MySites\DraftLogistics\SiExProData\bin\Debug\SiExProData.xml
+C:\MySites\DraftLogistics\SiExProData\obj\Debug\SiExProData.vbprojAssemblyReference.cache
+C:\MySites\DraftLogistics\SiExProData\obj\Debug\SiExProData.Resources.resources
+C:\MySites\DraftLogistics\SiExProData\obj\Debug\SiExProData.vbproj.GenerateResource.cache
+C:\MySites\DraftLogistics\SiExProData\obj\Debug\SiExProData.vbproj.CoreCompileInputs.cache
+C:\MySites\DraftLogistics\SiExProData\obj\Debug\SiExProData.vbproj.CopyComplete
+C:\MySites\DraftLogistics\SiExProData\obj\Debug\SiExProData.dll
+C:\MySites\DraftLogistics\SiExProData\obj\Debug\SiExProData.xml
+C:\MySites\DraftLogistics\SiExProData\obj\Debug\SiExProData.pdb

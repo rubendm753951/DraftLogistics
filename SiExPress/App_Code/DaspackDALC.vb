@@ -518,6 +518,7 @@ Public Class DaspackDALC
                 .servicioSat = row("ServicioSAT")
                 .areaExtendida = row("AreaExtendida")
                 .idProveedor = idProveedor
+                .servicio = servicio
             End With
 
             If idProveedor = 3 Then
@@ -528,6 +529,41 @@ Public Class DaspackDALC
                     tipoPaquete.Precio = row("PrecioPENextDay")
                     tipoPaquete.total = row("PrecioPENextDay") * row("Cantidad")
                 End If
+            End If
+
+            If idProveedor = 5 Then
+                Select Case servicio
+                    Case 1
+                        tipoPaquete.Precio = row("PrecioDLGombar")
+                        tipoPaquete.total = row("PrecioDLGombar") * row("Cantidad")
+                    Case 2
+                        tipoPaquete.Precio = row("PrecioDLGombarExpress")
+                        tipoPaquete.total = row("PrecioDLGombarExpress") * row("Cantidad")
+                    Case 3
+                        tipoPaquete.Precio = row("PrecioDLGombarTarima")
+                        tipoPaquete.total = row("PrecioDLGombarTarima") * row("Cantidad")
+                    Case 4
+                        tipoPaquete.Precio = row("PrecioDLGombarNacional")
+                        tipoPaquete.total = row("PrecioDLGombarNacional") * row("Cantidad")
+                    Case 5
+                        tipoPaquete.Precio = row("PrecioDLRutaLeonPueCdmx")
+                        tipoPaquete.total = row("PrecioDLRutaLeonPueCdmx") * row("Cantidad")
+                    Case 6
+                        tipoPaquete.Precio = row("PrecioDLRutaNorte")
+                        tipoPaquete.total = row("PrecioDLRutaNorte") * row("Cantidad")
+                    Case 7
+                        tipoPaquete.Precio = row("PrecioDLTarimasRutaLeonPueCdmx")
+                        tipoPaquete.total = row("PrecioDLTarimasRutaLeonPueCdmx") * row("Cantidad")
+                    Case 8
+                        tipoPaquete.Precio = row("PrecioDLRutaPacifico")
+                        tipoPaquete.total = row("PrecioDLRutaPacifico") * row("Cantidad")
+                    Case 9
+                        tipoPaquete.Precio = row("PrecioDLTarimasRutaPacifico")
+                        tipoPaquete.total = row("PrecioDLTarimasRutaPacifico") * row("Cantidad")
+                    Case 10
+                        tipoPaquete.Precio = row("PrecioDLTarimasOcurreRutaPacifico")
+                        tipoPaquete.total = row("PrecioDLTarimasOcurreRutaPacifico") * row("Cantidad")
+                End Select
             End If
 
 

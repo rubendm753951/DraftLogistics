@@ -24,6 +24,14 @@
     <NavigationProperty Name="D_TARIFAS_AGENCIA" Relationship="MasupackModel.C_AGENCIAS_D_TARIFAS_AGENCIA_fk" FromRole="Agencias" ToRole="D_TARIFAS_AGENCIA" />
     <Property Name="costo_adicional" Type="Decimal" Nullable="false" Precision="18" Scale="4" />
     <Property Name="guia_estafeta" Type="Boolean" Nullable="false" />
+    <Property Name="noexterior" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="colonia" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="municipio" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="codigo_postal" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="RFC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="D_ENVIOS_PREASIGNADOS" Relationship="MasupackModel.C_AGENCIAS_D_ENVIOS_PREVENTA_fk" FromRole="Agencias" ToRole="D_ENVIOS_PREASIGNADOS" />
+    <Property Name="tipo_de_pago" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="Cliente">
     <Key>
@@ -46,7 +54,10 @@
     <Property Name="codigo_postal" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="email" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
     <Property Name="NIT" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="D_ENVIOS_DATOS" Relationship="Self.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="C_CLIENTES" ToRole="D_ENVIOS_DATOS" />
+    <Property Name="RFC" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="RegistroTributario" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="ResidenciaFiscal" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="D_ENVIOS_DATOS" Relationship="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="Cliente" ToRole="D_ENVIOS_DATOS" />
   </EntityType>
   <EntityType Name="Destinatario">
     <Key>
@@ -68,7 +79,10 @@
     <Property Name="telefono" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="codigo_postal" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="email" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="D_ENVIOS_DATOS" Relationship="Self.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="C_DESTINATARIOS" ToRole="D_ENVIOS_DATOS" />
+    <Property Name="RFC" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="RegistroTributario" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="ResidenciaFiscal" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="D_ENVIOS_DATOS" Relationship="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="Destinatario" ToRole="D_ENVIOS_DATOS" />
   </EntityType>
   <EntityType Name="Envio">
     <Key>
@@ -99,58 +113,13 @@
     <Property Name="contenedores" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="observaciones" Type="String" MaxLength="3000" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="D_TARIFAS_AGENCIA" Relationship="MasupackModel.D_TARIFAS_AGENCIA_D_ENVIOS_fk" FromRole="Envio" ToRole="D_TARIFAS_AGENCIA" />
+    <NavigationProperty Name="D_ENVIOS_PREASIGNADOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_fk" FromRole="Envio" ToRole="D_ENVIOS_PREASIGNADOS" />
   </EntityType>
-  <EntityType Name="EnvioDatos">
-    <Key>
-      <PropertyRef Name="id_envio" />
-    </Key>
-    <Property Name="id_envio" Type="Int32" Nullable="false" />
-    <Property Name="id_cliente" Type="Int32" Nullable="false" />
-    <Property Name="id_destinatario" Type="Int32" Nullable="false" />
-    <Property Name="id_contenido" Type="Int32" />
-    <Property Name="observaciones" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-    <Property Name="exportado" Type="Boolean" />
-    <NavigationProperty Name="C_CLIENTES" Relationship="Self.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="C_CLIENTES" />
-    <NavigationProperty Name="C_DESTINATARIOS" Relationship="Self.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="C_DESTINATARIOS" />
-  </EntityType>
-  <Association Name="C_CLIENTES_D_ENVIOS_DATOS_fk">
-    <End Role="C_CLIENTES" Type="MasupackModel.Cliente" Multiplicity="1" />
-    <End Role="D_ENVIOS_DATOS" Type="MasupackModel.EnvioDatos" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="C_CLIENTES">
-        <PropertyRef Name="id_cliente" />
-      </Principal>
-      <Dependent Role="D_ENVIOS_DATOS">
-        <PropertyRef Name="id_cliente" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
-    <End Role="C_DESTINATARIOS" Type="MasupackModel.Destinatario" Multiplicity="1" />
-    <End Role="D_ENVIOS_DATOS" Type="MasupackModel.EnvioDatos" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="C_DESTINATARIOS">
-        <PropertyRef Name="id_destinatario" />
-      </Principal>
-      <Dependent Role="D_ENVIOS_DATOS">
-        <PropertyRef Name="id_destinatario" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityContainer Name="SiExProEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="C_AGENCIAS" EntityType="MasupackModel.Agencias" />
     <EntitySet Name="C_CLIENTES" EntityType="MasupackModel.Cliente" />
     <EntitySet Name="C_DESTINATARIOS" EntityType="MasupackModel.Destinatario" />
     <EntitySet Name="D_ENVIOS" EntityType="MasupackModel.Envio" />
-    <EntitySet Name="D_ENVIOS_DATOS" EntityType="MasupackModel.EnvioDatos" />
-    <AssociationSet Name="C_CLIENTES_D_ENVIOS_DATOS_fk" Association="Self.C_CLIENTES_D_ENVIOS_DATOS_fk">
-      <End Role="C_CLIENTES" EntitySet="C_CLIENTES" />
-      <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
-    </AssociationSet>
-    <AssociationSet Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk" Association="Self.C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
-      <End Role="C_DESTINATARIOS" EntitySet="C_DESTINATARIOS" />
-      <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
-    </AssociationSet>
     <EntitySet Name="D_TARIFAS_AGENCIA" EntityType="MasupackModel.TarifaAgencia" />
     <AssociationSet Name="C_AGENCIAS_D_TARIFAS_AGENCIA_fk" Association="MasupackModel.C_AGENCIAS_D_TARIFAS_AGENCIA_fk">
       <End Role="Agencias" EntitySet="C_AGENCIAS" />
@@ -173,6 +142,38 @@
     <EntitySet Name="D_COBERTURAS" EntityType="MasupackModel.Cobertura" />
     <EntitySet Name="D_ESTAFETA_REQUEST_RESPONSE" EntityType="MasupackModel.EstafetaRequestResponse" />
     <EntitySet Name="C_SEPOMEX" EntityType="MasupackModel.Sepomex" />
+    <EntitySet Name="D_ENVIOS_PE_TIPO_PAQUETES" EntityType="MasupackModel.PaqueteExpressTipoPaquete" />
+    <EntitySet Name="D_CODIGOS_SERVICIOS_SAT" EntityType="MasupackModel.CodigosServiciosSat" />
+    <EntitySet Name="D_ENVIOS_DATOS" EntityType="MasupackModel.EnvioDatos" />
+    <AssociationSet Name="C_CLIENTES_D_ENVIOS_DATOS_fk" Association="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk">
+      <End Role="Cliente" EntitySet="C_CLIENTES" />
+      <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
+    </AssociationSet>
+    <AssociationSet Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk" Association="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
+      <End Role="Destinatario" EntitySet="C_DESTINATARIOS" />
+      <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
+    </AssociationSet>
+    <EntitySet Name="D_DELIVERY_CONFIRMATION" EntityType="MasupackModel.DeliveryConfirmation" />
+    <EntitySet Name="D_TARIFAS_AGENCIA_DRAFT" EntityType="MasupackModel.TarifaAgenciaDraft" />
+    <EntitySet Name="D_TARIFAS_AGENCIA_ESTAFETA" EntityType="MasupackModel.TarifaAgenciaEstafeta" />
+    <EntitySet Name="D_TARIFAS_AGENCIA_FEDEX" EntityType="MasupackModel.TarifaAgenciaFedex" />
+    <EntitySet Name="D_TARIFAS_AGENCIA_PAQUETE_EXPRESS" EntityType="MasupackModel.TarifaAgenciaPaqueteExpress" />
+    <EntitySet Name="D_ENVIOS_PREASIGNADOS" EntityType="MasupackModel.EnviosPreAsignados" />
+    <AssociationSet Name="C_AGENCIAS_D_ENVIOS_PREVENTA_fk" Association="MasupackModel.C_AGENCIAS_D_ENVIOS_PREVENTA_fk">
+      <End Role="Agencias" EntitySet="C_AGENCIAS" />
+      <End Role="D_ENVIOS_PREASIGNADOS" EntitySet="D_ENVIOS_PREASIGNADOS" />
+    </AssociationSet>
+    <AssociationSet Name="D_ENVIOS_PREASIGNADOS_D_ENVIOS_fk" Association="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_fk">
+      <End Role="D_ENVIOS_PREASIGNADOS" EntitySet="D_ENVIOS_PREASIGNADOS" />
+      <End Role="Envio" EntitySet="D_ENVIOS" />
+    </AssociationSet>
+    <AssociationSet Name="D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" Association="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk">
+      <End Role="D_ENVIOS_PREASIGNADOS" EntitySet="D_ENVIOS_PREASIGNADOS" />
+      <End Role="EnvioDatos" EntitySet="D_ENVIOS_DATOS" />
+    </AssociationSet>
+    <EntitySet Name="D_AUDIT_LOG" EntityType="MasupackModel.AuditLog" />
+    <EntitySet Name="D_TARIFAS_AGENCIA_DLIVER_EXPRESS" EntityType="MasupackModel.TarifaAgenciaDliverExpress" />
+    <EntitySet Name="D_PROVIDER_LABEL" EntityType="MasupackModel.ProviderLabel" />
   </EntityContainer>
   <EntityType Name="TarifaAgencia">
     <Key>
@@ -264,6 +265,7 @@
     <Property Name="Domingo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
     <Property Name="id_envio" Type="Int32" Nullable="false" />
     <Property Name="FechaCotizacion" Type="DateTime" Precision="3" />
+    <Property Name="identificador" Type="Guid" />
   </EntityType>
   <EntityType Name="EstafetaTipoServicio">
     <Key>
@@ -284,6 +286,7 @@
     <Property Name="AplicaServicio" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="FechaCotizacion" Type="DateTime" Precision="3" />
     <Property Name="Selecccionado" Type="Boolean" />
+    <Property Name="identificador" Type="Guid" />
   </EntityType>
   <EntityType Name="EstafetaLabel">
     <Key>
@@ -336,6 +339,11 @@
     <Property Name="reexpedicion" Type="Boolean" Nullable="false" />
     <Property Name="garantia_maxima" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="ciudad" Type="String" MaxLength="90" FixedLength="false" Unicode="true" />
+    <Property Name="siglas_plaza_tarimas" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="area_extendida" Type="Int32" />
+    <Property Name="DL_Paqueteria" Type="Int32" />
+    <Property Name="DL_Express" Type="Int32" />
+    <Property Name="DL_Tarimas" Type="Int32" />
   </EntityType>
   <EntityType Name="EstafetaRequestResponse">
     <Key>
@@ -349,6 +357,8 @@
     <Property Name="cuenta" Type="Int32" />
     <Property Name="imagenBase64" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="carrier" Type="Int32" />
+    <Property Name="identificador" Type="Guid" />
+    <Property Name="idenvio" Type="Int32" />
   </EntityType>
   <EntityType Name="Sepomex">
     <Key>
@@ -383,5 +393,258 @@
     <Property Name="c_cve_ciudad" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="id_estado" Type="Int32" Nullable="false" />
     <Property Name="estado_codigo" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="PaqueteExpressTipoPaquete">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="id_envio" Type="Int32" Nullable="false" />
+    <Property Name="cantidad" Type="Int32" Nullable="false" />
+    <Property Name="contenido" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="tipoId" Type="Int32" Nullable="false" />
+    <Property Name="tipo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="alto" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="largo" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="ancho" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="peso" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="fecha" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="seguro" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="servicioSat" Type="Int32" Nullable="false" />
+    <Property Name="Precio" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="total" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="areaExtendida" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="idProveedor" Type="Int32" />
+    <Property Name="servicio" Type="Int32" />
+  </EntityType>
+  <EntityType Name="CodigosServiciosSat">
+    <Key>
+      <PropertyRef Name="codigo_servicio_id" />
+    </Key>
+    <Property Name="codigo_servicio_id" Type="Int32" Nullable="false" />
+    <Property Name="descripcion" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="EnvioDatos">
+    <Key>
+      <PropertyRef Name="id_envio" />
+    </Key>
+    <Property Name="id_envio" Type="Int32" Nullable="false" />
+    <Property Name="id_cliente" Type="Int32" Nullable="false" />
+    <Property Name="id_destinatario" Type="Int32" Nullable="false" />
+    <Property Name="id_contenido" Type="Int32" />
+    <Property Name="observaciones" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="exportado" Type="Boolean" />
+    <Property Name="entregado" Type="Boolean" />
+    <Property Name="fecha_entrega" Type="DateTime" Precision="3" />
+    <Property Name="id_proveedor" Type="Int32" />
+    <Property Name="codigoSat" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="codigo_barras" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <NavigationProperty Name="C_CLIENTES" Relationship="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Cliente" />
+    <NavigationProperty Name="C_DESTINATARIOS" Relationship="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Destinatario" />
+    <NavigationProperty Name="D_ENVIOS_PREASIGNADOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" FromRole="EnvioDatos" ToRole="D_ENVIOS_PREASIGNADOS" />
+  </EntityType>
+  <Association Name="C_CLIENTES_D_ENVIOS_DATOS_fk">
+    <End Type="MasupackModel.Cliente" Role="Cliente" Multiplicity="1" />
+    <End Type="MasupackModel.EnvioDatos" Role="D_ENVIOS_DATOS" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cliente">
+        <PropertyRef Name="id_cliente" />
+      </Principal>
+      <Dependent Role="D_ENVIOS_DATOS">
+        <PropertyRef Name="id_cliente" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
+    <End Type="MasupackModel.Destinatario" Role="Destinatario" Multiplicity="1" />
+    <End Type="MasupackModel.EnvioDatos" Role="D_ENVIOS_DATOS" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Destinatario">
+        <PropertyRef Name="id_destinatario" />
+      </Principal>
+      <Dependent Role="D_ENVIOS_DATOS">
+        <PropertyRef Name="id_destinatario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="DeliveryConfirmation">
+    <Key>
+      <PropertyRef Name="DeliveryConfirmationId" />
+    </Key>
+    <Property Name="DeliveryConfirmationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="ShipmentId" Type="Int32" Nullable="false" />
+    <Property Name="TrackId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="SignImage" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+    <Property Name="SignName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Comments" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="DeliveryDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="DeliveryImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="TarifaAgenciaDraft">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ID_AGENCIA" Type="Int32" />
+    <Property Name="ID_ZONA" Type="Int32" />
+    <Property Name="ID_CUENTA" Type="Int32" />
+    <Property Name="SERVICE_ID" Type="Int32" />
+    <Property Name="PESO_LIMITE_INFERIOR" Type="Double" />
+    <Property Name="PESO_LIMITE_SUPERIOR" Type="Double" />
+    <Property Name="PRECIO" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_KILO" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_KILO_ADICIONAL" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_AREA_EXTENDIDA" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="IsDeleted" Type="Int32" />
+  </EntityType>
+  <EntityType Name="TarifaAgenciaEstafeta">
+    <Key>
+      <PropertyRef Name="ID_TARIFAS_AGENCIA_ESTAFETA" />
+    </Key>
+    <Property Name="ID_TARIFAS_AGENCIA_ESTAFETA" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ID_AGENCIA" Type="Int32" />
+    <Property Name="ID_ZONA" Type="Int32" />
+    <Property Name="ID_CUENTA" Type="Int32" />
+    <Property Name="PESO_LIMITE_INFERIOR" Type="Double" />
+    <Property Name="PESO_LIMITE_SUPERIOR" Type="Double" />
+    <Property Name="PRECIO" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_POR_KILO" Type="Boolean" />
+    <Property Name="PRECIO_KILO_ADICIONAL" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_DIA_SIGUIENTE" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_POR_KILO_DIA_SIGUIENTE" Type="Boolean" />
+    <Property Name="PRECIO_KILO_ADICIONAL_DIA_SIGUIENTE" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_GOMBAR" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_POR_KILO_GOMBAR" Type="Boolean" />
+    <Property Name="PRECIO_KILO_ADICIONAL_GOMBAR" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="IsDeleted" Type="Int32" />
+  </EntityType>
+  <EntityType Name="TarifaAgenciaFedex">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ID_AGENCIA" Type="Int32" Nullable="false" />
+    <Property Name="ID_CUENTA" Type="Int32" />
+    <Property Name="SERVICE_ID" Type="Int32" />
+    <Property Name="PESO_LIMITE_INFERIOR" Type="Double" />
+    <Property Name="PESO_LIMITE_SUPERIOR" Type="Double" />
+    <Property Name="PRECIO" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_KILO" Type="Boolean" />
+    <Property Name="PRECIO_KILO_ADICIONAL" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_AREA_EXTENDIDA" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="IsDeleted" Type="Byte" />
+  </EntityType>
+  <EntityType Name="TarifaAgenciaPaqueteExpress">
+    <Key>
+      <PropertyRef Name="ID_TARIFAS_AGENCIA_PAQUETE_EXPRESS" />
+    </Key>
+    <Property Name="ID_TARIFAS_AGENCIA_PAQUETE_EXPRESS" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ID_AGENCIA" Type="Int32" />
+    <Property Name="Tarifa" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="KG_start" Type="Decimal" Precision="12" Scale="4" />
+    <Property Name="KG_End" Type="Decimal" Precision="12" Scale="4" />
+    <Property Name="CUM_start" Type="Decimal" Precision="12" Scale="4" />
+    <Property Name="CUM_end" Type="Decimal" Precision="12" Scale="4" />
+    <Property Name="PRECIO_ECONOMICO" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DIA_SIGUIENTE_BASE" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="DIA_SIGUIENTE_KILO" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="is_deleted" Type="Int32" />
+  </EntityType>
+  <EntityType Name="EnviosPreAsignados">
+    <Key>
+      <PropertyRef Name="id_envio" />
+    </Key>
+    <Property Name="id_envio" Type="Int32" Nullable="false" />
+    <Property Name="id_agencia" Type="Int32" Nullable="false" />
+    <Property Name="fecha" Type="DateTime" Precision="3" />
+    <Property Name="id_tarifa_tipo" Type="Int32" />
+    <Property Name="tarifa" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="id_moneda" Type="Int32" />
+    <NavigationProperty Name="C_AGENCIAS" Relationship="MasupackModel.C_AGENCIAS_D_ENVIOS_PREVENTA_fk" FromRole="D_ENVIOS_PREASIGNADOS" ToRole="Agencias" />
+    <NavigationProperty Name="D_ENVIOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_fk" FromRole="D_ENVIOS_PREASIGNADOS" ToRole="Envio" />
+    <NavigationProperty Name="D_ENVIOS_DATOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_PREASIGNADOS" ToRole="EnvioDatos" />
+  </EntityType>
+  <Association Name="C_AGENCIAS_D_ENVIOS_PREVENTA_fk">
+    <End Type="MasupackModel.Agencias" Role="Agencias" Multiplicity="1" />
+    <End Type="MasupackModel.EnviosPreAsignados" Role="D_ENVIOS_PREASIGNADOS" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Agencias">
+        <PropertyRef Name="id_agencia" />
+      </Principal>
+      <Dependent Role="D_ENVIOS_PREASIGNADOS">
+        <PropertyRef Name="id_agencia" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="D_ENVIOS_PREASIGNADOS_D_ENVIOS_fk">
+    <End Type="MasupackModel.EnviosPreAsignados" Role="D_ENVIOS_PREASIGNADOS" Multiplicity="1" />
+    <End Type="MasupackModel.Envio" Role="Envio" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="D_ENVIOS_PREASIGNADOS">
+        <PropertyRef Name="id_envio" />
+      </Principal>
+      <Dependent Role="Envio">
+        <PropertyRef Name="id_envio" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk">
+    <End Type="MasupackModel.EnviosPreAsignados" Role="D_ENVIOS_PREASIGNADOS" Multiplicity="1" />
+    <End Type="MasupackModel.EnvioDatos" Role="EnvioDatos" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="D_ENVIOS_PREASIGNADOS">
+        <PropertyRef Name="id_envio" />
+      </Principal>
+      <Dependent Role="EnvioDatos">
+        <PropertyRef Name="id_envio" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="AuditLog">
+    <Key>
+      <PropertyRef Name="AuditLogId" />
+    </Key>
+    <Property Name="AuditLogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Tabla" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+    <Property Name="Columna" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+    <Property Name="ValorAnterior" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="ValorActual" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="Fecha" Type="DateTime" Precision="3" />
+    <Property Name="Usuario" Type="Int32" />
+    <Property Name="IdEnvio" Type="Int32" />
+  </EntityType>
+  <EntityType Name="TarifaAgenciaDliverExpress">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ID_AGENCIA" Type="Int32" />
+    <Property Name="ID_ZONA" Type="Int32" />
+    <Property Name="ID_CUENTA" Type="Int32" />
+    <Property Name="SERVICE_ID" Type="Int32" />
+    <Property Name="PESO_LIMITE_INFERIOR" Type="Double" />
+    <Property Name="PESO_LIMITE_SUPERIOR" Type="Double" />
+    <Property Name="PRECIO" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_KILO" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_KILO_ADICIONAL" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_AREA_EXTENDIDA" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="IsDeleted" Type="Int32" />
+  </EntityType>
+  <EntityType Name="ProviderLabel">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShipmentId" Type="Int32" />
+    <Property Name="LabelBinary" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="LabelBase64" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="TrackingId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Date" Type="DateTime" Precision="3" />
+    <Property Name="ProviderId" Type="Int32" />
   </EntityType>
 </Schema>

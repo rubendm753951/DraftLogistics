@@ -761,7 +761,7 @@ Partial Class Punto_Venta
 
                     For Each row As DataRow In dtgridview.Rows
                         pesoVol = (row("Alto") * row("Ancho") * row("Largo")) / 5000
-                        estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, id_agencia, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, row("Peso"), 0, 0)
+                        estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, id_agencia, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, row("Peso"), 0, 0, row("Tipo"))
                         row("AreaExtendida") = 0
 
                         precioDLGombar = precioDLGombar + (estafetaPrecios.Gombar * row("Cantidad"))
@@ -1078,6 +1078,8 @@ Partial Class Punto_Venta
             Dim codigoSat As CodigosServiciosSat
 
             Dim coloniaDesc = ""
+            Dim esMiltiPaquete = False
+            Dim dlTipoServicio As Integer = 0
 
             If TxtCol2.Visible = False Then
                 coloniaDesc = DropDownColonia.SelectedItem.Text
@@ -1280,46 +1282,77 @@ Partial Class Punto_Venta
                         id_cliente = Session("id_cliente")
                     End If
 
-                    If rbCosto.Checked Then
-                        valor_envio = estafetaPrecios.Gombar
-                        total_envio = estafetaPrecios.Gombar
-                        datos_envio.observaciones = "Gombar"
-                    End If
+                    Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+                    If dtgridview IsNot Nothing Then
+                        If dtgridview.Rows.Count > 1 Then
+                            esMiltiPaquete = True
+                        End If
+                        For Each row As DataRow In dtgridview.Rows
+                            If row("Cantidad") > 1 Then
+                                esMiltiPaquete = True
+                            End If
 
-                    If rbGombarExpress.Checked Then
-                        valor_envio = estafetaPrecios.AmountGombarExpress
-                        total_envio = estafetaPrecios.AmountGombarExpress
-                        datos_envio.observaciones = "GombarExpress"
-                    End If
+                            If rbCosto.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLGombar") * row("Cantidad"))
+                                datos_envio.observaciones = "Gombar"
+                                dlTipoServicio = 1
+                            End If
 
-                    If rbGombarTarima.Checked Then
-                        valor_envio = estafetaPrecios.AmountGombarTarima
-                        total_envio = estafetaPrecios.AmountGombarTarima
-                        datos_envio.observaciones = "GombarTarima"
-                    End If
+                            If rbGombarExpress.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLGombarExpress") * row("Cantidad"))
+                                datos_envio.observaciones = "GombarExpress"
+                                dlTipoServicio = 2
+                            End If
 
-                    If rbGombarNacional.Checked Then
-                        valor_envio = estafetaPrecios.AmountGombarNacional
-                        total_envio = estafetaPrecios.AmountGombarNacional
-                        datos_envio.observaciones = "GombarNacional"
-                    End If
+                            If rbGombarTarima.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLGombarTarima") * row("Cantidad"))
+                                datos_envio.observaciones = "GombarTarima"
+                                dlTipoServicio = 3
+                            End If
 
-                    If rbGombarLeonPueCdmx.Checked Then
-                        valor_envio = estafetaPrecios.AmountGombarDLRutaLeonPueCdmx
-                        total_envio = estafetaPrecios.AmountGombarDLRutaLeonPueCdmx
-                        datos_envio.observaciones = "GombarRutaLeonPueCDMX"
-                    End If
+                            If rbGombarNacional.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLGombarNacional") * row("Cantidad"))
+                                datos_envio.observaciones = "GombarNacional"
+                                dlTipoServicio = 4
+                            End If
 
-                    If rbGombarRutaNorte.Checked Then
-                        valor_envio = estafetaPrecios.AmountGombarDLRutaNorte
-                        total_envio = estafetaPrecios.AmountGombarDLRutaNorte
-                        datos_envio.observaciones = "GombarRutaNorte"
-                    End If
+                            If rbGombarLeonPueCdmx.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLRutaLeonPueCdmx") * row("Cantidad"))
+                                datos_envio.observaciones = "GombarRutaLeonPueCDMX"
+                                dlTipoServicio = 5
+                            End If
 
-                    If rbGombarTarimasLeonPueCdmx.Checked Then
-                        valor_envio = estafetaPrecios.AmountGombarDLTarimasRutaLeonPueCdmx
-                        total_envio = estafetaPrecios.AmountGombarDLTarimasRutaLeonPueCdmx
-                        datos_envio.observaciones = "GombarTarimasRutaLeonPueCDMX"
+                            If rbGombarRutaNorte.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLRutaNorte") * row("Cantidad"))
+                                datos_envio.observaciones = "GombarRutaNorte"
+                                dlTipoServicio = 6
+                            End If
+
+                            If rbGombarTarimasLeonPueCdmx.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLTarimasRutaLeonPueCdmx") * row("Cantidad"))
+                                datos_envio.observaciones = "GombarTarimasRutaLeonPueCDMX"
+                                dlTipoServicio = 7
+                            End If
+
+                            If rbRutaPacifico.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLRutaPacifico") * row("Cantidad"))
+                                datos_envio.observaciones = "GombarRutaPacifico"
+                                dlTipoServicio = 8
+                            End If
+
+                            If rbTarimasRutaPacifico.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLTarimasRutaPacifico") * row("Cantidad"))
+                                datos_envio.observaciones = "GombarTarimasRutaPacifico"
+                                dlTipoServicio = 9
+                            End If
+
+                            If rbTarimasOcurreRutaPacifico.Checked Then
+                                valor_envio = valor_envio + (row("PrecioDLTarimasOcurreRutaPacifico") * row("Cantidad"))
+                                datos_envio.observaciones = "GombarTarimasOcurreRutaPacifico"
+                                dlTipoServicio = 10
+                            End If
+                        Next
+                        total_envio = valor_envio
                     End If
                 End If
 
@@ -1877,10 +1910,25 @@ Partial Class Punto_Venta
                                 ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
                             End If
                         Else
-                            Dim sjscript2 As String = "<script language=""javascript"">" &
-                            " window.open('guia_individual.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "&id_proveedor=" & DropDownProveedores.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
-                            "</script>"
+                            Dim sjscript2 As String = ""
+                            If esMiltiPaquete Then
+                                Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+                                If dtgridview IsNot Nothing Then
+                                    DaspackDALC.AddPaqueteExpressTipoPaquetes(dtgridview, envios(0), 5, dlTipoServicio)
+                                End If
+
+                                sjscript2 = "<script language=""javascript"">" &
+                                    " window.open('guia_individual_dl.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "&id_proveedor=" & DropDownProveedores.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                                    "</script>"
+                            Else
+                                sjscript2 = "<script language=""javascript"">" &
+                                    " window.open('guia_individual.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "&id_proveedor=" & DropDownProveedores.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                                    "</script>"
+                            End If
                             ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
+
+                            ViewState("Data") = Nothing
+                            BindGridView()
                         End If
                     End If
                 End If
@@ -2294,6 +2342,7 @@ Partial Class Punto_Venta
 
     Protected Sub OnAdd(ByVal sender As Object, ByVal e As EventArgs)
         Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+        Dim proveedor = DropDownProveedores.SelectedValue
 
         If dtgridview Is Nothing Then
             dtgridview = New DataTable()
@@ -2324,8 +2373,14 @@ Partial Class Punto_Venta
         End If
         Dim tipoPaqueteAgregado = False
         For Each row As DataRow In dtgridview.Rows
-            If ddlTiposPaquete.SelectedValue = row("TipoClave") Then
-                tipoPaqueteAgregado = True
+            If proveedor = 40 Then
+                If ddlTiposPaquete.SelectedValue = row("TipoClave") Then
+                    tipoPaqueteAgregado = True
+                End If
+            Else
+                If ddlTiposPaqueteDL.SelectedValue = row("TipoClave") Then
+                    tipoPaqueteAgregado = True
+                End If
             End If
         Next row
 
@@ -2353,8 +2408,15 @@ Partial Class Punto_Venta
                     dr2("Largo") = txtContLargo.Text
                     dr2("Alto") = txtContAlto.Text
                     dr2("Peso") = txtContPeso.Text
-                    dr2("TipoClave") = ddlTiposPaquete.SelectedValue
-                    dr2("Tipo") = ddlTiposPaquete.SelectedItem.Text
+
+                    If proveedor = 40 Then
+                        dr2("TipoClave") = ddlTiposPaquete.SelectedValue
+                        dr2("Tipo") = ddlTiposPaquete.SelectedItem.Text
+                    Else
+                        dr2("TipoClave") = ddlTiposPaqueteDL.SelectedValue
+                        dr2("Tipo") = ddlTiposPaqueteDL.SelectedItem.Text
+                    End If
+
                     dr2("Seguro") = txtPESeguro.Text
                     dr2("ServicioSAT") = codigoSat.codigo_servicio_id
                     dr2("ServicioSATDesc") = codigoSat.descripcion
@@ -2883,6 +2945,8 @@ Partial Class Punto_Venta
         remControl.Visible = False
         remText.Visible = False
         datosRemitente.Visible = False
+        ddlTiposPaquete.Visible = False
+        ddlTiposPaquete.Visible = False
 
         ViewState("Data") = Nothing
         BindGridView()
@@ -2921,12 +2985,19 @@ Partial Class Punto_Venta
             tipopaqueteredpack.Visible = False
         End If
 
+        If proveedor = 40 Then
+            ddlTiposPaquete.Visible = True
+            ddlTiposPaqueteDL.Visible = False
+        End If
+
         If proveedor = 50 Then
             remButton.Visible = True
             remControl.Visible = True
             remText.Visible = True
             datosRemitente.Visible = True
             tipopaqueteredpack.Visible = False
+            ddlTiposPaqueteDL.Visible = True
+            ddlTiposPaquete.Visible = False
         End If
 
         If proveedor = 230 Then
