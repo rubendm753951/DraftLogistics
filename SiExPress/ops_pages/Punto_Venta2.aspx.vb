@@ -1911,12 +1911,11 @@ Partial Class Punto_Venta
                             End If
                         Else
                             Dim sjscript2 As String = ""
+                            Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
+                            If dtgridview IsNot Nothing Then
+                                DaspackDALC.AddPaqueteExpressTipoPaquetes(dtgridview, envios(0), 5, dlTipoServicio)
+                            End If
                             If esMiltiPaquete Then
-                                Dim dtgridview As DataTable = TryCast(ViewState("Data"), DataTable)
-                                If dtgridview IsNot Nothing Then
-                                    DaspackDALC.AddPaqueteExpressTipoPaquetes(dtgridview, envios(0), 5, dlTipoServicio)
-                                End If
-
                                 sjscript2 = "<script language=""javascript"">" &
                                     " window.open('guia_individual_dl.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "&id_proveedor=" & DropDownProveedores.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
                                     "</script>"

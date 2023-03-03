@@ -268,6 +268,7 @@
               <Mapping SourceColumn="inst_entrega" DataSetColumn="inst_entrega" />
               <Mapping SourceColumn="IATA" DataSetColumn="IATA" />
               <Mapping SourceColumn="codigo_barras" DataSetColumn="codigo_barras" />
+              <Mapping SourceColumn="Servicio" DataSetColumn="Servicio" />
             </Mappings>
             <Sources />
           </TableAdapter>
@@ -342,8 +343,8 @@
               <Mapping SourceColumn="codigo_barras" DataSetColumn="codigo_barras" />
               <Mapping SourceColumn="CantidadLabel" DataSetColumn="CantidadLabel" />
               <Mapping SourceColumn="RepeatLabel" DataSetColumn="RepeatLabel" />
-              <Mapping SourceColumn="Cantidad" DataSetColumn="Cantidad" />
               <Mapping SourceColumn="Repeat" DataSetColumn="Repeat" />
+              <Mapping SourceColumn="Servicio" DataSetColumn="Servicio" />
             </Mappings>
             <Sources />
           </TableAdapter>
@@ -1296,6 +1297,13 @@
                 </xs:simpleType>
               </xs:element>
               <xs:element name="codigo_barras" msprop:Generator_ColumnVarNameInTable="columncodigo_barras" msprop:Generator_ColumnPropNameInRow="codigo_barras" msprop:Generator_ColumnPropNameInTable="codigo_barrasColumn" msprop:Generator_UserColumnName="codigo_barras" type="xs:base64Binary" minOccurs="0" />
+              <xs:element name="Servicio" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnServicio" msprop:Generator_ColumnPropNameInRow="Servicio" msprop:Generator_ColumnPropNameInTable="ServicioColumn" msprop:Generator_UserColumnName="Servicio" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="30" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -1586,6 +1594,13 @@
               </xs:element>
               <xs:element name="Cantidad" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnCantidad" msprop:Generator_ColumnPropNameInRow="Cantidad" msprop:Generator_ColumnPropNameInTable="CantidadColumn" msprop:Generator_UserColumnName="Cantidad" type="xs:int" minOccurs="0" />
               <xs:element name="Repeat" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnRepeat" msprop:Generator_ColumnPropNameInRow="Repeat" msprop:Generator_ColumnPropNameInTable="RepeatColumn" msprop:Generator_UserColumnName="Repeat" type="xs:int" minOccurs="0" />
+              <xs:element name="Servicio" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnServicio" msprop:Generator_ColumnPropNameInRow="Servicio" msprop:Generator_ColumnPropNameInTable="ServicioColumn" msprop:Generator_UserColumnName="Servicio" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="30" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
