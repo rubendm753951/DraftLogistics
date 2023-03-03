@@ -3,7 +3,7 @@
 ################################################################################
 
 SiExpress/Scripts/uploads
-SiExpress/Bin
+/SiExpress/Bin
 SiExpress/.vs
 SiExProData/bin
 SiExProData/obj
@@ -39,3 +39,13 @@ SiExProECommerce/obj/Debug/SiExProECommerce.pdb
 SiExProECommerce/obj/Debug/SiExProECommerce.vbproj.FileListAbsolute.txt
 SiExProECommerce/obj/Debug/SiExProECommerce.vbproj.GenerateResource.Cache
 SiExProECommerce/obj/Debug/SiExProECommerce.vbprojResolveAssemblyReference.cache
+SiExPress/Bin/EntityFramework.dll
+SiExPress/Bin/EntityFramework.SqlServer.dll
+SiExPress/Bin/SiExProData.dll
+SiExPress/Bin/SiExProData.pdb
+SiExProData/bin/Debug/SiExProData.dll
+SiExProData/bin/Debug/SiExProData.pdb
+SiExProData/obj/Debug/SiExProData.dll
+SiExProData/obj/Debug/SiExProData.pdb
+SiExProData/obj/Debug/SiExProData.vbproj.FileListAbsolute.txt
+SiExProData/obj/Debug/SiExProData.vbproj.GenerateResource.Cache

@@ -251,26 +251,28 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>="17-Feb-2015" 
-'Format(Today(),"d")</Value>
+                                      <Value>=Fields!Servicio.Value</Value>
                                       <Style>
                                         <FontSize>8pt</FontSize>
+                                        <Color>Red</Color>
                                       </Style>
                                     </TextRun>
                                   </TextRuns>
-                                  <Style />
+                                  <Style>
+                                    <TextAlign>Right</TextAlign>
+                                  </Style>
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>textbox3</rd:DefaultName>
                               <Top>13.10582cm</Top>
-                              <Left>6.75cm</Left>
+                              <Left>5.25cm</Left>
                               <Height>0.45cm</Height>
-                              <Width>2.75cm</Width>
+                              <Width>4.25cm</Width>
                               <ZIndex>8</ZIndex>
-                              <Visibility>
-                                <Hidden>true</Hidden>
-                              </Visibility>
                               <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -566,9 +568,9 @@
                                 </Paragraph>
                               </Paragraphs>
                               <Top>5.97227cm</Top>
-                              <Left>0.25cm</Left>
+                              <Left>0.25265cm</Left>
                               <Height>0.45cm</Height>
-                              <Width>9.25cm</Width>
+                              <Width>9.24735cm</Width>
                               <ZIndex>20</ZIndex>
                               <Style>
                                 <PaddingLeft>2pt</PaddingLeft>
@@ -1356,6 +1358,39 @@
                                 <PaddingBottom>2pt</PaddingBottom>
                               </Style>
                             </Textbox>
+                            <Textbox Name="textbox35">
+                              <KeepTogether>true</KeepTogether>
+                              <Paragraphs>
+                                <Paragraph>
+                                  <TextRuns>
+                                    <TextRun>
+                                      <Value>="Tel: " &amp; Fields!tel_remit.Value</Value>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                        <Color>Red</Color>
+                                      </Style>
+                                    </TextRun>
+                                  </TextRuns>
+                                  <Style>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </Paragraph>
+                              </Paragraphs>
+                              <Top>3.06946cm</Top>
+                              <Left>2.41799cm</Left>
+                              <Height>0.45cm</Height>
+                              <Width>4.90562cm</Width>
+                              <ZIndex>49</ZIndex>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                                <PaddingLeft>2pt</PaddingLeft>
+                                <PaddingRight>2pt</PaddingRight>
+                                <PaddingTop>2pt</PaddingTop>
+                                <PaddingBottom>2pt</PaddingBottom>
+                              </Style>
+                            </Textbox>
                           </ReportItems>
                           <KeepTogether>true</KeepTogether>
                           <Style />
@@ -1403,7 +1438,7 @@
         <InteractiveWidth>21cm</InteractiveWidth>
         <Style />
       </Page>
-    <AutoRefresh>0</AutoRefresh>
+  <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="paqueteriaDB_ConnectionString">
       <ConnectionProperties>
@@ -1630,10 +1665,14 @@
           <DataField>codigo_barras</DataField>
           <rd:TypeName>System.Byte[]</rd:TypeName>
         </Field>
+        <Field Name="Servicio">
+          <DataField>Servicio</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>DataSet2</rd:DataSetName>
-        <rd:SchemaPath>C:\MySites\SiExProEstafeta\SiExpress\App_Code\DataSet2.xsd</rd:SchemaPath>
+        <rd:SchemaPath>C:\MySites\DraftLogistics\SiExPress\App_Code\DataSet2.xsd</rd:SchemaPath>
         <rd:TableName>sp_Select_Datos_Envio_Mult2</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>

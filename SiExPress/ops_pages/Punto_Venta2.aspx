@@ -184,6 +184,16 @@
                                                 <asp:ListItem Text="HUACAL" Value="32"></asp:ListItem>
                                                 <asp:ListItem Text="CUBETA" Value="6"></asp:ListItem>
                                             </asp:DropDownList>
+                                            <asp:DropDownList CssClass="form-control" Height="30px" ID="ddlTiposPaqueteDL" runat="server" AutoPostBack="True">                                                
+                                                <asp:ListItem Text="SOBRE" Value="1"></asp:ListItem>
+                                                <asp:ListItem Text="PAQUETE" Value="2"></asp:ListItem>
+                                                <asp:ListItem Text="ATADO" Value="24"></asp:ListItem>
+                                                <asp:ListItem Text="BIDON" Value="4"></asp:ListItem>
+                                                <asp:ListItem Text="TAMBOR" Value="5"></asp:ListItem>
+                                                <asp:ListItem Text="CUBETA" Value="6"></asp:ListItem>
+                                                <asp:ListItem Text="COSTAL" Value="27"></asp:ListItem>
+                                                <asp:ListItem Text="TARIMA" Value="11"></asp:ListItem>                                                
+                                            </asp:DropDownList>
                                         </td>
                                         <td><strong><span style="font-size: 10pt">Servicio SAT:</span></strong></td>
                                         <td>

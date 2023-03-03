@@ -284,7 +284,7 @@ Public Class seguimiento_envios
     '    End Try
     'End Function
 
-    Public Function costo_estafeta_gombar(ByVal cp_destino As String, id_agencia As Integer, peso_vol As Decimal, area_extendida_express_saver As Decimal, area_extendida_standard_overnight As Decimal, peso As Decimal, valorAreaExtendida As Decimal, valorDeclarado As Decimal) As EstafetaPrecio
+    Public Function costo_estafeta_gombar(ByVal cp_destino As String, id_agencia As Integer, peso_vol As Decimal, area_extendida_express_saver As Decimal, area_extendida_standard_overnight As Decimal, peso As Decimal, valorAreaExtendida As Decimal, valorDeclarado As Decimal, Optional tipoPaquete As String = "") As EstafetaPrecio
 
         Try
             Dim MyConnection As ConnectionStringSettings
@@ -335,6 +335,11 @@ Public Class seguimiento_envios
             parm8.ParameterName = "@valor_declarado"
             parm8.Value = valorDeclarado
             cmd.Parameters.Add(parm8)
+
+            Dim parm9 As Data.Common.DbParameter = cmd.CreateParameter()
+            parm9.ParameterName = "@DL_subtipo_paquete"
+            parm9.Value = tipoPaquete
+            cmd.Parameters.Add(parm9)
 
             connection.Open()
 

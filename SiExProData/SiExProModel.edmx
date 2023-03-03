@@ -289,6 +289,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="total" Type="decimal" Precision="18" Scale="2" />
           <Property Name="areaExtendida" Type="decimal" Precision="18" Scale="2" />
           <Property Name="idProveedor" Type="int" />
+          <Property Name="servicio" Type="int" />
         </EntityType>
         <EntityType Name="D_ENVIOS_PREASIGNADOS">
           <Key>
@@ -1069,6 +1070,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="total" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="areaExtendida" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="idProveedor" Type="Int32" />
+          <Property Name="servicio" Type="Int32" />
         </EntityType>
         <EntityType Name="CodigosServiciosSat">
           <Key>
@@ -1617,6 +1619,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySetMapping Name="D_ENVIOS_PE_TIPO_PAQUETES">
             <EntityTypeMapping TypeName="MasupackModel.PaqueteExpressTipoPaquete">
               <MappingFragment StoreEntitySet="D_ENVIOS_PE_TIPO_PAQUETES">
+                <ScalarProperty Name="servicio" ColumnName="servicio" />
                 <ScalarProperty Name="idProveedor" ColumnName="idProveedor" />
                 <ScalarProperty Name="areaExtendida" ColumnName="areaExtendida" />
                 <ScalarProperty Name="total" ColumnName="total" />

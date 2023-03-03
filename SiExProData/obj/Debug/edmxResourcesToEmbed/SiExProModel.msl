@@ -4,6 +4,13 @@
     <EntitySetMapping Name="C_AGENCIAS">
       <EntityTypeMapping TypeName="MasupackModel.Agencias">
         <MappingFragment StoreEntitySet="C_AGENCIAS">
+          <ScalarProperty Name="tipo_de_pago" ColumnName="tipo_de_pago" />
+          <ScalarProperty Name="RFC" ColumnName="RFC" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+          <ScalarProperty Name="municipio" ColumnName="municipio" />
+          <ScalarProperty Name="colonia" ColumnName="colonia" />
+          <ScalarProperty Name="noexterior" ColumnName="noexterior" />
           <ScalarProperty Name="guia_estafeta" ColumnName="guia_estafeta" />
           <ScalarProperty Name="costo_adicional" ColumnName="costo_adicional" />
           <ScalarProperty Name="id_agencia" ColumnName="id_agencia" />
@@ -29,6 +36,9 @@
     <EntitySetMapping Name="C_CLIENTES">
       <EntityTypeMapping TypeName="MasupackModel.Cliente">
         <MappingFragment StoreEntitySet="C_CLIENTES">
+          <ScalarProperty Name="ResidenciaFiscal" ColumnName="ResidenciaFiscal" />
+          <ScalarProperty Name="RegistroTributario" ColumnName="RegistroTributario" />
+          <ScalarProperty Name="RFC" ColumnName="RFC" />
           <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
           <ScalarProperty Name="id_pais" ColumnName="id_pais" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
@@ -52,6 +62,9 @@
     <EntitySetMapping Name="C_DESTINATARIOS">
       <EntityTypeMapping TypeName="MasupackModel.Destinatario">
         <MappingFragment StoreEntitySet="C_DESTINATARIOS">
+          <ScalarProperty Name="ResidenciaFiscal" ColumnName="ResidenciaFiscal" />
+          <ScalarProperty Name="RegistroTributario" ColumnName="RegistroTributario" />
+          <ScalarProperty Name="RFC" ColumnName="RFC" />
           <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
           <ScalarProperty Name="id_pais" ColumnName="id_pais" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
@@ -98,18 +111,6 @@
           <ScalarProperty Name="id_subproducto" ColumnName="id_subproducto" />
           <ScalarProperty Name="contenedores" ColumnName="contenedores" />
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="D_ENVIOS_DATOS">
-      <EntityTypeMapping TypeName="MasupackModel.EnvioDatos">
-        <MappingFragment StoreEntitySet="D_ENVIOS_DATOS">
-          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
-          <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
-          <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
-          <ScalarProperty Name="id_contenido" ColumnName="id_contenido" />
-          <ScalarProperty Name="observaciones" ColumnName="observaciones" />
-          <ScalarProperty Name="exportado" ColumnName="exportado" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -162,6 +163,7 @@
     <EntitySetMapping Name="D_ESTAFETA_FRECUENCIA_COTIZADOR">
       <EntityTypeMapping TypeName="MasupackModel.EstafetaFrecuenciaCotizador">
         <MappingFragment StoreEntitySet="D_ESTAFETA_FRECUENCIA_COTIZADOR">
+          <ScalarProperty Name="identificador" ColumnName="identificador" />
           <ScalarProperty Name="FechaCotizacion" ColumnName="FechaCotizacion" />
           <ScalarProperty Name="id_envio" ColumnName="id_envio" />
           <ScalarProperty Name="Domingo" ColumnName="Domingo" />
@@ -188,6 +190,7 @@
     <EntitySetMapping Name="D_ESTAFETA_TIPO_SERVICIO">
       <EntityTypeMapping TypeName="MasupackModel.EstafetaTipoServicio">
         <MappingFragment StoreEntitySet="D_ESTAFETA_TIPO_SERVICIO">
+          <ScalarProperty Name="identificador" ColumnName="identificador" />
           <ScalarProperty Name="Selecccionado" ColumnName="Selecccionado" />
           <ScalarProperty Name="FechaCotizacion" ColumnName="FechaCotizacion" />
           <ScalarProperty Name="AplicaServicio" ColumnName="AplicaServicio" />
@@ -242,6 +245,11 @@
     <EntitySetMapping Name="D_COBERTURAS">
       <EntityTypeMapping TypeName="MasupackModel.Cobertura">
         <MappingFragment StoreEntitySet="D_COBERTURA">
+          <ScalarProperty Name="DL_Tarimas" ColumnName="DL_Tarimas" />
+          <ScalarProperty Name="DL_Express" ColumnName="DL_Express" />
+          <ScalarProperty Name="DL_Paqueteria" ColumnName="DL_Paqueteria" />
+          <ScalarProperty Name="area_extendida" ColumnName="area_extendida" />
+          <ScalarProperty Name="siglas_plaza_tarimas" ColumnName="siglas_plaza_tarimas" />
           <ScalarProperty Name="ciudad" ColumnName="ciudad" />
           <ScalarProperty Name="garantia_maxima" ColumnName="garantia_maxima" />
           <ScalarProperty Name="reexpedicion" ColumnName="reexpedicion" />
@@ -265,6 +273,8 @@
     <EntitySetMapping Name="D_ESTAFETA_REQUEST_RESPONSE">
       <EntityTypeMapping TypeName="MasupackModel.EstafetaRequestResponse">
         <MappingFragment StoreEntitySet="D_ESTAFETA_REQUEST_RESPONSE">
+          <ScalarProperty Name="idenvio" ColumnName="idenvio" />
+          <ScalarProperty Name="identificador" ColumnName="identificador" />
           <ScalarProperty Name="carrier" ColumnName="carrier" />
           <ScalarProperty Name="imagenBase64" ColumnName="imagenBase64" />
           <ScalarProperty Name="cuenta" ColumnName="cuenta" />
@@ -296,6 +306,205 @@
           <ScalarProperty Name="d_tipo_asenta" ColumnName="d_tipo_asenta" />
           <ScalarProperty Name="d_asenta" ColumnName="d_asenta" />
           <ScalarProperty Name="d_codigo" ColumnName="d_codigo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ENVIOS_PE_TIPO_PAQUETES">
+      <EntityTypeMapping TypeName="MasupackModel.PaqueteExpressTipoPaquete">
+        <MappingFragment StoreEntitySet="D_ENVIOS_PE_TIPO_PAQUETES">
+          <ScalarProperty Name="servicio" ColumnName="servicio" />
+          <ScalarProperty Name="idProveedor" ColumnName="idProveedor" />
+          <ScalarProperty Name="areaExtendida" ColumnName="areaExtendida" />
+          <ScalarProperty Name="total" ColumnName="total" />
+          <ScalarProperty Name="Precio" ColumnName="Precio" />
+          <ScalarProperty Name="servicioSat" ColumnName="servicioSat" />
+          <ScalarProperty Name="seguro" ColumnName="seguro" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="peso" ColumnName="peso" />
+          <ScalarProperty Name="ancho" ColumnName="ancho" />
+          <ScalarProperty Name="largo" ColumnName="largo" />
+          <ScalarProperty Name="alto" ColumnName="alto" />
+          <ScalarProperty Name="tipo" ColumnName="tipo" />
+          <ScalarProperty Name="tipoId" ColumnName="tipoId" />
+          <ScalarProperty Name="contenido" ColumnName="contenido" />
+          <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_CODIGOS_SERVICIOS_SAT">
+      <EntityTypeMapping TypeName="MasupackModel.CodigosServiciosSat">
+        <MappingFragment StoreEntitySet="D_CODIGOS_SERVICIOS_SAT">
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="codigo_servicio_id" ColumnName="codigo_servicio_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ENVIOS_DATOS">
+      <EntityTypeMapping TypeName="MasupackModel.EnvioDatos">
+        <MappingFragment StoreEntitySet="D_ENVIOS_DATOS">
+          <ScalarProperty Name="codigo_barras" ColumnName="codigo_barras" />
+          <ScalarProperty Name="codigoSat" ColumnName="codigoSat" />
+          <ScalarProperty Name="id_proveedor" ColumnName="id_proveedor" />
+          <ScalarProperty Name="fecha_entrega" ColumnName="fecha_entrega" />
+          <ScalarProperty Name="entregado" ColumnName="entregado" />
+          <ScalarProperty Name="exportado" ColumnName="exportado" />
+          <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="id_contenido" ColumnName="id_contenido" />
+          <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
+          <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_DELIVERY_CONFIRMATION">
+      <EntityTypeMapping TypeName="MasupackModel.DeliveryConfirmation">
+        <MappingFragment StoreEntitySet="D_DELIVERY_CONFIRMATION">
+          <ScalarProperty Name="DeliveryImage" ColumnName="DeliveryImage" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
+          <ScalarProperty Name="Comments" ColumnName="Comments" />
+          <ScalarProperty Name="SignName" ColumnName="SignName" />
+          <ScalarProperty Name="SignImage" ColumnName="SignImage" />
+          <ScalarProperty Name="TrackId" ColumnName="TrackId" />
+          <ScalarProperty Name="ShipmentId" ColumnName="ShipmentId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="DeliveryConfirmationId" ColumnName="DeliveryConfirmationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_TARIFAS_AGENCIA_DRAFT">
+      <EntityTypeMapping TypeName="MasupackModel.TarifaAgenciaDraft">
+        <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA_DRAFT">
+          <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+          <ScalarProperty Name="PRECIO_EXCESO_DIMENSIONES" ColumnName="PRECIO_EXCESO_DIMENSIONES" />
+          <ScalarProperty Name="PRECIO_AREA_EXTENDIDA" ColumnName="PRECIO_AREA_EXTENDIDA" />
+          <ScalarProperty Name="PRECIO_KILO_ADICIONAL" ColumnName="PRECIO_KILO_ADICIONAL" />
+          <ScalarProperty Name="PRECIO_KILO" ColumnName="PRECIO_KILO" />
+          <ScalarProperty Name="PRECIO" ColumnName="PRECIO" />
+          <ScalarProperty Name="PESO_LIMITE_SUPERIOR" ColumnName="PESO_LIMITE_SUPERIOR" />
+          <ScalarProperty Name="PESO_LIMITE_INFERIOR" ColumnName="PESO_LIMITE_INFERIOR" />
+          <ScalarProperty Name="SERVICE_ID" ColumnName="SERVICE_ID" />
+          <ScalarProperty Name="ID_CUENTA" ColumnName="ID_CUENTA" />
+          <ScalarProperty Name="ID_ZONA" ColumnName="ID_ZONA" />
+          <ScalarProperty Name="ID_AGENCIA" ColumnName="ID_AGENCIA" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_TARIFAS_AGENCIA_ESTAFETA">
+      <EntityTypeMapping TypeName="MasupackModel.TarifaAgenciaEstafeta">
+        <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA_ESTAFETA">
+          <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+          <ScalarProperty Name="PRECIO_KILO_ADICIONAL_GOMBAR" ColumnName="PRECIO_KILO_ADICIONAL_GOMBAR" />
+          <ScalarProperty Name="PRECIO_POR_KILO_GOMBAR" ColumnName="PRECIO_POR_KILO_GOMBAR" />
+          <ScalarProperty Name="PRECIO_GOMBAR" ColumnName="PRECIO_GOMBAR" />
+          <ScalarProperty Name="PRECIO_KILO_ADICIONAL_DIA_SIGUIENTE" ColumnName="PRECIO_KILO_ADICIONAL_DIA_SIGUIENTE" />
+          <ScalarProperty Name="PRECIO_POR_KILO_DIA_SIGUIENTE" ColumnName="PRECIO_POR_KILO_DIA_SIGUIENTE" />
+          <ScalarProperty Name="PRECIO_DIA_SIGUIENTE" ColumnName="PRECIO_DIA_SIGUIENTE" />
+          <ScalarProperty Name="PRECIO_KILO_ADICIONAL" ColumnName="PRECIO_KILO_ADICIONAL" />
+          <ScalarProperty Name="PRECIO_POR_KILO" ColumnName="PRECIO_POR_KILO" />
+          <ScalarProperty Name="PRECIO" ColumnName="PRECIO" />
+          <ScalarProperty Name="PESO_LIMITE_SUPERIOR" ColumnName="PESO_LIMITE_SUPERIOR" />
+          <ScalarProperty Name="PESO_LIMITE_INFERIOR" ColumnName="PESO_LIMITE_INFERIOR" />
+          <ScalarProperty Name="ID_CUENTA" ColumnName="ID_CUENTA" />
+          <ScalarProperty Name="ID_ZONA" ColumnName="ID_ZONA" />
+          <ScalarProperty Name="ID_AGENCIA" ColumnName="ID_AGENCIA" />
+          <ScalarProperty Name="ID_TARIFAS_AGENCIA_ESTAFETA" ColumnName="ID_TARIFAS_AGENCIA_ESTAFETA" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_TARIFAS_AGENCIA_FEDEX">
+      <EntityTypeMapping TypeName="MasupackModel.TarifaAgenciaFedex">
+        <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA_FEDEX">
+          <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+          <ScalarProperty Name="PRECIO_EXCESO_DIMENSIONES" ColumnName="PRECIO_EXCESO_DIMENSIONES" />
+          <ScalarProperty Name="PRECIO_AREA_EXTENDIDA" ColumnName="PRECIO_AREA_EXTENDIDA" />
+          <ScalarProperty Name="PRECIO_KILO_ADICIONAL" ColumnName="PRECIO_KILO_ADICIONAL" />
+          <ScalarProperty Name="PRECIO_KILO" ColumnName="PRECIO_KILO" />
+          <ScalarProperty Name="PRECIO" ColumnName="PRECIO" />
+          <ScalarProperty Name="PESO_LIMITE_SUPERIOR" ColumnName="PESO_LIMITE_SUPERIOR" />
+          <ScalarProperty Name="PESO_LIMITE_INFERIOR" ColumnName="PESO_LIMITE_INFERIOR" />
+          <ScalarProperty Name="SERVICE_ID" ColumnName="SERVICE_ID" />
+          <ScalarProperty Name="ID_CUENTA" ColumnName="ID_CUENTA" />
+          <ScalarProperty Name="ID_AGENCIA" ColumnName="ID_AGENCIA" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_TARIFAS_AGENCIA_PAQUETE_EXPRESS">
+      <EntityTypeMapping TypeName="MasupackModel.TarifaAgenciaPaqueteExpress">
+        <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA_PAQUETE_EXPRESS">
+          <ScalarProperty Name="is_deleted" ColumnName="is_deleted" />
+          <ScalarProperty Name="DIA_SIGUIENTE_KILO" ColumnName="DIA_SIGUIENTE_KILO" />
+          <ScalarProperty Name="DIA_SIGUIENTE_BASE" ColumnName="DIA_SIGUIENTE_BASE" />
+          <ScalarProperty Name="PRECIO_ECONOMICO" ColumnName="PRECIO_ECONOMICO" />
+          <ScalarProperty Name="CUM_end" ColumnName="CUM_end" />
+          <ScalarProperty Name="CUM_start" ColumnName="CUM_start" />
+          <ScalarProperty Name="KG_End" ColumnName="KG_End" />
+          <ScalarProperty Name="KG_start" ColumnName="KG_start" />
+          <ScalarProperty Name="Tarifa" ColumnName="Tarifa" />
+          <ScalarProperty Name="ID_AGENCIA" ColumnName="ID_AGENCIA" />
+          <ScalarProperty Name="ID_TARIFAS_AGENCIA_PAQUETE_EXPRESS" ColumnName="ID_TARIFAS_AGENCIA_PAQUETE_EXPRESS" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_ENVIOS_PREASIGNADOS">
+      <EntityTypeMapping TypeName="MasupackModel.EnviosPreAsignados">
+        <MappingFragment StoreEntitySet="D_ENVIOS_PREASIGNADOS">
+          <ScalarProperty Name="id_moneda" ColumnName="id_moneda" />
+          <ScalarProperty Name="tarifa" ColumnName="tarifa" />
+          <ScalarProperty Name="id_tarifa_tipo" ColumnName="id_tarifa_tipo" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+          <ScalarProperty Name="id_agencia" ColumnName="id_agencia" />
+          <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_AUDIT_LOG">
+      <EntityTypeMapping TypeName="MasupackModel.AuditLog">
+        <MappingFragment StoreEntitySet="D_AUDIT_LOG">
+          <ScalarProperty Name="IdEnvio" ColumnName="IdEnvio" />
+          <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+          <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+          <ScalarProperty Name="ValorActual" ColumnName="ValorActual" />
+          <ScalarProperty Name="ValorAnterior" ColumnName="ValorAnterior" />
+          <ScalarProperty Name="Columna" ColumnName="Columna" />
+          <ScalarProperty Name="Tabla" ColumnName="Tabla" />
+          <ScalarProperty Name="AuditLogId" ColumnName="AuditLogId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_TARIFAS_AGENCIA_DLIVER_EXPRESS">
+      <EntityTypeMapping TypeName="MasupackModel.TarifaAgenciaDliverExpress">
+        <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA_DLIVER_EXPRESS">
+          <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+          <ScalarProperty Name="PRECIO_EXCESO_DIMENSIONES" ColumnName="PRECIO_EXCESO_DIMENSIONES" />
+          <ScalarProperty Name="PRECIO_AREA_EXTENDIDA" ColumnName="PRECIO_AREA_EXTENDIDA" />
+          <ScalarProperty Name="PRECIO_KILO_ADICIONAL" ColumnName="PRECIO_KILO_ADICIONAL" />
+          <ScalarProperty Name="PRECIO_KILO" ColumnName="PRECIO_KILO" />
+          <ScalarProperty Name="PRECIO" ColumnName="PRECIO" />
+          <ScalarProperty Name="PESO_LIMITE_SUPERIOR" ColumnName="PESO_LIMITE_SUPERIOR" />
+          <ScalarProperty Name="PESO_LIMITE_INFERIOR" ColumnName="PESO_LIMITE_INFERIOR" />
+          <ScalarProperty Name="SERVICE_ID" ColumnName="SERVICE_ID" />
+          <ScalarProperty Name="ID_CUENTA" ColumnName="ID_CUENTA" />
+          <ScalarProperty Name="ID_ZONA" ColumnName="ID_ZONA" />
+          <ScalarProperty Name="ID_AGENCIA" ColumnName="ID_AGENCIA" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="D_PROVIDER_LABEL">
+      <EntityTypeMapping TypeName="MasupackModel.ProviderLabel">
+        <MappingFragment StoreEntitySet="D_PROVIDER_LABEL">
+          <ScalarProperty Name="ProviderId" ColumnName="ProviderId" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="TrackingId" ColumnName="TrackingId" />
+          <ScalarProperty Name="LabelBase64" ColumnName="LabelBase64" />
+          <ScalarProperty Name="LabelBinary" ColumnName="LabelBinary" />
+          <ScalarProperty Name="ShipmentId" ColumnName="ShipmentId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

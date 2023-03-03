@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">  
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
       <Body>
         <ReportItems>
           <Tablix Name="list1">
@@ -33,7 +33,7 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>nombre_dest</rd:DefaultName>
-                              <Top>7.24343cm</Top>
+                              <Top>7.08468cm</Top>
                               <Left>0.25cm</Left>
                               <Height>14.175pt</Height>
                               <Width>9.25cm</Width>
@@ -93,10 +93,10 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>id_envio_2</rd:DefaultName>
-                              <Top>2.37443cm</Top>
-                              <Left>4.75cm</Left>
+                              <Top>2.27918cm</Top>
+                              <Left>6.97657cm</Left>
                               <Height>0.60582cm</Height>
-                              <Width>4.75cm</Width>
+                              <Width>2.52343cm</Width>
                               <ZIndex>2</ZIndex>
                               <Style>
                                 <PaddingLeft>2pt</PaddingLeft>
@@ -121,7 +121,7 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>nombre_remit_1</rd:DefaultName>
-                              <Top>3.71966cm</Top>
+                              <Top>3.53445cm</Top>
                               <Left>0.25cm</Left>
                               <Height>0.45cm</Height>
                               <Width>9.25cm</Width>
@@ -149,7 +149,7 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>direccion_remit_1</rd:DefaultName>
-                              <Top>5.25668cm</Top>
+                              <Top>5.06618cm</Top>
                               <Left>0.25cm</Left>
                               <Height>0.45cm</Height>
                               <Width>9.25cm</Width>
@@ -177,7 +177,7 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>colonia_remit</rd:DefaultName>
-                              <Top>5.71568cm</Top>
+                              <Top>5.52518cm</Top>
                               <Left>0.25cm</Left>
                               <Height>0.45cm</Height>
                               <Width>9.25cm</Width>
@@ -207,7 +207,7 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>textbox1</rd:DefaultName>
-                              <Top>3.16675cm</Top>
+                              <Top>3.008cm</Top>
                               <Left>7.5cm</Left>
                               <Height>0.5cm</Height>
                               <Width>2cm</Width>
@@ -233,7 +233,7 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>direccion_dest</rd:DefaultName>
-                              <Top>8.85586cm</Top>
+                              <Top>8.72886cm</Top>
                               <Left>0.25cm</Left>
                               <Height>14.175pt</Height>
                               <Width>2.5cm</Width>
@@ -368,13 +368,7 @@
                               <Height>0.45cm</Height>
                               <Width>4.5cm</Width>
                               <ZIndex>11</ZIndex>
-                              <Visibility>
-                                <Hidden>true</Hidden>
-                              </Visibility>
                               <Style>
-                                <Border>
-                                  <Style>None</Style>
-                                </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -398,7 +392,7 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>empresa_dest</rd:DefaultName>
-                              <Top>7.76989cm</Top>
+                              <Top>7.61114cm</Top>
                               <Left>0.25cm</Left>
                               <Height>0.5cm</Height>
                               <Width>9.25cm</Width>
@@ -448,13 +442,7 @@
                               <Height>0.5cm</Height>
                               <Width>4.25cm</Width>
                               <ZIndex>14</ZIndex>
-                              <Visibility>
-                                <Hidden>true</Hidden>
-                              </Visibility>
                               <Style>
-                                <Border>
-                                  <Style>None</Style>
-                                </Border>
                                 <PaddingLeft>2pt</PaddingLeft>
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
@@ -462,7 +450,7 @@
                               </Style>
                             </Textbox>
                             <Line Name="line1">
-                              <Top>3.16544cm</Top>
+                              <Top>3.00669cm</Top>
                               <Height>0cm</Height>
                               <Width>9.52381cm</Width>
                               <ZIndex>15</ZIndex>
@@ -474,7 +462,7 @@
                               </Style>
                             </Line>
                             <Line Name="line2">
-                              <Top>6.66144cm</Top>
+                              <Top>6.50269cm</Top>
                               <Height>0cm</Height>
                               <Width>9.52381cm</Width>
                               <ZIndex>16</ZIndex>
@@ -500,7 +488,7 @@
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>3.16675cm</Top>
+                              <Top>3.008cm</Top>
                               <Height>0.5cm</Height>
                               <Width>2.25cm</Width>
                               <ZIndex>17</ZIndex>
@@ -526,7 +514,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>4.19321cm</Top>
+                              <Top>4.008cm</Top>
                               <Left>0.25cm</Left>
                               <Height>0.45cm</Height>
                               <Width>9.25cm</Width>
@@ -553,7 +541,7 @@
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>4.70377cm</Top>
+                              <Top>4.51327cm</Top>
                               <Height>0.5cm</Height>
                               <Width>2.57936cm</Width>
                               <ZIndex>19</ZIndex>
@@ -579,10 +567,10 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>6.16277cm</Top>
+                              <Top>5.97227cm</Top>
                               <Left>0.25cm</Left>
                               <Height>0.45cm</Height>
-                              <Width>9.25cm</Width>
+                              <Width>9.25001cm</Width>
                               <ZIndex>20</ZIndex>
                               <Style>
                                 <PaddingLeft>2pt</PaddingLeft>
@@ -608,7 +596,7 @@
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>6.69052cm</Top>
+                              <Top>6.53177cm</Top>
                               <Left>7.25cm</Left>
                               <Height>0.5cm</Height>
                               <Width>2.25cm</Width>
@@ -635,7 +623,7 @@
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>6.69052cm</Top>
+                              <Top>6.53177cm</Top>
                               <Height>0.5cm</Height>
                               <Width>2.25cm</Width>
                               <ZIndex>22</ZIndex>
@@ -661,7 +649,7 @@
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>8.3347cm</Top>
+                              <Top>8.17595cm</Top>
                               <Height>0.5cm</Height>
                               <Width>2.57936cm</Width>
                               <ZIndex>23</ZIndex>
@@ -685,7 +673,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>9.84527cm</Top>
+                              <Top>9.75002cm</Top>
                               <Left>0.25cm</Left>
                               <Height>14.175pt</Height>
                               <Width>2cm</Width>
@@ -710,7 +698,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>10.88759cm</Top>
+                              <Top>10.79234cm</Top>
                               <Left>0.25cm</Left>
                               <Height>14.175pt</Height>
                               <Width>2cm</Width>
@@ -735,7 +723,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>11.40875cm</Top>
+                              <Top>11.34525cm</Top>
                               <Left>0.25cm</Left>
                               <Height>14.175pt</Height>
                               <Width>1.25cm</Width>
@@ -748,7 +736,7 @@
                               </Style>
                             </Textbox>
                             <Line Name="line3">
-                              <Top>11.98413cm</Top>
+                              <Top>11.92063cm</Top>
                               <Height>0cm</Height>
                               <Width>9.52381cm</Width>
                               <ZIndex>27</ZIndex>
@@ -970,7 +958,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>10.36643cm</Top>
+                              <Top>10.27118cm</Top>
                               <Left>0.25cm</Left>
                               <Height>14.175pt</Height>
                               <Width>2.5cm</Width>
@@ -1113,7 +1101,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>9.83336cm</Top>
+                              <Top>9.73811cm</Top>
                               <Left>2.75cm</Left>
                               <Height>14.175pt</Height>
                               <Width>6.75cm</Width>
@@ -1141,7 +1129,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>10.36643cm</Top>
+                              <Top>10.27118cm</Top>
                               <Left>2.75cm</Left>
                               <Height>14.175pt</Height>
                               <Width>6.75cm</Width>
@@ -1169,7 +1157,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>8.84396cm</Top>
+                              <Top>8.71696cm</Top>
                               <Left>2.75cm</Left>
                               <Height>27.59986pt</Height>
                               <Width>6.75cm</Width>
@@ -1196,7 +1184,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>10.88759cm</Top>
+                              <Top>10.79234cm</Top>
                               <Left>2.75cm</Left>
                               <Height>14.175pt</Height>
                               <Width>6.75cm</Width>
@@ -1223,7 +1211,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>11.40875cm</Top>
+                              <Top>11.34525cm</Top>
                               <Left>1.5cm</Left>
                               <Height>14.175pt</Height>
                               <Width>3cm</Width>
@@ -1250,7 +1238,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>11.40875cm</Top>
+                              <Top>11.34525cm</Top>
                               <Left>4.75cm</Left>
                               <Height>14.175pt</Height>
                               <Width>1.25cm</Width>
@@ -1277,7 +1265,7 @@
                                   <Style />
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>11.40875cm</Top>
+                              <Top>11.34525cm</Top>
                               <Left>6.25cm</Left>
                               <Height>14.175pt</Height>
                               <Width>3.25cm</Width>
@@ -1294,8 +1282,8 @@
                               <Value>=Fields!codigo_barras.Value</Value>
                               <MIMEType>image/png</MIMEType>
                               <Sizing>Fit</Sizing>
-                              <Top>0.63481in</Top>
-                              <Height>0.56695in</Height>
+                              <Top>0.62787in</Top>
+                              <Height>0.5267in</Height>
                               <Width>1.67323in</Width>
                               <ZIndex>46</ZIndex>
                               <Style>
@@ -1313,7 +1301,7 @@
                                       <Value>=Fields!IATA.Value</Value>
                                       <Style>
                                         <FontFamily>Arial Narrow</FontFamily>
-                                        <FontSize>58pt</FontSize>
+                                        <FontSize>50pt</FontSize>
                                       </Style>
                                     </TextRun>
                                   </TextRuns>
@@ -1323,9 +1311,9 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>IATA</rd:DefaultName>
-                              <Top>0.03454in</Top>
+                              <Top>0.00593in</Top>
                               <Left>1.76654in</Left>
-                              <Height>0.83083in</Height>
+                              <Height>0.73541in</Height>
                               <Width>1.97362in</Width>
                               <ZIndex>47</ZIndex>
                               <Style>
@@ -1333,7 +1321,6 @@
                                 <VerticalAlign>Top</VerticalAlign>
                                 <PaddingLeft>1pt</PaddingLeft>
                                 <PaddingRight>1pt</PaddingRight>
-                                <PaddingTop>1pt</PaddingTop>
                                 <PaddingBottom>1pt</PaddingBottom>
                               </Style>
                             </Textbox>
@@ -1355,10 +1342,10 @@
                                 </Paragraph>
                               </Paragraphs>
                               <rd:DefaultName>Provider</rd:DefaultName>
-                              <Top>1.84225in</Top>
-                              <Left>3.30918in</Left>
-                              <Height>0.21342in</Height>
-                              <Width>0.39583in</Width>
+                              <Top>1.79225in</Top>
+                              <Left>3.2571in</Left>
+                              <Height>0.20231in</Height>
+                              <Width>0.41667in</Width>
                               <ZIndex>48</ZIndex>
                               <Style>
                                 <Border>
@@ -1368,6 +1355,44 @@
                                 <PaddingRight>2pt</PaddingRight>
                                 <PaddingTop>2pt</PaddingTop>
                                 <PaddingBottom>2pt</PaddingBottom>
+                              </Style>
+                            </Textbox>
+                            <Textbox Name="RepeatLabel">
+                              <CanGrow>true</CanGrow>
+                              <KeepTogether>true</KeepTogether>
+                              <Paragraphs>
+                                <Paragraph>
+                                  <TextRuns>
+                                    <TextRun>
+                                      <Value>=Fields!RepeatLabel.Value &amp; "/" &amp;Fields!CantidadLabel.Value</Value>
+                                      <Style>
+                                        <FontFamily>Arial Narrow</FontFamily>
+                                        <FontSize>24pt</FontSize>
+                                        <FontWeight>Bold</FontWeight>
+                                        <TextDecoration>None</TextDecoration>
+                                      </Style>
+                                    </TextRun>
+                                  </TextRuns>
+                                  <Style>
+                                    <TextAlign>Center</TextAlign>
+                                  </Style>
+                                </Paragraph>
+                              </Paragraphs>
+                              <rd:DefaultName>RepeatLabel</rd:DefaultName>
+                              <Top>0.62579in</Top>
+                              <Left>1.7571in</Left>
+                              <Height>0.40646in</Height>
+                              <Width>1.04792in</Width>
+                              <ZIndex>49</ZIndex>
+                              <Style>
+                                <Border>
+                                  <Style>None</Style>
+                                </Border>
+                                <VerticalAlign>Middle</VerticalAlign>
+                                <PaddingLeft>1pt</PaddingLeft>
+                                <PaddingRight>1pt</PaddingRight>
+                                <PaddingTop>1pt</PaddingTop>
+                                <PaddingBottom>1pt</PaddingBottom>
                               </Style>
                             </Textbox>
                             <Textbox Name="textbox35">
@@ -1388,11 +1413,11 @@
                                   </Style>
                                 </Paragraph>
                               </Paragraphs>
-                              <Top>3.22821cm</Top>
-                              <Left>2.43563cm</Left>
+                              <Top>3.06945cm</Top>
+                              <Left>2.37989cm</Left>
                               <Height>0.45cm</Height>
-                              <Width>4.88798cm</Width>
-                              <ZIndex>49</ZIndex>
+                              <Width>4.979cm</Width>
+                              <ZIndex>50</ZIndex>
                               <Style>
                                 <Border>
                                   <Style>None</Style>
@@ -1431,7 +1456,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <KeepTogether>true</KeepTogether>
-            <DataSetName>DataSet2_sp_Select_Datos_Envio_Mult2</DataSetName>
+            <DataSetName>DataSet2_sp_Select_Datos_Envio_Mult_DL</DataSetName>
             <Top>0.24405cm</Top>
             <Left>0.31746cm</Left>
             <Height>14.84391cm</Height>
@@ -1461,11 +1486,11 @@
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="DataSet2_sp_Select_Datos_Envio_Mult2">
+    <DataSet Name="DataSet2_sp_Select_Datos_Envio_Mult_DL">
       <Query>
         <DataSourceName>paqueteriaDB_ConnectionString</DataSourceName>
         <CommandType>StoredProcedure</CommandType>
-        <CommandText>dbo.sp_Select_Datos_Envio_Mult</CommandText>
+        <CommandText>dbo.sp_Select_Datos_Envio_Mult_DL</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -1677,6 +1702,22 @@
           <DataField>codigo_barras</DataField>
           <rd:TypeName>System.Byte[]</rd:TypeName>
         </Field>
+        <Field Name="CantidadLabel">
+          <DataField>CantidadLabel</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="RepeatLabel">
+          <DataField>RepeatLabel</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Cantidad">
+          <DataField>Cantidad</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Repeat">
+          <DataField>Repeat</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
         <Field Name="Servicio">
           <DataField>Servicio</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -1685,10 +1726,10 @@
       <rd:DataSetInfo>
         <rd:DataSetName>DataSet2</rd:DataSetName>
         <rd:SchemaPath>C:\MySites\DraftLogistics\SiExPress\App_Code\DataSet2.xsd</rd:SchemaPath>
-        <rd:TableName>sp_Select_Datos_Envio_Mult2</rd:TableName>
+        <rd:TableName>sp_Select_Datos_Envio_Mult_DL</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
-        <rd:TableAdapterName>sp_Select_Datos_Envio_Mult2TableAdapter</rd:TableAdapterName>
+        <rd:TableAdapterName>sp_Select_Datos_Envio_Mult_DLTableAdapter</rd:TableAdapterName>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
