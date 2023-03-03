@@ -97,26 +97,6 @@ Partial Class ops_pages_consulta_envio
             datos2 = datos2 & "Referencia Exportación: " & reader.GetString(42)
             TextBox2.Text = datos2
 
-            'TextBox3.Text = datos2
-            ''Remitente y Destinatario
-            'datos3 = "Remitente: " & reader.GetString(18) & vbCrLf
-            'datos3 = datos3 & "Empresa: " & reader.GetString(19) & vbCrLf
-            'datos3 = datos3 & "Dirección: " & reader.GetString(21) & vbCrLf
-            'datos3 = datos3 & "Teléfono: " & reader.GetString(20) & vbCrLf
-            'datos3 = datos3 & "Dirección: " & reader.GetString(19) & vbCrLf
-            'datos3 = datos3 & "Ciudad: " & reader.GetString(22) & vbCrLf
-            'datos3 = datos3 & "Estado: " & reader.GetString(23) & vbCrLf
-            'datos3 = datos3 & "Zip Code: " & reader.GetString(37) & vbCrLf
-            'datos3 = datos3 & "País: " & reader.GetString(24) & vbCrLf
-            'datos3 = datos3 & "Destinatario: " & reader.GetString(25) & vbCrLf
-            'datos3 = datos3 & "Empresa: " & reader.GetString(26) & vbCrLf
-            'datos3 = datos3 & "Dirección: " & reader.GetString(28) & vbCrLf
-            'datos3 = datos3 & "Teléfono: " & reader.GetString(27) & vbCrLf
-            'datos3 = datos3 & "Ciudad: " & reader.GetString(29) & vbCrLf
-            'datos3 = datos3 & "Estado: " & reader.GetString(30) & vbCrLf
-            'datos3 = datos3 & "Zip Code: " & reader.GetString(38) & vbCrLf
-            'datos3 = datos3 & "País: " & reader.GetString(31)
-            'TextBox4.Text = datos3
             TextBox1.Text = id_envio.ToString
             GridView1.DataBind()
         Else
