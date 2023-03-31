@@ -171,7 +171,7 @@ Partial Class Punto_Venta
             Dim Mensaje As String = "" 'para devolver resultado de validación de mensajes
             Dim Datos_Dest As New ObjDestinatario
             Dim datos_envio As New ObjEnvio
-
+            Dim redPackId = ConfigurationManager.AppSettings("RedPAck.Id")
             Dim Crear_Envio As New Insertar_Envios
             Dim coloniaDesc = ""
             Label2.Text = ""
@@ -376,6 +376,7 @@ Partial Class Punto_Venta
             brTarimasOcurreRutaPacifico.Visible = False
             brRedPackEcoExpress.Visible = False
 
+
             '************ FEDEX  **************
             If proveedor = 10 Then
                 If String.IsNullOrWhiteSpace(txtFedexServicioSat.Text) Then
@@ -520,24 +521,30 @@ Partial Class Punto_Venta
                         EstafetaTipoServicio.Value = sGUID
                         Session(sGUID) = respuestaFrecuenciaCotizador
 
+                        Dim costoReexpedicion As Double = 0
+
+                        Double.TryParse(respuestaFrecuenciaCotizador.Respuesta(0).CostoReexpedicion, costoReexpedicion)
+
+                        costoReexpedicion = costoReexpedicion * 1.16
+
                         For Each tipoServicio As Estafeta.Frecuenciacotizador.TipoServicio In respuestaFrecuenciaCotizador.Respuesta(0).TipoServicio
                             If tipoServicio.DescripcionServicio.ToLower = "terrestre" And estafetaPrecios.Terrestre > 0 Then
-                                estafetaTerrestre.Value = estafetaPrecios.Terrestre
-                                rbTerrestre.Text = " Terrestre: " & FormatCurrency(estafetaPrecios.Terrestre.ToString(), 2)
+                                estafetaTerrestre.Value = estafetaPrecios.Terrestre + costoReexpedicion
+                                rbTerrestre.Text = " Terrestre: " & FormatCurrency(estafetaTerrestre.Value.ToString(), 2)
                                 rbTerrestre.Visible = True
                                 brTerrestre.Visible = True
                             End If
 
                             If tipoServicio.DescripcionServicio.ToLower = "dia sig." And estafetaPrecios.DiaSiguiente > 0 Then
-                                estafetaDiaSig.Value = estafetaPrecios.DiaSiguiente
-                                rbDiaSiguiente.Text = " Dia Siguiente: " & FormatCurrency(estafetaPrecios.DiaSiguiente.ToString(), 2)
+                                estafetaDiaSig.Value = estafetaPrecios.DiaSiguiente + costoReexpedicion
+                                rbDiaSiguiente.Text = " Dia Siguiente: " & FormatCurrency(estafetaDiaSig.Value.ToString(), 2)
                                 rbDiaSiguiente.Visible = True
                                 brDiaSiguiente.Visible = True
                             End If
 
                             If tipoServicio.DescripcionServicio.ToLower = "ltl" And estafetaPrecios.Ltl > 0 Then
-                                estafetaLtl.Value = estafetaPrecios.Ltl
-                                rbLtl.Text = " Tarimas: " & FormatCurrency(estafetaPrecios.Ltl.ToString(), 2)
+                                estafetaLtl.Value = estafetaPrecios.Ltl + costoReexpedicion
+                                rbLtl.Text = " Tarimas: " & FormatCurrency(estafetaLtl.Value.ToString(), 2)
                                 rbLtl.Visible = True
                                 brLtl.Visible = True
                             End If
@@ -869,7 +876,7 @@ Partial Class Punto_Venta
             End If
 
             '************ REDPACK  **************
-            If proveedor = 230 Then
+            If proveedor = redPackId Then
                 If String.IsNullOrWhiteSpace(txtRedPackServicioSat.Text) Then
                     Label2.Text = "El codigo SAT ingresado no existe"
                     ModalPopupExtender3.Show()
@@ -1076,7 +1083,7 @@ Partial Class Punto_Venta
             Dim datos_envio As New ObjEnvio
             Dim Crear_Envio As New Insertar_Envios
             Dim codigoSat As CodigosServiciosSat
-
+            Dim redPackId = ConfigurationManager.AppSettings("RedPAck.Id")
             Dim coloniaDesc = ""
             Dim esMiltiPaquete = False
             Dim dlTipoServicio As Integer = 0
@@ -1200,8 +1207,11 @@ Partial Class Punto_Venta
 
             Do While cajas_count < envios.Length()
                 Dim cliente As Cliente = Nothing
+                Dim costoReexpedicion As Double = 0
                 If respuestaFrecuenciaCotizador IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta IsNot Nothing Then
                     cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.Where(Function(x) x.Seleccionada = True).FirstOrDefault()
+                    Double.TryParse(respuestaFrecuenciaCotizador.Respuesta(0).CostoReexpedicion, costoReexpedicion)
+                    costoReexpedicion = costoReexpedicion * 1.16
                 End If
 
                 Dim valor_envio = 0
@@ -1213,7 +1223,7 @@ Partial Class Punto_Venta
                     envioEstafeta = True
                     datos_envio.observaciones = "Terrestre"
                     cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "terrestre")
-                    total_envio = estafetaPrecios.Terrestre
+                    total_envio = estafetaPrecios.Terrestre + costoReexpedicion
                     id_cliente = cuentaServicio.Cliente.id_cliente
                     cliente = cuentaServicio.Cliente
                 End If
@@ -1224,7 +1234,7 @@ Partial Class Punto_Venta
                     datos_envio.observaciones = "Dia Sig."
                     envioEstafeta = True
                     cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "dia sig.")
-                    total_envio = estafetaPrecios.DiaSiguiente
+                    total_envio = estafetaPrecios.DiaSiguiente + costoReexpedicion
                     id_cliente = cuentaServicio.Cliente.id_cliente
                     cliente = cuentaServicio.Cliente
                 End If
@@ -1235,7 +1245,7 @@ Partial Class Punto_Venta
                     datos_envio.observaciones = "LTL"
                     envioEstafeta = True
                     cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "ltl")
-                    total_envio = estafetaPrecios.Ltl
+                    total_envio = estafetaPrecios.Ltl + costoReexpedicion
                     id_cliente = cuentaServicio.Cliente.id_cliente
                     cliente = cuentaServicio.Cliente
                 End If
@@ -1568,7 +1578,7 @@ Partial Class Punto_Venta
 
                 End If
 
-                If proveedor = 230 Then
+                If proveedor = redpackId Then
 
                     If rbRedPackEcoExpress.Checked Then
                         With shipmentRequest
@@ -1794,7 +1804,7 @@ Partial Class Punto_Venta
                     Dim fedexResponse = DaspackDALC.FedexShipment(fedexShipRequest)
                     If fedexResponse.Success Then
                         Dim sjscript2 As String = "<script language=""javascript"">" &
-                        " window.open('../Reports/PrintFedexLabel.aspx?id_envio=" & envios(0).ToString & "&tipo_impresion=" & ddlTipoImpresion.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                        " window.open('../Reports/PrintFedexLabel.aspx?id_envio=" & envios(0).ToString & "&tipo_impresion=" & ddlTipoImpresion.SelectedValue & "&providerId=2','','width=600,height=800, toolbar=1, scrollbars=1')" &
                         "</script>"
                         'Dim sjscript2 As String = "<script language=""javascript"">" &
                         '" window.open('../Reports/PrintFedexLabel.aspx?id_envio=" & envios(0).ToString & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
@@ -2998,8 +3008,9 @@ Partial Class Punto_Venta
             ddlTiposPaqueteDL.Visible = True
             ddlTiposPaquete.Visible = False
         End If
+        Dim redPackId = ConfigurationManager.AppSettings("RedPAck.Id")
 
-        If proveedor = 230 Then
+        If proveedor = redPackId Then
             contenidosDesc.Visible = False
             contenidosCampos.Visible = False
             contenidosGrid.Visible = False
