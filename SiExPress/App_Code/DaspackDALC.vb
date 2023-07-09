@@ -925,7 +925,7 @@ Public Class DaspackDALC
             Dim jsonRequest = serializer.Serialize(redPackShipRequest)
 
             Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
-            resByte = webClient.UploadData(ConfigurationManager.AppSettings("RedPAck.Ship"), "post", reqString)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("RedPAck.ShipDocumentacion"), "post", reqString)
             resString = Encoding.Default.GetString(resByte)
             response = serializer.Deserialize(Of RedPackShipServiceResponse)(resString)
             webClient.Dispose()

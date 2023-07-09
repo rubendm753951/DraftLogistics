@@ -202,30 +202,14 @@
                                         <td style="width: 110px; height: 12px; text-align: left">Ocurre<asp:CheckBox ID="chkOcurre" runat="server" Text=" " /></td>
                                     </tr>
                                 </table>
-                                <table style="width: 600px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px" runat="server" id="tipopaqueteredpack">
+                                <table style="width: 600px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px" runat="server" id="tblTipoPaqueteUnico">
                                     <tr>
                                         <td><strong><span style="font-size: 10pt">Servicio SAT:</span></strong></td>
                                         <td>
-                                            <asp:TextBox CssClass="form-control" Height="27px" ID="txtRedPackServicioSat" runat="server" Width="180px"></asp:TextBox>
+                                            <asp:TextBox CssClass="form-control" Height="27px" ID="txtServicioSatUnico" runat="server" Width="180px"></asp:TextBox>
                                         </td>
                                     </tr>
-                                </table>
-                                <table style="width: 600px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px" runat="server" id="tipopaquetefedex">
-                                    <tr>
-                                        <td><strong><span style="font-size: 10pt">Servicio SAT:</span></strong></td>
-                                        <td>
-                                            <asp:TextBox CssClass="form-control" Height="27px" ID="txtFedexServicioSat" runat="server" Width="180px"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                </table>
-                                <%--<table style="width: 600px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px" runat="server" id="tipopaquetedraft">
-                                    <tr>
-                                        <td><strong><span style="font-size: 10pt">Servicio SAT:</span></strong></td>
-                                        <td>
-                                            <asp:TextBox CssClass="form-control" Height="27px" ID="txtDraftServicioSat" runat="server" Width="180px"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                </table>--%>
+                                </table>                                
                                 <table style="width: 600px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px" runat="server" id="contenidosCampos">
                                     <tr>
                                         <td style="width: 100px; height: 5px;"><span style="font-size: 10pt">Ancho (cms)</span></td>

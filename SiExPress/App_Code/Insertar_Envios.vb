@@ -752,7 +752,7 @@ Public Class Insertar_Envios
             Return "Estado o provincia del destinatario esincorrecta o falta"
         ElseIf datosDest.codigo_postal Is Nothing Or Len(datosDest.codigo_postal) < 4 Then
             Return "El código postal del destinatario es incorrecto"
-        ElseIf datosDest.rfc Is Nothing Or Len(datosDest.rfc) < 13 Then
+        ElseIf datosDest.rfc Is Nothing Or Len(datosDest.rfc) < 12 Then
             Return "El RFC del destinatario es incorrecto"
         Else
             Return "OK"

@@ -1,6 +1,7 @@
 ﻿Imports Microsoft.VisualBasic
 Imports Estafeta
 Imports System.Net
+Imports System.IO
 
 Public Class EstafetaWrapper
     Public Const TERRESTRE = "terrestre"
@@ -268,6 +269,7 @@ Public Class EstafetaWrapper
         Dim message As String = ""
         Dim identificador = System.Guid.NewGuid
 
+
         For index = 0 To envios.Length - 1
             DaspackDALC.InsFrecuanciaCotizador(envios(index), respuestaFrecuenciaCotizador, tipoServicio)
             If response.globalResult.resultCode = 0 Then
@@ -299,6 +301,117 @@ Public Class EstafetaWrapper
         Return message
 
     End Function
+
+    Public Function NewLabel(idUsuario As Integer, shipmentRequest As ShipRequestDto, tipoServicio As Estafeta.Frecuenciacotizador.TipoServicio, respuestaFrecuenciaCotizador As Estafeta.Frecuenciacotizador.Respuesta(), envios() As Integer) As String
+        Dim message As String = ""
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New EstafetaLabelServiceResponse()
+        Try
+
+            Dim serviceTypeId = 1 '70
+
+            If tipoServicio.DescripcionServicio.ToLower = DIA_SIGUIENTE Then
+                serviceTypeId = 2 '60
+            End If
+
+            If tipoServicio.DescripcionServicio.ToLower = LTL Then
+                serviceTypeId = 3 'L0
+            End If
+
+            shipmentRequest.ShipmentRequest.ServiceTypeId = serviceTypeId
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(shipmentRequest)
+
+            Dim url = ConfigurationManager.AppSettings("Estafeta.NewLabel.Service") + IIf(tipoServicio.DescripcionServicio.ToLower = LTL, "true", "false")
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(url, "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of EstafetaLabelServiceResponse)(resString)
+            webClient.Dispose()
+
+            If response IsNot Nothing And response.Data IsNot Nothing Then
+                Dim identificador = System.Guid.NewGuid
+
+                DaspackDALC.InsFrecuanciaCotizador(envios(0), respuestaFrecuenciaCotizador, tipoServicio)
+
+                If response.Data.Elements IsNot Nothing Then
+                    If response.Data.Elements.Count > 0 Then
+                        If response.Data.Elements(0) IsNot Nothing Then
+                            If Not String.IsNullOrWhiteSpace(response.Data.Elements.FirstOrDefault().TrackingCode) Then
+                                If Not tipoServicio.DescripcionServicio.ToLower = LTL Then
+                                    Dim zpl() As Byte = Encoding.UTF8.GetBytes(response.Data.Elements.FirstOrDefault().Data)
+
+                                    ' adjust print density (8dpmm), label width (4 inches), label height (6 inches), and label index (0) as necessary
+                                    Dim request As HttpWebRequest = WebRequest.Create("http://api.labelary.com/v1/printers/8dpmm/labels/4x6/0/")
+                                    request.Method = "POST"
+                                    request.Accept = "application/pdf" ' omit this line to get PNG images back
+                                    request.ContentType = "application/x-www-form-urlencoded"
+                                    request.ContentLength = zpl.Length
+
+                                    Dim requestStream As Stream = request.GetRequestStream()
+                                    requestStream.Write(zpl, 0, zpl.Length)
+                                    requestStream.Close()
+
+                                    Try
+                                        Dim responseHttp As HttpWebResponse = request.GetResponse()
+                                        Dim responseStream As Stream = responseHttp.GetResponseStream()
+                                        Dim ms = New MemoryStream()
+                                        responseStream.CopyTo(ms)
+                                        Dim data = ms.ToArray()
+                                        responseStream.Close()
+                                        DaspackDALC.InsEstafetaLabel(envios(0), data, response.Data.Elements.FirstOrDefault().TrackingCode, response.Data.Elements.FirstOrDefault().WayBill, identificador)
+                                        message = "Envio Exportado"
+                                    Catch e As WebException
+                                        message = UpdateObservations(response.Data.Result.Description, envios(0), idUsuario)
+                                    End Try
+                                Else
+                                    Dim data = Convert.FromBase64String(response.Data.Elements.FirstOrDefault().Data)
+                                    DaspackDALC.InsEstafetaLabel(envios(0), data, response.Data.Elements.FirstOrDefault().TrackingCode, response.Data.Elements.FirstOrDefault().WayBill, identificador)
+                                    message = "Envio Exportado"
+                                End If
+                            End If
+                        End If
+                    Else
+                        If response.Data.Result IsNot Nothing Then
+                            If response.Data.Result.Code >= 0 Then
+                                message = UpdateObservations(response.Data.Result.Description, envios(0), idUsuario)
+                            End If
+                        End If
+                    End If
+                Else
+                    If response.Data.Result IsNot Nothing Then
+                        If response.Data.Result.Code >= 0 Then
+                            message = UpdateObservations(response.Data.Result.Description, envios(0), idUsuario)
+                        End If
+                    End If
+                End If
+            End If
+
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+
+        Return message
+
+    End Function
+
+    Private Function UpdateObservations(ByVal message As String, ByVal idEnvio As Integer, ByVal idUsuario As Integer) As String
+        Dim observaciones As String = "No se pudo crear envio " + message
+
+        Dim cancela As New seguimiento_envios
+        cancela.insertar_seguimiento(idEnvio, "~/admin_pages/modif_cancel.aspx", observaciones, idUsuario)
+
+        Return observaciones
+    End Function
+
 
     Public Function Tracking(ByVal trackingId As String) As List(Of EstafetaTrackingStep)
         Dim estafetaService As New Estafeta.Tracking.Service()
