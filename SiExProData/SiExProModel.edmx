@@ -267,6 +267,9 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="id_proveedor" Type="int" />
           <Property Name="codigoSat" Type="varchar" MaxLength="50" />
           <Property Name="codigo_barras" Type="image" />
+          <Property Name="no_factura" Type="nvarchar" MaxLength="50" />
+          <Property Name="importe_factura_proveedor" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="gratificacion" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="D_ENVIOS_PE_TIPO_PAQUETES">
           <Key>
@@ -338,6 +341,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="trackId" Type="nvarchar" MaxLength="150" />
           <Property Name="fecha" Type="datetime" />
           <Property Name="relacion" Type="uniqueidentifier" />
+          <Property Name="wayBill" Type="nvarchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="D_ESTAFETA_REQUEST_RESPONSE">
           <Key>
@@ -953,6 +957,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="trackId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="fecha" Type="DateTime" Precision="3" />
           <Property Name="relacion" Type="Guid" />
+          <Property Name="wayBill" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EstadosGombar">
           <Key>
@@ -1097,6 +1102,9 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <NavigationProperty Name="C_CLIENTES" Relationship="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Cliente" />
           <NavigationProperty Name="C_DESTINATARIOS" Relationship="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Destinatario" />
           <NavigationProperty Name="D_ENVIOS_PREASIGNADOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" FromRole="EnvioDatos" ToRole="D_ENVIOS_PREASIGNADOS" />
+          <Property Name="no_factura" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="importe_factura_proveedor" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="gratificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="C_CLIENTES_D_ENVIOS_DATOS_fk">
           <End Type="MasupackModel.Cliente" Role="Cliente" Multiplicity="1" />
@@ -1519,6 +1527,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySetMapping Name="D_ESTAFETA_LABEL">
             <EntityTypeMapping TypeName="MasupackModel.EstafetaLabel">
               <MappingFragment StoreEntitySet="D_ESTAFETA_LABEL">
+                <ScalarProperty Name="wayBill" ColumnName="wayBill" />
                 <ScalarProperty Name="relacion" ColumnName="relacion" />
                 <ScalarProperty Name="fecha" ColumnName="fecha" />
                 <ScalarProperty Name="trackId" ColumnName="trackId" />
@@ -1651,6 +1660,9 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySetMapping Name="D_ENVIOS_DATOS">
             <EntityTypeMapping TypeName="MasupackModel.EnvioDatos">
               <MappingFragment StoreEntitySet="D_ENVIOS_DATOS">
+                <ScalarProperty Name="gratificacion" ColumnName="gratificacion" />
+                <ScalarProperty Name="importe_factura_proveedor" ColumnName="importe_factura_proveedor" />
+                <ScalarProperty Name="no_factura" ColumnName="no_factura" />
                 <ScalarProperty Name="codigo_barras" ColumnName="codigo_barras" />
                 <ScalarProperty Name="codigoSat" ColumnName="codigoSat" />
                 <ScalarProperty Name="id_proveedor" ColumnName="id_proveedor" />

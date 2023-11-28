@@ -174,7 +174,7 @@
                                         <td style="width: 110px; height: 9px; padding-top: 10px">
                                             <asp:DropDownList CssClass="form-control" Height="30px" ID="ddlTiposPaquete" runat="server" AutoPostBack="True">
                                                 <asp:ListItem Text="CAJA" Value="2"></asp:ListItem>
-                                                <asp:ListItem Text="SOBRE" Value="1"></asp:ListItem>
+                                                <%--<asp:ListItem Text="SOBRE" Value="1"></asp:ListItem>--%>
                                                 <asp:ListItem Text="BOLSA" Value="4"></asp:ListItem>
                                                 <asp:ListItem Text="PIEZA" Value="5"></asp:ListItem>
                                                 <asp:ListItem Text="TARIMA" Value="11"></asp:ListItem>

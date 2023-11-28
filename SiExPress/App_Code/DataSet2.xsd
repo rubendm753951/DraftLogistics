@@ -269,6 +269,7 @@
               <Mapping SourceColumn="IATA" DataSetColumn="IATA" />
               <Mapping SourceColumn="codigo_barras" DataSetColumn="codigo_barras" />
               <Mapping SourceColumn="Servicio" DataSetColumn="Servicio" />
+              <Mapping SourceColumn="Proveedor" DataSetColumn="Proveedor" />
             </Mappings>
             <Sources />
           </TableAdapter>
@@ -333,7 +334,6 @@
               <Mapping SourceColumn="Referencia_FedEx" DataSetColumn="Referencia_FedEx" />
               <Mapping SourceColumn="unidad_peso" DataSetColumn="unidad_peso" />
               <Mapping SourceColumn="Referencia_USPS" DataSetColumn="Referencia_USPS" />
-              <Mapping SourceColumn="contenedores" DataSetColumn="contenedores" />
               <Mapping SourceColumn="colonia_remit" DataSetColumn="colonia_remit" />
               <Mapping SourceColumn="mpio_remit" DataSetColumn="mpio_remit" />
               <Mapping SourceColumn="colonia_dest" DataSetColumn="colonia_dest" />
@@ -345,6 +345,9 @@
               <Mapping SourceColumn="RepeatLabel" DataSetColumn="RepeatLabel" />
               <Mapping SourceColumn="Repeat" DataSetColumn="Repeat" />
               <Mapping SourceColumn="Servicio" DataSetColumn="Servicio" />
+              <Mapping SourceColumn="contenedores" DataSetColumn="contenedores1" />
+              <Mapping SourceColumn="Cantidad" DataSetColumn="Cantidad1" />
+              <Mapping SourceColumn="Proveedor" DataSetColumn="Proveedor" />
             </Mappings>
             <Sources />
           </TableAdapter>
@@ -893,7 +896,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="sp_Select_Datos_Envio_iata" msprop:Generator_TableClassName="sp_Select_Datos_Envio_iataDataTable" msprop:Generator_TableVarName="tablesp_Select_Datos_Envio_iata" msprop:Generator_RowChangedName="sp_Select_Datos_Envio_iataRowChanged" msprop:Generator_TablePropName="sp_Select_Datos_Envio_iata" msprop:Generator_RowDeletingName="sp_Select_Datos_Envio_iataRowDeleting" msprop:Generator_RowChangingName="sp_Select_Datos_Envio_iataRowChanging" msprop:Generator_RowEvHandlerName="sp_Select_Datos_Envio_iataRowChangeEventHandler" msprop:Generator_RowDeletedName="sp_Select_Datos_Envio_iataRowDeleted" msprop:Generator_RowClassName="sp_Select_Datos_Envio_iataRow" msprop:Generator_UserTableName="sp_Select_Datos_Envio_iata" msprop:Generator_RowEvArgName="sp_Select_Datos_Envio_iataRowChangeEvent">
+        <xs:element name="sp_Select_Datos_Envio_iata" msprop:Generator_TableClassName="sp_Select_Datos_Envio_iataDataTable" msprop:Generator_TableVarName="tablesp_Select_Datos_Envio_iata" msprop:Generator_TablePropName="sp_Select_Datos_Envio_iata" msprop:Generator_RowDeletingName="sp_Select_Datos_Envio_iataRowDeleting" msprop:Generator_RowChangingName="sp_Select_Datos_Envio_iataRowChanging" msprop:Generator_RowEvHandlerName="sp_Select_Datos_Envio_iataRowChangeEventHandler" msprop:Generator_RowDeletedName="sp_Select_Datos_Envio_iataRowDeleted" msprop:Generator_UserTableName="sp_Select_Datos_Envio_iata" msprop:Generator_RowChangedName="sp_Select_Datos_Envio_iataRowChanged" msprop:Generator_RowEvArgName="sp_Select_Datos_Envio_iataRowChangeEvent" msprop:Generator_RowClassName="sp_Select_Datos_Envio_iataRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="id_envio" msprop:Generator_ColumnVarNameInTable="columnid_envio" msprop:Generator_ColumnPropNameInRow="id_envio" msprop:Generator_ColumnPropNameInTable="id_envioColumn" msprop:Generator_UserColumnName="id_envio" type="xs:int" />
@@ -1026,7 +1029,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="sp_Select_Datos_Envio_Mult2" msprop:Generator_TableClassName="sp_Select_Datos_Envio_Mult2DataTable" msprop:Generator_TableVarName="tablesp_Select_Datos_Envio_Mult2" msprop:Generator_TablePropName="sp_Select_Datos_Envio_Mult2" msprop:Generator_RowDeletingName="sp_Select_Datos_Envio_Mult2RowDeleting" msprop:Generator_RowChangingName="sp_Select_Datos_Envio_Mult2RowChanging" msprop:Generator_RowEvHandlerName="sp_Select_Datos_Envio_Mult2RowChangeEventHandler" msprop:Generator_RowDeletedName="sp_Select_Datos_Envio_Mult2RowDeleted" msprop:Generator_UserTableName="sp_Select_Datos_Envio_Mult2" msprop:Generator_RowChangedName="sp_Select_Datos_Envio_Mult2RowChanged" msprop:Generator_RowEvArgName="sp_Select_Datos_Envio_Mult2RowChangeEvent" msprop:Generator_RowClassName="sp_Select_Datos_Envio_Mult2Row">
+        <xs:element name="sp_Select_Datos_Envio_Mult2" msprop:Generator_TableClassName="sp_Select_Datos_Envio_Mult2DataTable" msprop:Generator_TableVarName="tablesp_Select_Datos_Envio_Mult2" msprop:Generator_RowChangedName="sp_Select_Datos_Envio_Mult2RowChanged" msprop:Generator_TablePropName="sp_Select_Datos_Envio_Mult2" msprop:Generator_RowDeletingName="sp_Select_Datos_Envio_Mult2RowDeleting" msprop:Generator_RowChangingName="sp_Select_Datos_Envio_Mult2RowChanging" msprop:Generator_RowEvHandlerName="sp_Select_Datos_Envio_Mult2RowChangeEventHandler" msprop:Generator_RowDeletedName="sp_Select_Datos_Envio_Mult2RowDeleted" msprop:Generator_RowClassName="sp_Select_Datos_Envio_Mult2Row" msprop:Generator_UserTableName="sp_Select_Datos_Envio_Mult2" msprop:Generator_RowEvArgName="sp_Select_Datos_Envio_Mult2RowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="id_envio" msprop:Generator_ColumnVarNameInTable="columnid_envio" msprop:Generator_ColumnPropNameInRow="id_envio" msprop:Generator_ColumnPropNameInTable="id_envioColumn" msprop:Generator_UserColumnName="id_envio" type="xs:int" />
@@ -1304,10 +1307,17 @@
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
+              <xs:element name="Proveedor" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnProveedor" msprop:Generator_ColumnPropNameInRow="Proveedor" msprop:Generator_ColumnPropNameInTable="ProveedorColumn" msprop:Generator_UserColumnName="Proveedor" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="sp_Select_Datos_Envio_Mult_DL" msprop:Generator_TableClassName="sp_Select_Datos_Envio_Mult_DLDataTable" msprop:Generator_TableVarName="tablesp_Select_Datos_Envio_Mult_DL" msprop:Generator_TablePropName="sp_Select_Datos_Envio_Mult_DL" msprop:Generator_RowDeletingName="sp_Select_Datos_Envio_Mult_DLRowDeleting" msprop:Generator_RowChangingName="sp_Select_Datos_Envio_Mult_DLRowChanging" msprop:Generator_RowEvHandlerName="sp_Select_Datos_Envio_Mult_DLRowChangeEventHandler" msprop:Generator_RowDeletedName="sp_Select_Datos_Envio_Mult_DLRowDeleted" msprop:Generator_UserTableName="sp_Select_Datos_Envio_Mult_DL" msprop:Generator_RowChangedName="sp_Select_Datos_Envio_Mult_DLRowChanged" msprop:Generator_RowEvArgName="sp_Select_Datos_Envio_Mult_DLRowChangeEvent" msprop:Generator_RowClassName="sp_Select_Datos_Envio_Mult_DLRow">
+        <xs:element name="sp_Select_Datos_Envio_Mult_DL" msprop:Generator_TableClassName="sp_Select_Datos_Envio_Mult_DLDataTable" msprop:Generator_TableVarName="tablesp_Select_Datos_Envio_Mult_DL" msprop:Generator_RowChangedName="sp_Select_Datos_Envio_Mult_DLRowChanged" msprop:Generator_TablePropName="sp_Select_Datos_Envio_Mult_DL" msprop:Generator_RowDeletingName="sp_Select_Datos_Envio_Mult_DLRowDeleting" msprop:Generator_RowChangingName="sp_Select_Datos_Envio_Mult_DLRowChanging" msprop:Generator_RowEvHandlerName="sp_Select_Datos_Envio_Mult_DLRowChangeEventHandler" msprop:Generator_RowDeletedName="sp_Select_Datos_Envio_Mult_DLRowDeleted" msprop:Generator_RowClassName="sp_Select_Datos_Envio_Mult_DLRow" msprop:Generator_UserTableName="sp_Select_Datos_Envio_Mult_DL" msprop:Generator_RowEvArgName="sp_Select_Datos_Envio_Mult_DLRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="id_envio" msprop:Generator_ColumnVarNameInTable="columnid_envio" msprop:Generator_ColumnPropNameInRow="id_envio" msprop:Generator_ColumnPropNameInTable="id_envioColumn" msprop:Generator_UserColumnName="id_envio" type="xs:int" />
@@ -1598,6 +1608,15 @@
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="30" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="contenedores1" msdata:ReadOnly="true" msdata:Caption="contenedores" msprop:Generator_ColumnVarNameInTable="columncontenedores1" msprop:Generator_ColumnPropNameInRow="contenedores1" msprop:Generator_ColumnPropNameInTable="contenedores1Column" msprop:Generator_UserColumnName="contenedores1" type="xs:int" minOccurs="0" />
+              <xs:element name="Cantidad1" msdata:ReadOnly="true" msdata:Caption="Cantidad" msprop:Generator_ColumnVarNameInTable="columnCantidad1" msprop:Generator_ColumnPropNameInRow="Cantidad1" msprop:Generator_ColumnPropNameInTable="Cantidad1Column" msprop:Generator_UserColumnName="Cantidad1" type="xs:long" minOccurs="0" />
+              <xs:element name="Proveedor" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnProveedor" msprop:Generator_ColumnPropNameInRow="Proveedor" msprop:Generator_ColumnPropNameInTable="ProveedorColumn" msprop:Generator_UserColumnName="Proveedor" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>

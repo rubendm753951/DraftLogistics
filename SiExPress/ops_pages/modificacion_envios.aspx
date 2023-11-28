@@ -67,6 +67,24 @@
                                         </td>
                                     </tr>  
                                     <tr>
+                                        <td style="width: 200px; text-align: right">No Factura</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtNoFactura" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                    </tr>  
+                                    <tr>
+                                        <td style="width: 200px; text-align: right">Importe Factura Proveedor</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtImporteFacturaProveedor" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                    </tr>  
+                                    <tr>
+                                        <td style="width: 200px; text-align: right">Gratificacion</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtGratificacion" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                    </tr>  
+                                    <tr>
                                         <td style="width: 200px; text-align: right">Comentarios</td>
                                         <td style="width: 294px; padding-left: 10px; padding-right: 10px">
                                             <asp:TextBox CssClass="form-control" Height="90px" ID="txtComentarios" runat="server" TabIndex="1" TextMode="MultiLine" Rows="3"></asp:TextBox>

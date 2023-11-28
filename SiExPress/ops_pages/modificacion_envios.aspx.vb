@@ -46,13 +46,20 @@ Partial Class ops_pages_modificacion_envios
                     End If
                 End If
 
-                Dim respuesta = DaspackDALC.ModificacionEnvioProveedor(numeroEnvio, txtComentarios.Text, DropDownProveedores.SelectedValue, usuarioId)
+                If String.IsNullOrWhiteSpace(txtImporteFacturaProveedor.Text) Then
+                    txtImporteFacturaProveedor.Text = "0"
+                End If
+
+                Dim respuesta = DaspackDALC.ModificacionEnvioProveedor(numeroEnvio, txtComentarios.Text, DropDownProveedores.SelectedValue, usuarioId, txtNoFactura.Text, txtImporteFacturaProveedor.Text, txtGratificacion.Text)
                 If respuesta = True Then
-                    mensaje = mensaje + " Proveedor Envio actualizado."
+                    mensaje = mensaje + " Proveedor Envio actualizado y datos adicionales."
                     txtComentarios.Text = ""
                     txtEnvio.Text = ""
                     txtTotalEnvio.Text = ""
                     txtReferencia.Text = ""
+                    txtNoFactura.Text = ""
+                    txtImporteFacturaProveedor.Text = ""
+                    txtGratificacion.Text = ""
                 Else
                     mensaje = mensaje + " Proveedor envio no pudo ser actualizado."
                 End If

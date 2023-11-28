@@ -213,6 +213,7 @@ Public Class DaspackDALC
             .labelPDF = labelPDF
             .trackId = referencia
             .relacion = identificador
+            .wayBill = resultDescription
         End With
 
         If Not existeLabel Then
@@ -803,7 +804,7 @@ Public Class DaspackDALC
         Return response
     End Function
 
-    Public Shared Function ModificacionEnvioProveedor(id_envio As Integer, comentarios As String, idProveedor As Integer, idUsuario As Integer) As Boolean
+    Public Shared Function ModificacionEnvioProveedor(id_envio As Integer, comentarios As String, idProveedor As Integer, idUsuario As Integer, noFactura As String, importeFacturaProveedor As Decimal, gratificacion As String) As Boolean
         Dim dbContext As New SiExProEntities
 
         InsComenatrio(id_envio, idUsuario, "Proveedor Envio Modificado: " + comentarios)
@@ -820,9 +821,44 @@ Public Class DaspackDALC
         auditLogEnvioDatos.IdEnvio = id_envio
 
         envioDato.id_proveedor = idProveedor
-        dbContext.SaveChanges()
-
         dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatos)
+
+        Dim auditLogEnvioDatosNoFactura = New AuditLog
+        auditLogEnvioDatosNoFactura.Columna = "no_factura"
+        auditLogEnvioDatosNoFactura.Fecha = DateTime.Now
+        auditLogEnvioDatosNoFactura.Tabla = "D_ENVIOS_DATOS"
+        auditLogEnvioDatosNoFactura.Usuario = idUsuario
+        auditLogEnvioDatosNoFactura.ValorAnterior = IIf(envioDato.no_factura Is Nothing, "", envioDato.no_factura)
+        auditLogEnvioDatosNoFactura.ValorActual = noFactura
+        auditLogEnvioDatosNoFactura.IdEnvio = id_envio
+
+        envioDato.no_factura = noFactura
+        dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosNoFactura)
+
+        Dim auditLogEnvioDatosImporteFacturaProveedor = New AuditLog
+        auditLogEnvioDatosImporteFacturaProveedor.Columna = "importe_factura_proveedor"
+        auditLogEnvioDatosImporteFacturaProveedor.Fecha = DateTime.Now
+        auditLogEnvioDatosImporteFacturaProveedor.Tabla = "D_ENVIOS_DATOS"
+        auditLogEnvioDatosImporteFacturaProveedor.Usuario = idUsuario
+        auditLogEnvioDatosImporteFacturaProveedor.ValorAnterior = IIf(envioDato.importe_factura_proveedor Is Nothing, "", envioDato.importe_factura_proveedor.ToString)
+        auditLogEnvioDatosImporteFacturaProveedor.ValorActual = importeFacturaProveedor
+        auditLogEnvioDatosImporteFacturaProveedor.IdEnvio = id_envio
+
+        envioDato.importe_factura_proveedor = importeFacturaProveedor
+        dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosImporteFacturaProveedor)
+
+        Dim auditLogEnvioDatosGratificacion = New AuditLog
+        auditLogEnvioDatosGratificacion.Columna = "gratificacion"
+        auditLogEnvioDatosGratificacion.Fecha = DateTime.Now
+        auditLogEnvioDatosGratificacion.Tabla = "D_ENVIOS_DATOS"
+        auditLogEnvioDatosGratificacion.Usuario = idUsuario
+        auditLogEnvioDatosGratificacion.ValorAnterior = IIf(envioDato.gratificacion Is Nothing, "", envioDato.gratificacion)
+        auditLogEnvioDatosGratificacion.ValorActual = gratificacion
+        auditLogEnvioDatosGratificacion.IdEnvio = id_envio
+
+        envioDato.gratificacion = gratificacion
+        dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosGratificacion)
+
         dbContext.SaveChanges()
 
         Return True

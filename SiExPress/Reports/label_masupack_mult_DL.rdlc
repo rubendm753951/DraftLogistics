@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">  
       <Body>
         <ReportItems>
           <Tablix Name="list1">
@@ -1330,7 +1330,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Parameters!Provider.Value</Value>
+                                      <Value>=Fields!Proveedor.Value</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -1722,6 +1722,18 @@
           <DataField>Servicio</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="contenedores1">
+          <DataField>contenedores</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Cantidad1">
+          <DataField>Cantidad</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="Proveedor">
+          <DataField>Proveedor</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>DataSet2</rd:DataSetName>
@@ -1732,7 +1744,7 @@
         <rd:TableAdapterName>sp_Select_Datos_Envio_Mult_DLTableAdapter</rd:TableAdapterName>
       </rd:DataSetInfo>
     </DataSet>
-  </DataSets>
+  </DataSets>  
   <ReportParameters>
     <ReportParameter Name="ImagePath">
       <DataType>String</DataType>
@@ -1746,7 +1758,7 @@
       <AllowBlank>true</AllowBlank>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
-  </ReportParameters>  
+  </ReportParameters>
   <EmbeddedImages>
     <EmbeddedImage Name="masupack_gif">
       <MIMEType>image/gif</MIMEType>

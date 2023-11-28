@@ -22,6 +22,9 @@ Partial Public Class EnvioDatos
     Public Property id_proveedor As Nullable(Of Integer)
     Public Property codigoSat As String
     Public Property codigo_barras As Byte()
+    Public Property no_factura As String
+    Public Property importe_factura_proveedor As Nullable(Of Decimal)
+    Public Property gratificacion As String
 
     Public Overridable Property C_CLIENTES As Cliente
     Public Overridable Property C_DESTINATARIOS As Destinatario

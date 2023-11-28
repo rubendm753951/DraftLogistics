@@ -1343,7 +1343,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value>=Parameters!Provider.Value</Value>
+                                      <Value>=Fields!Proveedor.Value</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -1450,7 +1450,7 @@
         <InteractiveWidth>21cm</InteractiveWidth>
         <Style />
       </Page>
-    <AutoRefresh>0</AutoRefresh>
+<AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="paqueteriaDB_ConnectionString">
       <ConnectionProperties>
@@ -1681,6 +1681,10 @@
           <DataField>Servicio</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="Proveedor">
+          <DataField>Proveedor</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>DataSet2</rd:DataSetName>
@@ -1691,7 +1695,7 @@
         <rd:TableAdapterName>sp_Select_Datos_Envio_Mult2TableAdapter</rd:TableAdapterName>
       </rd:DataSetInfo>
     </DataSet>
-  </DataSets>
+  </DataSets>  
   <ReportParameters>
     <ReportParameter Name="ImagePath">
       <DataType>String</DataType>

@@ -211,12 +211,26 @@ Partial Class Punto_Venta
             Dim Crear_Envio As New Insertar_Envios
             Dim codigoSat As CodigosServiciosSat = Nothing
             Dim coloniaDesc = ""
+            Dim coloniaRem = ""
             Label2.Text = ""
 
             If TxtCol2.Visible = False Then
                 coloniaDesc = DropDownColonia.SelectedItem.Text
             Else
                 coloniaDesc = TxtCol2.Text
+            End If
+
+            If TxtCol.Visible = False Then
+                If DropDownColoniaRem.SelectedItem IsNot Nothing Then
+                    coloniaRem = DropDownColoniaRem.SelectedItem.Text
+                Else
+                    If Not String.IsNullOrWhiteSpace(TxtCol.Text) Then
+                        coloniaRem = TxtCol.Text
+                    End If
+                End If
+
+            Else
+                coloniaRem = TxtCol.Text
             End If
             'Insetar nuevo destinataro
             Dim id_destinatario As Integer
@@ -571,7 +585,7 @@ Partial Class Punto_Venta
             If proveedor = redPackId Then
                 If estafetaPrecios.AmountEcoExpressRedPack > 0 Then
                     Dim redPAckResponse = DaspackDALC.RedPackRate(shipRequestDto)
-                    If estafetaPrecios.ExpressSaverUser > 0 And redPAckResponse IsNot Nothing And redPAckResponse.Success = True And redPAckResponse.Data IsNot Nothing Then
+                    If estafetaPrecios.AmountEcoExpressRedPack > 0 And redPAckResponse IsNot Nothing And redPAckResponse.Success = True And redPAckResponse.Data IsNot Nothing Then
                         redPackEcoExpress.Value = estafetaPrecios.AmountEcoExpressRedPack
                         rbRedPackEcoExpress.Text = " RedPack Economico: " & FormatCurrency(estafetaPrecios.AmountEcoExpressRedPack.ToString(), 2)
                         rbRedPackEcoExpress.Visible = True
@@ -718,7 +732,7 @@ Partial Class Punto_Venta
                 datos_cliente.noexterior = 0 ' Estamos pasando la dirección completa en el campo de calle.
                 datos_cliente.nointerior = Nothing
                 datos_cliente.direccion2 = Nothing
-                datos_cliente.colonia = TxtCol.Text
+                datos_cliente.colonia = coloniaRem
                 datos_cliente.ciudad = txtCiudad.Text
                 datos_cliente.municipio = TxtMpio.Text
                 datos_cliente.estadoprovincia = txtEdo.Text
@@ -973,14 +987,54 @@ Partial Class Punto_Venta
             Dim codigoSat As CodigosServiciosSat = Nothing
             Dim redPackId = ConfigurationManager.AppSettings("RedPAck.Id")
             Dim coloniaDesc = ""
+            Dim coloniaRem = ""
             Dim esMiltiPaquete = False
             Dim dlTipoServicio As Integer = 0
+
+
+            If rbCosto.Checked = False And
+                rbTerrestre.Checked = False And
+                rbDiaSiguiente.Checked = False And
+                rbLtl.Checked = False And
+                rbFedexExpress.Checked = False And
+                rbFedexStandard.Checked = False And
+                rbPaqueteExpressEconomic.Checked = False And
+                rbPaqueteExpressNextDay.Checked = False And
+                rbGombarExpress.Checked = False And
+                rbGombarTarima.Checked = False And
+                rbGombarNacional.Checked = False And
+                rbGombarLeonPueCdmx.Checked = False And
+                rbGombarTarimasLeonPueCdmx.Checked = False And
+                rbRutaPacifico.Checked = False And
+                rbTarimasRutaPacifico.Checked = False And
+                rbTarimasOcurreRutaPacifico.Checked = False And
+                rbRedPackEcoExpress.Checked = False And
+                rbGombarRutaNorte.Checked = False Then
+                Label2.Text = "Debe seleccionar una opcion"
+                ModalPopupExtender3.Show()
+                Exit Sub
+            End If
+
 
             If TxtCol2.Visible = False Then
                 coloniaDesc = DropDownColonia.SelectedItem.Text
             Else
                 coloniaDesc = TxtCol2.Text
             End If
+
+            If TxtCol.Visible = False Then
+                If DropDownColoniaRem.SelectedItem IsNot Nothing Then
+                    coloniaRem = DropDownColoniaRem.SelectedItem.Text
+                Else
+                    If Not String.IsNullOrWhiteSpace(TxtCol.Text) Then
+                        coloniaRem = TxtCol.Text
+                    End If
+                End If
+
+            Else
+                coloniaRem = TxtCol.Text
+            End If
+
             'Insetar nuevo destinataro
             Dim id_destinatario As Integer
             Datos_Dest.id_pais = DropDownPais2.SelectedValue
@@ -1220,7 +1274,7 @@ Partial Class Punto_Venta
                     datos_cliente.noexterior = 0 ' Estamos pasando la dirección completa en el campo de calle.
                     datos_cliente.nointerior = Nothing
                     datos_cliente.direccion2 = Nothing
-                    datos_cliente.colonia = TxtCol.Text
+                    datos_cliente.colonia = coloniaRem
                     datos_cliente.ciudad = txtCiudad.Text
                     datos_cliente.municipio = TxtMpio.Text
                     datos_cliente.estadoprovincia = txtEdo.Text

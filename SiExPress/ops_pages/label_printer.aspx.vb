@@ -30,7 +30,7 @@ Partial Class ops_pages_label_printer
 
 
                         Dim sjscript2 As String = "<script language=""javascript"">" &
-                        " window.open('guia_mult.aspx?id_envio1=" & minEnvio & "&id_envio2=" & maxEnvio & "&id_agente=" & DropDownAgente.SelectedValue & "','_blank','width=600,height=800, toolbar=1, scrollbars=1');" &
+                        " window.open('guia_individual_dl.aspx?id_envio1=" & minEnvio & "&id_envio2=" & maxEnvio & "&id_agente=" & DropDownAgente.SelectedValue & "&id_proveedor=10','','width=600,height=800, toolbar=1, scrollbars=1');" &
                         " window.open('EstafetaLabelMultiple.aspx?id_envio1=" & minEnvio & "&id_envio2=" & maxEnvio & "&id_agente=" & DropDownAgente.SelectedValue & "','_blank','width=600,height=800, toolbar=1, scrollbars=1');" &
                         "</script>"
                         ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)

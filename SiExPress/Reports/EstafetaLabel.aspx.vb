@@ -11,6 +11,24 @@ Partial Class Reports_EstafetaLabel
                 Dim estafetaLabel = DaspackDALC.EstafetaLabel(id_envio)
                 If estafetaLabel IsNot Nothing Then
                     Dim base64String As String = Convert.ToBase64String(estafetaLabel.labelPDF, 0, estafetaLabel.labelPDF.Length)
+                    'Dim chtLoginsByMonthStream As MemoryStream = New MemoryStream()
+                    'Dim Width As Double = Double.Parse(5.3) * 72
+                    'Dim Height As Double = Double.Parse(8.2) * 72
+
+                    ''Read the entire stream
+                    'chtLoginsByMonthStream.Read(estafetaLabel.labelPDF, 0, estafetaLabel.labelPDF.Length)
+
+                    'Dim image As New Image
+                    'image.Width = CType(Width, Unit)
+                    'image.Height = CType(Height, Unit)
+
+                    'image.ImageUrl = "data:image/png;base64," & base64String
+
+                    'image.Visible = True
+
+
+                    'FedexLabelPanel.Controls.Add(image)
+
 
                     If base64String = "" Then
                         Response.Write("Etiqueta no disponible.")
@@ -20,8 +38,15 @@ Partial Class Reports_EstafetaLabel
                         Response.ClearContent()
                         Response.ClearHeaders()
                         Response.ContentType = "application/pdf"
-                        Response.BinaryWrite(System.Convert.FromBase64String(base64String))
+                        Response.BinaryWrite(estafetaLabel.labelPDF)
                         Response.End()
+
+                        'Response.AddHeader("Content-Type", "application/pdf")
+                        'Response.AddHeader("Content-Length", base64String.Length.ToString())
+                        'Response.AddHeader("Content-Disposition", "inline;")
+                        'Response.AddHeader("Cache-Control", "private, max-age=0, must-revalidate")
+                        'Response.AddHeader("Pragma", "public")
+                        'Response.BinaryWrite(Convert.FromBase64String(base64String))
                     End If
                 End If
             End If
