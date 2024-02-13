@@ -33,6 +33,7 @@
           <siteMapNode url="ops_pages/import_ecommerce.aspx" title="Importar ECommerce"  description="Import ECommerce" />
           <siteMapNode url="ops_pages/mantenimiento_tarifas.aspx" title="Mantenimiento Tarifas"  description="Mantenimiento Tarifas" />
           <siteMapNode url="ops_pages/modificacion_envios.aspx" title="Modificación de Envios"  description="Modificación de Envios" />
+          <siteMapNode url="ops_pages/actualizacion_facturas.aspx" title="Actualizacion Facturas"  description="Actualizacion Facturas" />
         </siteMapNode>
 
       <siteMapNode url="ops_pages/cliente_corporativo.aspx" title="Cliente Corporativo"  description="Cliente Corporativo">

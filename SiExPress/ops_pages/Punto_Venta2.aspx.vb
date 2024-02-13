@@ -530,55 +530,82 @@ Partial Class Punto_Venta
                     .Peso = txtPeso.Text
                 End With
 
-                Dim respuestaFrecuenciaCotizador As FrecuenciaCotizadorRespuesta = estafetaWrapper.FrecuenciaCotizadorSingle(envioExportar, estafetaPrecios)
-                If respuestaFrecuenciaCotizador.Respuesta IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta.Length > 0 Then
-                    If respuestaFrecuenciaCotizador.Respuesta(0).MensajeError <> "" Then
-                        Label2.Text = respuestaFrecuenciaCotizador.Respuesta(0).MensajeError
-                        ModalPopupExtender3.Show()
-                        Mensaje = ""
-                        Exit Sub
-                    Else
-                        Dim sGUID As String
-                        sGUID = System.Guid.NewGuid.ToString()
-                        estafetaTipoServicio.Value = sGUID
-                        Session(sGUID) = respuestaFrecuenciaCotizador
-
-                        Dim costoReexpedicion As Double = 0
-
-                        Double.TryParse(respuestaFrecuenciaCotizador.Respuesta(0).CostoReexpedicion, costoReexpedicion)
-
-                        costoReexpedicion = costoReexpedicion * 1.16
-
-                        For Each tipoServicio As Estafeta.Frecuenciacotizador.TipoServicio In respuestaFrecuenciaCotizador.Respuesta(0).TipoServicio
-                            If tipoServicio.DescripcionServicio.ToLower = "terrestre" And estafetaPrecios.Terrestre > 0 Then
-                                estafetaTerrestre.Value = estafetaPrecios.Terrestre + costoReexpedicion
-                                rbTerrestre.Text = " Terrestre: " & FormatCurrency(estafetaTerrestre.Value.ToString(), 2)
-                                rbTerrestre.Visible = True
-                                brTerrestre.Visible = True
-                            End If
-
-                            If tipoServicio.DescripcionServicio.ToLower = "dia sig." And estafetaPrecios.DiaSiguiente > 0 Then
-                                estafetaDiaSig.Value = estafetaPrecios.DiaSiguiente + costoReexpedicion
-                                rbDiaSiguiente.Text = " Dia Siguiente: " & FormatCurrency(estafetaDiaSig.Value.ToString(), 2)
-                                rbDiaSiguiente.Visible = True
-                                brDiaSiguiente.Visible = True
-                            End If
-
-                            If tipoServicio.DescripcionServicio.ToLower = "ltl" And estafetaPrecios.Ltl > 0 Then
-                                estafetaLtl.Value = estafetaPrecios.Ltl + costoReexpedicion
-                                rbLtl.Text = " Tarimas: " & FormatCurrency(estafetaLtl.Value.ToString(), 2)
-                                rbLtl.Visible = True
-                                brLtl.Visible = True
-                            End If
-                        Next
-
-                        If rbLtl.Visible = False And rbDiaSiguiente.Visible = False And rbTerrestre.Visible = False Then
-                            Label2.Text = "El servicio no está disponible para el destino o agente seleccionado"
-                            ModalPopupExtender3.Show()
-                            Exit Sub
+                Dim superEnviosResponse = DaspackDALC.SuperEnviosQuote(shipRequestDto)
+                If superEnviosResponse IsNot Nothing AndAlso superEnviosResponse.Data IsNot Nothing Then
+                    If superEnviosResponse.Data.paqueterias.Length > 0 Then
+                        Dim servicios = superEnviosResponse.Data.paqueterias.Where(Function(x) x.proveedor.ToLower() = "estafeta")
+                        If servicios IsNot Nothing AndAlso servicios.Count() > 0 Then
+                            Dim sGUID As String
+                            sGUID = System.Guid.NewGuid.ToString()
+                            estafetaTipoServicio.Value = sGUID
+                            Session(sGUID) = servicios
+                            For Each tipoServicio As Paqueteria In servicios
+                                If tipoServicio.idServicio = ConfigurationManager.AppSettings("SuperEnvios.Estafeta.Economico") And estafetaPrecios.Terrestre > 0 Then
+                                    estafetaTerrestre.Value = estafetaPrecios.Terrestre
+                                    rbTerrestre.Text = " Terrestre: " & FormatCurrency(estafetaTerrestre.Value.ToString(), 2)
+                                    rbTerrestre.Visible = True
+                                    brTerrestre.Visible = True
+                                End If
+                            Next
                         End If
                     End If
                 End If
+
+                If rbLtl.Visible = False And rbDiaSiguiente.Visible = False And rbTerrestre.Visible = False Then
+                    Label2.Text = "El servicio no está disponible para el destino o agente seleccionado"
+                    ModalPopupExtender3.Show()
+                    Exit Sub
+                End If
+
+                'Dim respuestaFrecuenciaCotizador As FrecuenciaCotizadorRespuesta = estafetaWrapper.FrecuenciaCotizadorSingle(envioExportar, estafetaPrecios)
+                'If respuestaFrecuenciaCotizador.Respuesta IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta.Length > 0 Then
+                '    If respuestaFrecuenciaCotizador.Respuesta(0).MensajeError <> "" Then
+                '        Label2.Text = respuestaFrecuenciaCotizador.Respuesta(0).MensajeError
+                '        ModalPopupExtender3.Show()
+                '        Mensaje = ""
+                '        Exit Sub
+                '    Else
+                '        Dim sGUID As String
+                '        sGUID = System.Guid.NewGuid.ToString()
+                '        estafetaTipoServicio.Value = sGUID
+                '        Session(sGUID) = respuestaFrecuenciaCotizador
+
+                '        Dim costoReexpedicion As Double = 0
+
+                '        Double.TryParse(respuestaFrecuenciaCotizador.Respuesta(0).CostoReexpedicion, costoReexpedicion)
+
+                '        costoReexpedicion = costoReexpedicion * 1.16
+
+                '        For Each tipoServicio As Estafeta.Frecuenciacotizador.TipoServicio In respuestaFrecuenciaCotizador.Respuesta(0).TipoServicio
+                '            If tipoServicio.DescripcionServicio.ToLower = "terrestre" And estafetaPrecios.Terrestre > 0 Then
+                '                estafetaTerrestre.Value = estafetaPrecios.Terrestre + costoReexpedicion
+                '                rbTerrestre.Text = " Terrestre: " & FormatCurrency(estafetaTerrestre.Value.ToString(), 2)
+                '                rbTerrestre.Visible = True
+                '                brTerrestre.Visible = True
+                '            End If
+
+                '            If tipoServicio.DescripcionServicio.ToLower = "dia sig." And estafetaPrecios.DiaSiguiente > 0 Then
+                '                estafetaDiaSig.Value = estafetaPrecios.DiaSiguiente + costoReexpedicion
+                '                rbDiaSiguiente.Text = " Dia Siguiente: " & FormatCurrency(estafetaDiaSig.Value.ToString(), 2)
+                '                rbDiaSiguiente.Visible = True
+                '                brDiaSiguiente.Visible = True
+                '            End If
+
+                '            If tipoServicio.DescripcionServicio.ToLower = "ltl" And estafetaPrecios.Ltl > 0 Then
+                '                estafetaLtl.Value = estafetaPrecios.Ltl + costoReexpedicion
+                '                rbLtl.Text = " Tarimas: " & FormatCurrency(estafetaLtl.Value.ToString(), 2)
+                '                rbLtl.Visible = True
+                '                brLtl.Visible = True
+                '            End If
+                '        Next
+
+                '        If rbLtl.Visible = False And rbDiaSiguiente.Visible = False And rbTerrestre.Visible = False Then
+                '            Label2.Text = "El servicio no está disponible para el destino o agente seleccionado"
+                '            ModalPopupExtender3.Show()
+                '            Exit Sub
+                '        End If
+                '    End If
+                'End If
             End If
 
             '************ REDPACK  **************
@@ -1111,12 +1138,12 @@ Partial Class Punto_Venta
                 ReDim envios(0)
             End If
 
-            Dim estafetaWrapper As New EstafetaWrapper()
-            Dim respuestaFrecuenciaCotizador = CType(Session(estafetaTipoServicio.Value), FrecuenciaCotizadorRespuesta)
-            Dim sessionTipoServico As Estafeta.Frecuenciacotizador.TipoServicio()
-            If respuestaFrecuenciaCotizador IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta IsNot Nothing Then
-                sessionTipoServico = respuestaFrecuenciaCotizador.Respuesta(0).TipoServicio
-            End If
+            'Dim estafetaWrapper As New EstafetaWrapper()
+            'Dim respuestaFrecuenciaCotizador = CType(Session(estafetaTipoServicio.Value), FrecuenciaCotizadorRespuesta)
+            'Dim sessionTipoServico As Estafeta.Frecuenciacotizador.TipoServicio()
+            'If respuestaFrecuenciaCotizador IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta IsNot Nothing Then
+            '    sessionTipoServico = respuestaFrecuenciaCotizador.Respuesta(0).TipoServicio
+            'End If
 
             Dim tipoServicio As Estafeta.Frecuenciacotizador.TipoServicio = New Estafeta.Frecuenciacotizador.TipoServicio()
             Dim envioEstafeta As Boolean = False
@@ -1197,48 +1224,65 @@ Partial Class Punto_Venta
 
             Do While cajas_count < envios.Length()
                 Dim cliente As Cliente = Nothing
-                Dim costoReexpedicion As Double = 0
-                If respuestaFrecuenciaCotizador IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta IsNot Nothing Then
-                    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.Where(Function(x) x.Seleccionada = True).FirstOrDefault()
-                    Double.TryParse(respuestaFrecuenciaCotizador.Respuesta(0).CostoReexpedicion, costoReexpedicion)
-                    costoReexpedicion = costoReexpedicion * 1.16
-                End If
+                'Dim costoReexpedicion As Double = 0
+                'If respuestaFrecuenciaCotizador IsNot Nothing AndAlso respuestaFrecuenciaCotizador.Respuesta IsNot Nothing Then
+                '    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.Where(Function(x) x.Seleccionada = True).FirstOrDefault()
+                '    Double.TryParse(respuestaFrecuenciaCotizador.Respuesta(0).CostoReexpedicion, costoReexpedicion)
+                '    costoReexpedicion = costoReexpedicion * 1.16
+                'End If
 
                 Dim valor_envio = 0
                 Dim total_envio As Decimal = 0
                 If proveedor = 30 Then
+                    Dim servicios = CType(Session(estafetaTipoServicio.Value), IEnumerable(Of Paqueteria))
+
                     If rbTerrestre.Checked Then
-                        tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio.ToLower = "terrestre")
-                        valor_envio = tipoServicio.CostoTotal
-                        envioEstafeta = True
-                        datos_envio.observaciones = "Terrestre"
-                        cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "terrestre")
-                        total_envio = estafetaPrecios.Terrestre + costoReexpedicion
-                        id_cliente = cuentaServicio.Cliente.id_cliente
-                        cliente = cuentaServicio.Cliente
+                        Dim servicioEconomico = servicios.FirstOrDefault(Function(x) x.idServicio = ConfigurationManager.AppSettings("SuperEnvios.Estafeta.Economico"))
+                        If servicioEconomico IsNot Nothing Then
+                            valor_envio = servicioEconomico.precio_regular
+                            envioEstafeta = True
+                            datos_envio.observaciones = "Terrestre"
+                            shipmentRequest.AccountId = estafetaPrecios.Cuenta
+                            cliente = DaspackDALC.GetGombarSender(estafetaPrecios.Cuenta)
+                            'cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "terrestre")
+                            total_envio = estafetaPrecios.Terrestre
+                            id_cliente = cliente.id_cliente
+                            shipmentRequest.ServiceTypeId = ConfigurationManager.AppSettings("SuperEnvios.Estafeta.Economico")
+                        End If
                     End If
 
-                    If rbDiaSiguiente.Checked Then
-                        tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio.ToLower = "dia sig.")
-                        valor_envio = tipoServicio.CostoTotal
-                        datos_envio.observaciones = "Dia Sig."
-                        envioEstafeta = True
-                        cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "dia sig.")
-                        total_envio = estafetaPrecios.DiaSiguiente + costoReexpedicion
-                        id_cliente = cuentaServicio.Cliente.id_cliente
-                        cliente = cuentaServicio.Cliente
-                    End If
+                    'If rbTerrestre.Checked Then
+                    '    tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio.ToLower = "terrestre")
+                    '    valor_envio = tipoServicio.CostoTotal
+                    '    envioEstafeta = True
+                    '    datos_envio.observaciones = "Terrestre"
+                    '    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "terrestre")
+                    '    total_envio = estafetaPrecios.Terrestre
+                    '    id_cliente = cuentaServicio.Cliente.id_cliente
+                    '    cliente = cuentaServicio.Cliente
+                    'End If
 
-                    If rbLtl.Checked Then
-                        tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio.ToLower = "ltl")
-                        valor_envio = tipoServicio.CostoTotal
-                        datos_envio.observaciones = "LTL"
-                        envioEstafeta = True
-                        cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "ltl")
-                        total_envio = estafetaPrecios.Ltl + costoReexpedicion
-                        id_cliente = cuentaServicio.Cliente.id_cliente
-                        cliente = cuentaServicio.Cliente
-                    End If
+                    'If rbDiaSiguiente.Checked Then
+                    '    tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio.ToLower = "dia sig.")
+                    '    valor_envio = tipoServicio.CostoTotal
+                    '    datos_envio.observaciones = "Dia Sig."
+                    '    envioEstafeta = True
+                    '    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "dia sig.")
+                    '    total_envio = estafetaPrecios.DiaSiguiente + costoReexpedicion
+                    '    id_cliente = cuentaServicio.Cliente.id_cliente
+                    '    cliente = cuentaServicio.Cliente
+                    'End If
+
+                    'If rbLtl.Checked Then
+                    '    tipoServicio = sessionTipoServico.FirstOrDefault(Function(x) x.DescripcionServicio.ToLower = "ltl")
+                    '    valor_envio = tipoServicio.CostoTotal
+                    '    datos_envio.observaciones = "LTL"
+                    '    envioEstafeta = True
+                    '    cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "ltl")
+                    '    total_envio = estafetaPrecios.Ltl + costoReexpedicion
+                    '    id_cliente = cuentaServicio.Cliente.id_cliente
+                    '    cliente = cuentaServicio.Cliente
+                    'End If
 
                     If cliente IsNot Nothing And (rbTerrestre.Checked Or rbDiaSiguiente.Checked Or rbLtl.Checked) Then
                         datos_cliente.id_pais = cliente.id_pais
@@ -1259,7 +1303,7 @@ Partial Class Punto_Venta
                         datos_cliente.codigo_postal = cliente.codigo_postal
                     End If
 
-                    shipmentRequest.AccountId = cuentaServicio.Cuenta
+                    'shipmentRequest.AccountId = cuentaServicio.Cuenta
                     shipmentRequest.Reference = TxtRef.Text
                     shipmentRequest.ClientId = id_cliente
                     datos_envio.id_cliente = cliente.id_cliente
@@ -1596,30 +1640,45 @@ Partial Class Punto_Venta
             shipmentRequest.ClientId = id_cliente
             shipmentRequest.IsOcurre = IIf(chkOcurre.Checked Or estafetaPrecios.Ocurre, 1, 0)
             If envioEstafeta = True Then
-                Dim respuestaLabel As String = String.Empty
-                If tipoServicio.DescripcionServicio.ToLower = "dia sig." Then
-                    respuestaLabel = estafetaWrapper.Label(datos_envio, datos_cliente, Datos_Dest, tipoServicio, respuestaFrecuenciaCotizador.Respuesta, cuentaServicio.Cuenta, envios, ddlTipoImpresion.SelectedValue)
-                Else
-                    respuestaLabel = estafetaWrapper.NewLabel(datos_envio.id_usuario, shipRequestDto, tipoServicio, respuestaFrecuenciaCotizador.Respuesta, envios)
-                End If
-
-                If agente.guia_estafeta = True And respuestaLabel = "Envio Exportado" Then
+                Dim superEnviosResponse = DaspackDALC.SuperEnviosShip(shipRequestDto)
+                If superEnviosResponse IsNot Nothing AndAlso superEnviosResponse.Data IsNot Nothing AndAlso superEnviosResponse.Data.respuesta IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(superEnviosResponse.Data.respuesta.etiqueta) Then
                     Dim sjscript2 As String = "<script language=""javascript"">" &
-                    " window.open('../Reports/EstafetaLabel.aspx?id_envio=" & envios(cajas_count - 1).ToString & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
-                    "</script>"
-                    ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
-                Else
-                    If agente.guia_estafeta = True Then
-                        Label2.Text = "Ocurrió un error, por favor revise los datos ---> Error al crear etiqueta " + respuestaLabel
-                        ModalPopupExtender3.Show()
-                    Else
+                               " window.open('" & superEnviosResponse.Data.respuesta.etiqueta & "', '_blank')" &
+                               "</script>"
 
-                        Dim sjscript2 As String = "<script language=""javascript"">" &
-                    " window.open('guia_individual.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "&id_proveedor=" & DropDownProveedores.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
-                    "</script>"
-                        ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
-                    End If
+                    ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
+
+                    ViewState("Data") = Nothing
+                    BindGridView()
+                Else
+                    Label2.Text = "Ocurrió un error, por favor revise los datos "
+                    ModalPopupExtender3.Show()
                 End If
+
+                'Dim respuestaLabel As String = String.Empty
+                'If tipoServicio.DescripcionServicio.ToLower = "dia sig." Then
+                '    respuestaLabel = EstafetaWrapper.Label(datos_envio, datos_cliente, Datos_Dest, tipoServicio, respuestaFrecuenciaCotizador.Respuesta, cuentaServicio.Cuenta, envios, ddlTipoImpresion.SelectedValue)
+                'Else
+                '    respuestaLabel = EstafetaWrapper.NewLabel(datos_envio.id_usuario, shipRequestDto, tipoServicio, respuestaFrecuenciaCotizador.Respuesta, envios)
+                'End If
+
+                'If agente.guia_estafeta = True And respuestaLabel = "Envio Exportado" Then
+                '    Dim sjscript2 As String = "<script language=""javascript"">" &
+                '    " window.open('../Reports/EstafetaLabel.aspx?id_envio=" & envios(cajas_count - 1).ToString & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                '    "</script>"
+                '    ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
+                'Else
+                '    If agente.guia_estafeta = True Then
+                '        Label2.Text = "Ocurrió un error, por favor revise los datos ---> Error al crear etiqueta " + respuestaLabel
+                '        ModalPopupExtender3.Show()
+                '    Else
+
+                '        Dim sjscript2 As String = "<script language=""javascript"">" &
+                '    " window.open('guia_individual.aspx?id_envio1=" & envios(0).ToString & "&id_envio2=" & envios(cajas_count - 1).ToString & "&id_agente=" & datos_envio.id_agente & "&id_proveedor=" & DropDownProveedores.SelectedValue & "','','width=600,height=800, toolbar=1, scrollbars=1')" &
+                '    "</script>"
+                '        ScriptManager.RegisterStartupScript(Me, Me.GetType, "key", sjscript2, False)
+                '    End If
+                'End If
             Else
                 If rbFedexStandard.Checked Or rbFedexExpress.Checked Then
                     Dim fedexResponse = DaspackDALC.FedexShipment(shipRequestDto)

@@ -804,6 +804,32 @@ Public Class DaspackDALC
         Return response
     End Function
 
+    Public Shared Function ModificacionFactura(id_envio As Integer, comentarios As String, noFactura As String, idUsuario As Integer) As Boolean
+        Dim dbContext As New SiExProEntities
+
+        InsComenatrio(id_envio, idUsuario, "Importacion Factura Envio Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
+
+        Dim auditLogEnvio = New AuditLog
+        Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        Dim auditLogEnvioDatosNoFactura = New AuditLog
+        auditLogEnvioDatosNoFactura.Columna = "no_factura"
+        auditLogEnvioDatosNoFactura.Fecha = DateTime.Now
+        auditLogEnvioDatosNoFactura.Tabla = "D_ENVIOS_DATOS"
+        auditLogEnvioDatosNoFactura.Usuario = idUsuario
+        auditLogEnvioDatosNoFactura.ValorAnterior = IIf(envioDato.no_factura Is Nothing, "", envioDato.no_factura)
+        auditLogEnvioDatosNoFactura.ValorActual = noFactura
+        auditLogEnvioDatosNoFactura.IdEnvio = id_envio
+
+        envioDato.no_factura = noFactura
+        dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosNoFactura)
+
+        dbContext.SaveChanges()
+
+        Return True
+
+    End Function
+
     Public Shared Function ModificacionEnvioProveedor(id_envio As Integer, comentarios As String, idProveedor As Integer, idUsuario As Integer, noFactura As String, importeFacturaProveedor As Decimal, gratificacion As String) As Boolean
         Dim dbContext As New SiExProEntities
 
@@ -964,6 +990,55 @@ Public Class DaspackDALC
             resByte = webClient.UploadData(ConfigurationManager.AppSettings("RedPAck.ShipDocumentacion"), "post", reqString)
             resString = Encoding.Default.GetString(resByte)
             response = serializer.Deserialize(Of RedPackShipServiceResponse)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function SuperEnviosQuote(ByVal fedexShipRequest As ShipRequestDto) As SuperEnviosQuoteServiceResponse
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New SuperEnviosQuoteServiceResponse()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(fedexShipRequest)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("SuperEnvios.Quote"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of SuperEnviosQuoteServiceResponse)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+    Public Shared Function SuperEnviosShip(ByVal fedexShipRequest As ShipRequestDto) As SuperEnviosShipServiceResponse
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New SuperEnviosShipServiceResponse()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(fedexShipRequest)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("SuperEnvios.Ship"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of SuperEnviosShipServiceResponse)(resString)
             webClient.Dispose()
         Catch ex As Exception
             response.Success = False
