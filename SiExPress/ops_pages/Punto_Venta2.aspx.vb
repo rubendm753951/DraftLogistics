@@ -542,7 +542,8 @@ Partial Class Punto_Venta
                             For Each tipoServicio As Paqueteria In servicios
                                 If tipoServicio.idServicio = ConfigurationManager.AppSettings("SuperEnvios.Estafeta.Economico") And estafetaPrecios.Terrestre > 0 Then
                                     estafetaTerrestre.Value = estafetaPrecios.Terrestre
-                                    rbTerrestre.Text = " Terrestre: " & FormatCurrency(estafetaTerrestre.Value.ToString(), 2)
+                                    Dim valor = estafetaPrecios.Terrestre + tipoServicio.precio
+                                    rbTerrestre.Text = " Terrestre: " & FormatCurrency(valor.ToString(), 2)
                                     rbTerrestre.Visible = True
                                     brTerrestre.Visible = True
                                 End If
@@ -631,8 +632,46 @@ Partial Class Punto_Venta
             '************ PAQUETE EXPRESS  **************
             If proveedor = 40 Then
                 If (estafetaPrecios.PaqueteExpressEconomic > 0 Or estafetaPrecios.PaqueteExpressNextDay > 0) Then
+                    Dim agente = db.C_AGENCIAS.FirstOrDefault(Function(x) x.id_agencia = DropDownAgentes.Text)
+
+                    If agente IsNot Nothing AndAlso agente.pe_remitente Then
+                        Dim datos_cliente As New ObjCliente
+                        Dim id_cliente As Integer
+                        datos_cliente.id_pais = DropDownPais.SelectedValue
+                        datos_cliente.nombre = txtNombre.Text
+                        'datos_cliente.apellidos = TxtApellidos.Text
+                        datos_cliente.empresa = txtEmpresa.Text
+                        datos_cliente.calle = txtCalle.Text
+                        datos_cliente.noexterior = 0 ' Estamos pasando la dirección completa en el campo de calle.
+                        datos_cliente.nointerior = Nothing
+                        datos_cliente.direccion2 = Nothing
+                        datos_cliente.colonia = coloniaRem
+                        datos_cliente.ciudad = txtCiudad.Text
+                        datos_cliente.municipio = TxtMpio.Text
+                        datos_cliente.estadoprovincia = txtEdo.Text
+                        datos_cliente.telefono = txtTelefono.Text
+                        datos_cliente.codigo_postal = TxtCP.Text
+                        datos_cliente.email = txtEmail.Text
+                        datos_cliente.rfc = txtRemRfc.Text
+                        datos_cliente.registro_tributario = txtRemRfc.Text
+                        datos_cliente.residencia_fiscal = "MEX"
+
+                        Mensaje = Crear_Envio.valida_datos_cliente(datos_cliente)
+                        If Mensaje = "OK" Then
+                            id_cliente = Crear_Envio.crea_cliente(datos_cliente)
+                            shipRequestDto.ShipmentRequest.ClientId = id_cliente
+                            Session("id_cliente") = id_cliente
+                        Else
+                            Label2.Text = "Ocurrió un error, por favor revise los datos ---> " + Mensaje
+                            ModalPopupExtender3.Show()
+                            Mensaje = ""
+                            Exit Sub
+                        End If
+                    Else
+                        shipRequestDto.ShipmentRequest.ClientId = ConfigurationManager.AppSettings("PaqueteExpress.ClientId")
+                    End If
+
                     shipRequestDto.ShipmentRequest.AccountId = estafetaPrecios.UserAccountPe
-                    shipRequestDto.ShipmentRequest.ClientId = ConfigurationManager.AppSettings("PaqueteExpress.ClientId")
                     shipRequestDto.ShipmentRequest.FedexExpressSaver = estafetaPrecios.ExpressSaverUser > 0
                     shipRequestDto.ShipmentRequest.FedexStandardOvernight = estafetaPrecios.StandardOvernightUser > 0
                     shipRequestDto.ShipmentRequest.IsOcurre = IIf(chkOcurre.Checked, 1, 0)
@@ -936,7 +975,9 @@ Partial Class Punto_Venta
                 txtEmpresa.Text = row.Cells(4).Text
                 txtCalle.Text = row.Cells(5).Text
                 txtCiudad.Text = row.Cells(6).Text
-                txtEdo.SelectedValue = row.Cells(7).Text
+                If Not String.IsNullOrWhiteSpace(row.Cells(7).Text) AndAlso row.Cells(7).Text.Length = 2 Then
+                    txtEdo.SelectedValue = row.Cells(7).Text
+                End If
                 txtTelefono.Text = row.Cells(8).Text
                 txtEmail.Text = row.Cells(9).Text
                 TxtCP.Text = row.Cells(10).Text
@@ -1239,13 +1280,13 @@ Partial Class Punto_Venta
                     If rbTerrestre.Checked Then
                         Dim servicioEconomico = servicios.FirstOrDefault(Function(x) x.idServicio = ConfigurationManager.AppSettings("SuperEnvios.Estafeta.Economico"))
                         If servicioEconomico IsNot Nothing Then
-                            valor_envio = servicioEconomico.precio_regular
+                            valor_envio = estafetaPrecios.Terrestre
                             envioEstafeta = True
                             datos_envio.observaciones = "Terrestre"
                             shipmentRequest.AccountId = estafetaPrecios.Cuenta
                             cliente = DaspackDALC.GetGombarSender(estafetaPrecios.Cuenta)
                             'cuentaServicio = respuestaFrecuenciaCotizador.CuentaServicios.FirstOrDefault(Function(x) x.Servicio.ToLower = "terrestre")
-                            total_envio = estafetaPrecios.Terrestre
+                            total_envio = estafetaPrecios.Terrestre + servicioEconomico.precio_regular
                             id_cliente = cliente.id_cliente
                             shipmentRequest.ServiceTypeId = ConfigurationManager.AppSettings("SuperEnvios.Estafeta.Economico")
                         End If
@@ -1421,17 +1462,17 @@ Partial Class Punto_Venta
                     shipmentRequest.FedexExpressSaver = rbFedexExpress.Checked
                     shipmentRequest.FedexStandardOvernight = rbFedexStandard.Checked
 
-                    If rbFedexExpress.Checked Then
-                        cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.ExpressSaverUser)
-                        shipmentRequest.AccountId = estafetaPrecios.ExpressSaverUser
-                        shipmentRequest.ClientId = cliente.id_cliente
-                    End If
+                    'If rbFedexExpress.Checked Then
+                    '    cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.ExpressSaverUser)
+                    '    shipmentRequest.AccountId = estafetaPrecios.ExpressSaverUser
+                    '    shipmentRequest.ClientId = cliente.id_cliente
+                    'End If
 
-                    If rbFedexStandard.Checked Then
-                        cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.StandardOvernightUser)
-                        shipmentRequest.AccountId = IIf(estafetaPrecios.StandardOvernightUser = 5, 2, estafetaPrecios.StandardOvernightUser)
-                        shipmentRequest.ClientId = cliente.id_cliente
-                    End If
+                    'If rbFedexStandard.Checked Then
+                    '    cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.StandardOvernightUser)
+                    '    shipmentRequest.AccountId = IIf(estafetaPrecios.StandardOvernightUser = 5, 2, estafetaPrecios.StandardOvernightUser)
+                    '    shipmentRequest.ClientId = cliente.id_cliente
+                    'End If
 
                     Dim fedexRateResponse = DaspackDALC.FedexRate(shipRequestDto)
                     If fedexRateResponse.Success AndAlso fedexRateResponse.Data IsNot Nothing Then
@@ -1440,11 +1481,10 @@ Partial Class Punto_Venta
                     End If
 
                     estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, DropDownAgentes.Text, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, envioExportar.Peso, 0, 0)
-
+                    envioEstafeta = False
                     If rbFedexExpress.Checked Then
                         valor_envio = estafetaPrecios.ExpressSaverAmount
                         datos_envio.observaciones = "FedexExpressSaver"
-                        envioEstafeta = False
                         total_envio = estafetaPrecios.ExpressSaverAmount
                         cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.ExpressSaverUser)
                         shipmentRequest.ServiceTypeId = 1
@@ -1457,7 +1497,6 @@ Partial Class Punto_Venta
                     If rbFedexStandard.Checked Then
                         valor_envio = estafetaPrecios.StandardOvernightAmount
                         datos_envio.observaciones = "FedexStandardOvernight"
-                        envioEstafeta = False
                         total_envio = estafetaPrecios.StandardOvernightAmount
                         cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.StandardOvernightUser)
                         shipmentRequest.ServiceTypeId = 2
@@ -1470,12 +1509,52 @@ Partial Class Punto_Venta
 
                 If (estafetaPrecios.PaqueteExpressEconomic > 0 Or estafetaPrecios.PaqueteExpressNextDay > 0) Then
                     If rbPaqueteExpressEconomic.Checked Or rbPaqueteExpressNextDay.Checked Then
+                        If agente.pe_remitente Then
+                            datos_cliente.id_pais = DropDownPais.SelectedValue
+                            datos_cliente.nombre = txtNombre.Text
+                            'datos_cliente.apellidos = TxtApellidos.Text
+                            datos_cliente.empresa = txtEmpresa.Text
+                            datos_cliente.calle = txtCalle.Text
+                            datos_cliente.noexterior = 0 ' Estamos pasando la dirección completa en el campo de calle.
+                            datos_cliente.nointerior = Nothing
+                            datos_cliente.direccion2 = Nothing
+                            datos_cliente.colonia = coloniaRem
+                            datos_cliente.ciudad = txtCiudad.Text
+                            datos_cliente.municipio = TxtMpio.Text
+                            datos_cliente.estadoprovincia = txtEdo.Text
+                            datos_cliente.telefono = txtTelefono.Text
+                            datos_cliente.codigo_postal = TxtCP.Text
+                            datos_cliente.email = txtEmail.Text
+                            datos_cliente.rfc = txtRemRfc.Text
+                            datos_cliente.registro_tributario = txtRemRfc.Text
+                            datos_cliente.residencia_fiscal = "MEX"
+                            If Session("id_cliente") = 0 Then
+                                Mensaje = Crear_Envio.valida_datos_cliente(datos_cliente)
+                                If Mensaje = "OK" Then
+                                    id_cliente = Crear_Envio.crea_cliente(datos_cliente)
+                                    Session("id_cliente") = id_cliente
+                                Else
+                                    Label2.Text = "Ocurrió un error, por favor revise los datos ---> " + Mensaje
+                                    ModalPopupExtender3.Show()
+                                    Mensaje = ""
+                                    Exit Sub
+                                End If
+                            Else
+                                id_cliente = Session("id_cliente")
+                            End If
+                        End If
+
                         shipmentRequest.FedexExpressSaver = estafetaPrecios.ExpressSaverUser > 0
                         shipmentRequest.FedexStandardOvernight = estafetaPrecios.StandardOvernightUser > 0
                         shipmentRequest.IsOcurre = IIf(chkOcurre.Checked, 1, 0)
 
-                        If rbPaqueteExpressEconomic.Checked Then
+                        If agente.pe_remitente Then
+                            cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.id_cliente = id_cliente)
+                        Else
                             cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.UserAccountPe)
+                        End If
+
+                        If rbPaqueteExpressEconomic.Checked Then
                             shipmentRequest.ClientId = cliente.id_cliente
                             datos_envio.id_cliente = cliente.id_cliente
                             id_cliente = cliente.id_cliente
@@ -1483,7 +1562,6 @@ Partial Class Punto_Venta
                         End If
 
                         If rbPaqueteExpressNextDay.Checked Then
-                            cliente = db.C_CLIENTES.FirstOrDefault(Function(x) x.NIT = estafetaPrecios.UserAccountPe)
                             shipmentRequest.ClientId = cliente.id_cliente
                             datos_envio.id_cliente = cliente.id_cliente
                             id_cliente = cliente.id_cliente
@@ -2065,6 +2143,13 @@ Partial Class Punto_Venta
                 TxtCP.Text = agente.codigo_postal
                 txtEmail.Text = agente.email
                 txtRemRfc.Text = agente.RFC
+
+                If DropDownProveedores.SelectedValue = 40 Then
+                    datosRemitente.Visible = agente.pe_remitente
+                    remButton.Visible = agente.pe_remitente
+                    remControl.Visible = agente.pe_remitente
+                    remText.Visible = agente.pe_remitente
+                End If
             End If
 
         Catch ex As Exception
@@ -2794,6 +2879,15 @@ Partial Class Punto_Venta
         If proveedor = 40 Then
             ddlTiposPaquete.Visible = True
             ddlTiposPaqueteDL.Visible = False
+
+            Dim db As New SiExProEntities
+            Dim agente = db.C_AGENCIAS.FirstOrDefault(Function(x) x.id_agencia = DropDownAgentes.Text)
+            If agente IsNot Nothing Then
+                datosRemitente.Visible = agente.pe_remitente
+                remButton.Visible = agente.pe_remitente
+                remControl.Visible = agente.pe_remitente
+                remText.Visible = agente.pe_remitente
+            End If
         End If
 
         If proveedor = 50 Then

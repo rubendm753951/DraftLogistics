@@ -37,6 +37,7 @@ Partial Public Class Agencias
     Public Property email As String
     Public Property RFC As String
     Public Property tipo_de_pago As String
+    Public Property pe_remitente As Boolean
 
     Public Overridable Property D_TARIFAS_AGENCIA As ICollection(Of TarifaAgencia) = New HashSet(Of TarifaAgencia)
     Public Overridable Property D_ENVIOS_PREASIGNADOS As ICollection(Of EnviosPreAsignados) = New HashSet(Of EnviosPreAsignados)

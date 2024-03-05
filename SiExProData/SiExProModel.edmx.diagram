@@ -24,9 +24,6 @@
         <EntityTypeShape EntityType="MasupackModel.Sepomex" Width="1.5" PointX="0.75" PointY="12.75" />
         <EntityTypeShape EntityType="MasupackModel.PaqueteExpressTipoPaquete" Width="1.5" PointX="3.375" PointY="13.75" />
         <EntityTypeShape EntityType="MasupackModel.CodigosServiciosSat" Width="1.5" PointX="13.375" PointY="4.75" />
-        <EntityTypeShape EntityType="MasupackModel.EnvioDatos" Width="1.5" PointX="3" PointY="0.75" />
-        <AssociationConnector Association="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk" />
-        <AssociationConnector Association="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" />
         <EntityTypeShape EntityType="MasupackModel.DeliveryConfirmation" Width="1.5" PointX="5.375" PointY="13.75" />
         <EntityTypeShape EntityType="MasupackModel.TarifaAgenciaDraft" Width="1.5" PointX="13.375" PointY="7.75" />
         <EntityTypeShape EntityType="MasupackModel.TarifaAgenciaEstafeta" Width="1.5" PointX="13.375" PointY="12.75" />
@@ -35,10 +32,13 @@
         <EntityTypeShape EntityType="MasupackModel.EnviosPreAsignados" Width="1.5" PointX="8" PointY="19.5" />
         <AssociationConnector Association="MasupackModel.C_AGENCIAS_D_ENVIOS_PREVENTA_fk" />
         <AssociationConnector Association="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_fk" />
-        <AssociationConnector Association="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" />
         <EntityTypeShape EntityType="MasupackModel.AuditLog" Width="1.5" PointX="15.375" PointY="4.75" />
         <EntityTypeShape EntityType="MasupackModel.TarifaAgenciaDliverExpress" Width="1.5" PointX="15" PointY="7.75" />
         <EntityTypeShape EntityType="MasupackModel.ProviderLabel" Width="1.5" PointX="15.375" PointY="12.75" />
+        <EntityTypeShape EntityType="MasupackModel.EnvioDatos" Width="1.5" PointX="16.25" PointY="16.25" />
+        <AssociationConnector Association="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk" />
+        <AssociationConnector Association="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" />
+        <AssociationConnector Association="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

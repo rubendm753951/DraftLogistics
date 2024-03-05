@@ -35,6 +35,7 @@
           <Property Name="email" Type="varchar" MaxLength="100" />
           <Property Name="RFC" Type="varchar" MaxLength="50" />
           <Property Name="tipo_de_pago" Type="varchar" MaxLength="20" />
+          <Property Name="pe_remitente" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="C_CLIENTES">
           <Key>
@@ -270,6 +271,8 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="no_factura" Type="nvarchar" MaxLength="50" />
           <Property Name="importe_factura_proveedor" Type="decimal" Precision="18" Scale="4" />
           <Property Name="gratificacion" Type="nvarchar" MaxLength="50" />
+          <Property Name="partner_envio_id" Type="nvarchar" MaxLength="50" />
+          <Property Name="costo_envio_proveedor" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="D_ENVIOS_PE_TIPO_PAQUETES">
           <Key>
@@ -691,6 +694,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="RFC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="D_ENVIOS_PREASIGNADOS" Relationship="MasupackModel.C_AGENCIAS_D_ENVIOS_PREVENTA_fk" FromRole="Agencias" ToRole="D_ENVIOS_PREASIGNADOS" />
           <Property Name="tipo_de_pago" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="pe_remitente" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Cliente">
           <Key>
@@ -803,15 +807,6 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySet Name="C_SEPOMEX" EntityType="MasupackModel.Sepomex" />
           <EntitySet Name="D_ENVIOS_PE_TIPO_PAQUETES" EntityType="MasupackModel.PaqueteExpressTipoPaquete" />
           <EntitySet Name="D_CODIGOS_SERVICIOS_SAT" EntityType="MasupackModel.CodigosServiciosSat" />
-          <EntitySet Name="D_ENVIOS_DATOS" EntityType="MasupackModel.EnvioDatos" />
-          <AssociationSet Name="C_CLIENTES_D_ENVIOS_DATOS_fk" Association="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk">
-            <End Role="Cliente" EntitySet="C_CLIENTES" />
-            <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
-          </AssociationSet>
-          <AssociationSet Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk" Association="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
-            <End Role="Destinatario" EntitySet="C_DESTINATARIOS" />
-            <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
-          </AssociationSet>
           <EntitySet Name="D_DELIVERY_CONFIRMATION" EntityType="MasupackModel.DeliveryConfirmation" />
           <EntitySet Name="D_TARIFAS_AGENCIA_DRAFT" EntityType="MasupackModel.TarifaAgenciaDraft" />
           <EntitySet Name="D_TARIFAS_AGENCIA_ESTAFETA" EntityType="MasupackModel.TarifaAgenciaEstafeta" />
@@ -826,13 +821,22 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
             <End Role="D_ENVIOS_PREASIGNADOS" EntitySet="D_ENVIOS_PREASIGNADOS" />
             <End Role="Envio" EntitySet="D_ENVIOS" />
           </AssociationSet>
-          <AssociationSet Name="D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" Association="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk">
-            <End Role="D_ENVIOS_PREASIGNADOS" EntitySet="D_ENVIOS_PREASIGNADOS" />
-            <End Role="EnvioDatos" EntitySet="D_ENVIOS_DATOS" />
-          </AssociationSet>
           <EntitySet Name="D_AUDIT_LOG" EntityType="MasupackModel.AuditLog" />
           <EntitySet Name="D_TARIFAS_AGENCIA_DLIVER_EXPRESS" EntityType="MasupackModel.TarifaAgenciaDliverExpress" />
           <EntitySet Name="D_PROVIDER_LABEL" EntityType="MasupackModel.ProviderLabel" />
+          <EntitySet Name="D_ENVIOS_DATOS" EntityType="MasupackModel.EnvioDatos" />
+          <AssociationSet Name="C_CLIENTES_D_ENVIOS_DATOS_fk" Association="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk">
+            <End Role="Cliente" EntitySet="C_CLIENTES" />
+            <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
+          </AssociationSet>
+          <AssociationSet Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk" Association="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
+            <End Role="Destinatario" EntitySet="C_DESTINATARIOS" />
+            <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
+          </AssociationSet>
+          <AssociationSet Name="D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" Association="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk">
+            <End Role="EnviosPreAsignados" EntitySet="D_ENVIOS_PREASIGNADOS" />
+            <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="TarifaAgencia">
           <Key>
@@ -1084,52 +1088,6 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="codigo_servicio_id" Type="Int32" Nullable="false" />
           <Property Name="descripcion" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="EnvioDatos">
-          <Key>
-            <PropertyRef Name="id_envio" />
-          </Key>
-          <Property Name="id_envio" Type="Int32" Nullable="false" />
-          <Property Name="id_cliente" Type="Int32" Nullable="false" />
-          <Property Name="id_destinatario" Type="Int32" Nullable="false" />
-          <Property Name="id_contenido" Type="Int32" />
-          <Property Name="observaciones" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="exportado" Type="Boolean" />
-          <Property Name="entregado" Type="Boolean" />
-          <Property Name="fecha_entrega" Type="DateTime" Precision="3" />
-          <Property Name="id_proveedor" Type="Int32" />
-          <Property Name="codigoSat" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="codigo_barras" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <NavigationProperty Name="C_CLIENTES" Relationship="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Cliente" />
-          <NavigationProperty Name="C_DESTINATARIOS" Relationship="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Destinatario" />
-          <NavigationProperty Name="D_ENVIOS_PREASIGNADOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" FromRole="EnvioDatos" ToRole="D_ENVIOS_PREASIGNADOS" />
-          <Property Name="no_factura" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="importe_factura_proveedor" Type="Decimal" Precision="18" Scale="4" />
-          <Property Name="gratificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <Association Name="C_CLIENTES_D_ENVIOS_DATOS_fk">
-          <End Type="MasupackModel.Cliente" Role="Cliente" Multiplicity="1" />
-          <End Type="MasupackModel.EnvioDatos" Role="D_ENVIOS_DATOS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Cliente">
-              <PropertyRef Name="id_cliente" />
-            </Principal>
-            <Dependent Role="D_ENVIOS_DATOS">
-              <PropertyRef Name="id_cliente" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
-          <End Type="MasupackModel.Destinatario" Role="Destinatario" Multiplicity="1" />
-          <End Type="MasupackModel.EnvioDatos" Role="D_ENVIOS_DATOS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Destinatario">
-              <PropertyRef Name="id_destinatario" />
-            </Principal>
-            <Dependent Role="D_ENVIOS_DATOS">
-              <PropertyRef Name="id_destinatario" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="DeliveryConfirmation">
           <Key>
             <PropertyRef Name="DeliveryConfirmationId" />
@@ -1229,7 +1187,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="id_moneda" Type="Int32" />
           <NavigationProperty Name="C_AGENCIAS" Relationship="MasupackModel.C_AGENCIAS_D_ENVIOS_PREVENTA_fk" FromRole="D_ENVIOS_PREASIGNADOS" ToRole="Agencias" />
           <NavigationProperty Name="D_ENVIOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_fk" FromRole="D_ENVIOS_PREASIGNADOS" ToRole="Envio" />
-          <NavigationProperty Name="D_ENVIOS_DATOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_PREASIGNADOS" ToRole="EnvioDatos" />
+          <NavigationProperty Name="D_ENVIOS_DATOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" FromRole="EnviosPreAsignados" ToRole="D_ENVIOS_DATOS" />
         </EntityType>
         <Association Name="C_AGENCIAS_D_ENVIOS_PREVENTA_fk">
           <End Type="MasupackModel.Agencias" Role="Agencias" Multiplicity="1" />
@@ -1251,18 +1209,6 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
               <PropertyRef Name="id_envio" />
             </Principal>
             <Dependent Role="Envio">
-              <PropertyRef Name="id_envio" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk">
-          <End Type="MasupackModel.EnviosPreAsignados" Role="D_ENVIOS_PREASIGNADOS" Multiplicity="1" />
-          <End Type="MasupackModel.EnvioDatos" Role="EnvioDatos" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="D_ENVIOS_PREASIGNADOS">
-              <PropertyRef Name="id_envio" />
-            </Principal>
-            <Dependent Role="EnvioDatos">
               <PropertyRef Name="id_envio" />
             </Dependent>
           </ReferentialConstraint>
@@ -1310,6 +1256,66 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="Date" Type="DateTime" Precision="3" />
           <Property Name="ProviderId" Type="Int32" />
         </EntityType>
+        <EntityType Name="EnvioDatos">
+          <Key>
+            <PropertyRef Name="id_envio" />
+          </Key>
+          <Property Name="id_envio" Type="Int32" Nullable="false" />
+          <Property Name="id_cliente" Type="Int32" Nullable="false" />
+          <Property Name="id_destinatario" Type="Int32" Nullable="false" />
+          <Property Name="id_contenido" Type="Int32" />
+          <Property Name="observaciones" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="exportado" Type="Boolean" />
+          <Property Name="entregado" Type="Boolean" />
+          <Property Name="fecha_entrega" Type="DateTime" Precision="3" />
+          <Property Name="id_proveedor" Type="Int32" />
+          <Property Name="codigoSat" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="codigo_barras" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="no_factura" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="importe_factura_proveedor" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="gratificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="partner_envio_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="costo_envio_proveedor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="C_CLIENTES" Relationship="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Cliente" />
+          <NavigationProperty Name="C_DESTINATARIOS" Relationship="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Destinatario" />
+          <NavigationProperty Name="D_ENVIOS_PREASIGNADOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="EnviosPreAsignados" />
+        </EntityType>
+        <Association Name="C_CLIENTES_D_ENVIOS_DATOS_fk">
+          <End Type="MasupackModel.Cliente" Role="Cliente" Multiplicity="1" />
+          <End Type="MasupackModel.EnvioDatos" Role="D_ENVIOS_DATOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cliente">
+              <PropertyRef Name="id_cliente" />
+            </Principal>
+            <Dependent Role="D_ENVIOS_DATOS">
+              <PropertyRef Name="id_cliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="C_DESTINATARIOS_D_ENVIOS_DATOS_fk">
+          <End Type="MasupackModel.Destinatario" Role="Destinatario" Multiplicity="1" />
+          <End Type="MasupackModel.EnvioDatos" Role="D_ENVIOS_DATOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Destinatario">
+              <PropertyRef Name="id_destinatario" />
+            </Principal>
+            <Dependent Role="D_ENVIOS_DATOS">
+              <PropertyRef Name="id_destinatario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk">
+          <End Type="MasupackModel.EnviosPreAsignados" Role="EnviosPreAsignados" Multiplicity="1" />
+          <End Type="MasupackModel.EnvioDatos" Role="D_ENVIOS_DATOS" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="EnviosPreAsignados">
+              <PropertyRef Name="id_envio" />
+            </Principal>
+            <Dependent Role="D_ENVIOS_DATOS">
+              <PropertyRef Name="id_envio" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1319,6 +1325,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySetMapping Name="C_AGENCIAS">
             <EntityTypeMapping TypeName="MasupackModel.Agencias">
               <MappingFragment StoreEntitySet="C_AGENCIAS">
+                <ScalarProperty Name="pe_remitente" ColumnName="pe_remitente" />
                 <ScalarProperty Name="tipo_de_pago" ColumnName="tipo_de_pago" />
                 <ScalarProperty Name="RFC" ColumnName="RFC" />
                 <ScalarProperty Name="email" ColumnName="email" />
@@ -1657,26 +1664,6 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="D_ENVIOS_DATOS">
-            <EntityTypeMapping TypeName="MasupackModel.EnvioDatos">
-              <MappingFragment StoreEntitySet="D_ENVIOS_DATOS">
-                <ScalarProperty Name="gratificacion" ColumnName="gratificacion" />
-                <ScalarProperty Name="importe_factura_proveedor" ColumnName="importe_factura_proveedor" />
-                <ScalarProperty Name="no_factura" ColumnName="no_factura" />
-                <ScalarProperty Name="codigo_barras" ColumnName="codigo_barras" />
-                <ScalarProperty Name="codigoSat" ColumnName="codigoSat" />
-                <ScalarProperty Name="id_proveedor" ColumnName="id_proveedor" />
-                <ScalarProperty Name="fecha_entrega" ColumnName="fecha_entrega" />
-                <ScalarProperty Name="entregado" ColumnName="entregado" />
-                <ScalarProperty Name="exportado" ColumnName="exportado" />
-                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
-                <ScalarProperty Name="id_contenido" ColumnName="id_contenido" />
-                <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
-                <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
-                <ScalarProperty Name="id_envio" ColumnName="id_envio" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="D_DELIVERY_CONFIRMATION">
             <EntityTypeMapping TypeName="MasupackModel.DeliveryConfirmation">
               <MappingFragment StoreEntitySet="D_DELIVERY_CONFIRMATION">
@@ -1824,6 +1811,28 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
                 <ScalarProperty Name="LabelBinary" ColumnName="LabelBinary" />
                 <ScalarProperty Name="ShipmentId" ColumnName="ShipmentId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_ENVIOS_DATOS">
+            <EntityTypeMapping TypeName="MasupackModel.EnvioDatos">
+              <MappingFragment StoreEntitySet="D_ENVIOS_DATOS">
+                <ScalarProperty Name="costo_envio_proveedor" ColumnName="costo_envio_proveedor" />
+                <ScalarProperty Name="partner_envio_id" ColumnName="partner_envio_id" />
+                <ScalarProperty Name="gratificacion" ColumnName="gratificacion" />
+                <ScalarProperty Name="importe_factura_proveedor" ColumnName="importe_factura_proveedor" />
+                <ScalarProperty Name="no_factura" ColumnName="no_factura" />
+                <ScalarProperty Name="codigo_barras" ColumnName="codigo_barras" />
+                <ScalarProperty Name="codigoSat" ColumnName="codigoSat" />
+                <ScalarProperty Name="id_proveedor" ColumnName="id_proveedor" />
+                <ScalarProperty Name="fecha_entrega" ColumnName="fecha_entrega" />
+                <ScalarProperty Name="entregado" ColumnName="entregado" />
+                <ScalarProperty Name="exportado" ColumnName="exportado" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+                <ScalarProperty Name="id_contenido" ColumnName="id_contenido" />
+                <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
+                <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
+                <ScalarProperty Name="id_envio" ColumnName="id_envio" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

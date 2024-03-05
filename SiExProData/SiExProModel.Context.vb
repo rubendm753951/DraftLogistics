@@ -41,7 +41,6 @@ Partial Public Class SiExProEntities
     Public Overridable Property C_SEPOMEX() As DbSet(Of Sepomex)
     Public Overridable Property D_ENVIOS_PE_TIPO_PAQUETES() As DbSet(Of PaqueteExpressTipoPaquete)
     Public Overridable Property D_CODIGOS_SERVICIOS_SAT() As DbSet(Of CodigosServiciosSat)
-    Public Overridable Property D_ENVIOS_DATOS() As DbSet(Of EnvioDatos)
     Public Overridable Property D_DELIVERY_CONFIRMATION() As DbSet(Of DeliveryConfirmation)
     Public Overridable Property D_TARIFAS_AGENCIA_DRAFT() As DbSet(Of TarifaAgenciaDraft)
     Public Overridable Property D_TARIFAS_AGENCIA_ESTAFETA() As DbSet(Of TarifaAgenciaEstafeta)
@@ -51,6 +50,7 @@ Partial Public Class SiExProEntities
     Public Overridable Property D_AUDIT_LOG() As DbSet(Of AuditLog)
     Public Overridable Property D_TARIFAS_AGENCIA_DLIVER_EXPRESS() As DbSet(Of TarifaAgenciaDliverExpress)
     Public Overridable Property D_PROVIDER_LABEL() As DbSet(Of ProviderLabel)
+    Public Overridable Property D_ENVIOS_DATOS() As DbSet(Of EnvioDatos)
 
     Public Overridable Function sp_Select_envios_comentarios_pendientes(id_oficina As Nullable(Of Integer)) As ObjectResult(Of SelectEnviosComentariosPendientesResult)
         Dim id_oficinaParameter As ObjectParameter = If(id_oficina.HasValue, New ObjectParameter("id_oficina", id_oficina), New ObjectParameter("id_oficina", GetType(Integer)))

@@ -20,7 +20,7 @@ Partial Public Class Paqueteria
     Public Property tiempo_de_entrega As String
     Public Property precio_regular As String
     Public Property zona_extendida As String
-    Public Property precio_zona_extendida As Integer
+    Public Property precio_zona_extendida As String
     Public Property precio As String
     Public Property TipoCotización As String
     Public Property Zona As String
