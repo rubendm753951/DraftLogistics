@@ -128,10 +128,18 @@ Partial Public Class QuoteServiceResponse
     Public Property ClientAddrDest As ClientAddrDest
     Public Property QuoteServices As String()
     Public Property Quotations As PEQuotation()
+    Public Property BranchInfo As BranchInfo()
 End Class
 
 Partial Public Class PaqueteExpressQuoteServiceResponse
     Public Property Data() As QuoteServiceResponse
+    Public Property ErrorMessage() As String
+
+    Public Property Success() As Boolean
+End Class
+
+Partial Public Class PaqueteExpressBranchServiceResponse
+    Public Property Data() As BranchInfo
     Public Property ErrorMessage() As String
 
     Public Property Success() As Boolean
@@ -142,4 +150,31 @@ Partial Public Class PaqueteExpressShipResponse
     Public Property ErrorMessage() As String
 
     Public Property Success() As Boolean
+End Class
+
+Partial Public Class BranchInfo
+    Public Property clave As String
+    Public Property nombre As String
+    Public Property tipoSuc As String
+    Public Property codigoPostal As String
+    Public Property colonia As String
+    Public Property calle As String
+    Public Property numero As String
+    Public Property ciudad As String
+    Public Property estado As String
+    Public Property municipio As String
+    Public Property pais As String
+    Public Property telefono1 As String
+    Public Property telefono2 As String
+    Public Property telefono3 As String
+    Public Property telefono4 As String
+    Public Property telefono5 As String
+    Public Property localizaLatitud As String
+    Public Property localizaLongitud As String
+    Public Property horario As String
+    Public Property largo As Double
+    Public Property ancho As Double
+    Public Property alto As Double
+    Public Property peso As Double
+    Public Property volumen As Double
 End Class

@@ -64,9 +64,7 @@
                                         <td style="width: 200px; text-align: right">Referencia Fedex</td>
                                         <td style="width: 294px; padding-left: 10px; padding-right: 10px">
                                             <asp:textbox cssclass="form-control" height="27px" id="txtReferencia" runat="server" width="233px"></asp:textbox>
-                                        </td>
-                                    </tr>  
-                                    <tr>
+                                        </td>                                    
                                         <td style="width: 200px; text-align: right">No Factura</td>
                                         <td style="width: 294px; padding-left: 10px; padding-right: 10px">
                                             <asp:textbox cssclass="form-control" height="27px" id="txtNoFactura" runat="server" width="233px"></asp:textbox>
@@ -76,20 +74,64 @@
                                         <td style="width: 200px; text-align: right">Importe Factura Proveedor</td>
                                         <td style="width: 294px; padding-left: 10px; padding-right: 10px">
                                             <asp:textbox cssclass="form-control" height="27px" id="txtImporteFacturaProveedor" runat="server" width="233px"></asp:textbox>
-                                        </td>
-                                    </tr>  
-                                    <tr>
+                                        </td>                                    
                                         <td style="width: 200px; text-align: right">Gratificacion</td>
                                         <td style="width: 294px; padding-left: 10px; padding-right: 10px">
                                             <asp:textbox cssclass="form-control" height="27px" id="txtGratificacion" runat="server" width="233px"></asp:textbox>
                                         </td>
-                                    </tr>  
+                                    </tr>                                                                                                                                                 
+                                    <tr style="margin-bottom: 15px; padding-bottom: 15px">
+                                        <td style="width: 200px; text-align: right">Casetas</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtCasetas" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                        <td style="width: 200px; text-align: right">Gastos</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtGastos" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 200px; text-align: right">Viaticos</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtViaticos" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                        <td style="width: 200px; text-align: right">Pension</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtPension" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 200px; text-align: right">Maniobras Cliente</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtManiobrasCliente" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                        <td style="width: 200px; text-align: right">Maniobras Propias</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtManiobrasPropias" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 200px; text-align: right">Nombre del Proveedor</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtNombreProveedor" runat="server" width="233px"></asp:textbox>
+                                        </td>                                        
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 200px; text-align: right">Estadias</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtEstadias" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                        <td style="width: 200px; text-align: right">Demoras</td>
+                                        <td style="width: 294px; padding-left: 10px; padding-right: 10px">
+                                            <asp:textbox cssclass="form-control" height="27px" id="txtDemoras" runat="server" width="233px"></asp:textbox>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td style="width: 200px; text-align: right">Comentarios</td>
                                         <td style="width: 294px; padding-left: 10px; padding-right: 10px">
                                             <asp:TextBox CssClass="form-control" Height="90px" ID="txtComentarios" runat="server" TabIndex="1" TextMode="MultiLine" Rows="3"></asp:TextBox>
                                         </td>                                                                                
-                                    </tr>                                                                          
+                                    </tr>   
                                     <tr>
                                         <td style="width: 200px; text-align: right"></td>
                                         <td style="width: 294px; padding-left: 10px; padding-right: 10px; margin-top: 30px; position:absolute; display: flex;" >

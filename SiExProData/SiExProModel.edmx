@@ -273,6 +273,15 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="gratificacion" Type="nvarchar" MaxLength="50" />
           <Property Name="partner_envio_id" Type="nvarchar" MaxLength="50" />
           <Property Name="costo_envio_proveedor" Type="nvarchar" MaxLength="50" />
+          <Property Name="casetas" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="gastos" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="viaticos" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="pension" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="maniobras_cliente" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="maniobras_propias" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="nombre_proveedor" Type="varchar" MaxLength="150" />
+          <Property Name="estadias" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="demoras" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="D_ENVIOS_PE_TIPO_PAQUETES">
           <Key>
@@ -478,6 +487,25 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="money" />
           <Property Name="IsDeleted" Type="tinyint" />
         </EntityType>
+        <EntityType Name="D_TARIFAS_AGENCIA_NORTE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_AGENCIA" Type="int" />
+          <Property Name="ID_ZONA" Type="int" />
+          <Property Name="ID_CUENTA" Type="int" />
+          <Property Name="SUB_TIPO_PAQUETE" Type="varchar" MaxLength="100" />
+          <Property Name="SERVICE_ID" Type="int" />
+          <Property Name="PESO_LIMITE_INFERIOR" Type="float" />
+          <Property Name="PESO_LIMITE_SUPERIOR" Type="float" />
+          <Property Name="PRECIO" Type="money" />
+          <Property Name="PRECIO_KILO" Type="money" />
+          <Property Name="PRECIO_KILO_ADICIONAL" Type="money" />
+          <Property Name="PRECIO_AREA_EXTENDIDA" Type="money" />
+          <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="money" />
+          <Property Name="IsDeleted" Type="int" />
+        </EntityType>
         <EntityType Name="D_TARIFAS_AGENCIA_PAQUETE_EXPRESS">
           <Key>
             <PropertyRef Name="ID_TARIFAS_AGENCIA_PAQUETE_EXPRESS" />
@@ -493,6 +521,42 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="DIA_SIGUIENTE_BASE" Type="money" />
           <Property Name="DIA_SIGUIENTE_KILO" Type="money" />
           <Property Name="is_deleted" Type="int" />
+        </EntityType>
+        <EntityType Name="D_TARIFAS_AGENCIA_REDPACK">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_AGENCIA" Type="int" />
+          <Property Name="ID_ZONA" Type="int" />
+          <Property Name="ID_CUENTA" Type="int" />
+          <Property Name="SERVICE_ID" Type="int" />
+          <Property Name="PESO_LIMITE_INFERIOR" Type="float" />
+          <Property Name="PESO_LIMITE_SUPERIOR" Type="float" />
+          <Property Name="PRECIO" Type="money" />
+          <Property Name="PRECIO_KILO" Type="money" />
+          <Property Name="PRECIO_KILO_ADICIONAL" Type="money" />
+          <Property Name="PRECIO_AREA_EXTENDIDA" Type="money" />
+          <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="money" />
+          <Property Name="IsDeleted" Type="int" />
+        </EntityType>
+        <EntityType Name="D_TARIFAS_AGENCIA_TUFESA">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_AGENCIA" Type="int" />
+          <Property Name="ID_ZONA" Type="int" />
+          <Property Name="ID_CUENTA" Type="int" />
+          <Property Name="SERVICE_ID" Type="int" />
+          <Property Name="PESO_LIMITE_INFERIOR" Type="float" />
+          <Property Name="PESO_LIMITE_SUPERIOR" Type="float" />
+          <Property Name="PRECIO" Type="money" />
+          <Property Name="PRECIO_KILO" Type="money" />
+          <Property Name="PRECIO_KILO_ADICIONAL" Type="money" />
+          <Property Name="PRECIO_AREA_EXTENDIDA" Type="money" />
+          <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="money" />
+          <Property Name="IsDeleted" Type="int" />
         </EntityType>
         <Association Name="C_AGENCIAS_D_ENVIOS_PREVENTA_fk">
           <End Role="C_AGENCIAS" Type="Self.C_AGENCIAS" Multiplicity="1" />
@@ -607,7 +671,10 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySet Name="D_TARIFAS_AGENCIA_DRAFT" EntityType="Self.D_TARIFAS_AGENCIA_DRAFT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_TARIFAS_AGENCIA_ESTAFETA" EntityType="Self.D_TARIFAS_AGENCIA_ESTAFETA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_TARIFAS_AGENCIA_FEDEX" EntityType="Self.D_TARIFAS_AGENCIA_FEDEX" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_TARIFAS_AGENCIA_NORTE" EntityType="Self.D_TARIFAS_AGENCIA_NORTE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_TARIFAS_AGENCIA_PAQUETE_EXPRESS" EntityType="Self.D_TARIFAS_AGENCIA_PAQUETE_EXPRESS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_TARIFAS_AGENCIA_REDPACK" EntityType="Self.D_TARIFAS_AGENCIA_REDPACK" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_TARIFAS_AGENCIA_TUFESA" EntityType="Self.D_TARIFAS_AGENCIA_TUFESA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="C_SEPOMEX" EntityType="Self.C_SEPOMEX" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [C_SEPOMEX].[d_codigo] AS [d_codigo], 
@@ -837,6 +904,9 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
             <End Role="EnviosPreAsignados" EntitySet="D_ENVIOS_PREASIGNADOS" />
             <End Role="D_ENVIOS_DATOS" EntitySet="D_ENVIOS_DATOS" />
           </AssociationSet>
+          <EntitySet Name="D_TARIFAS_AGENCIA_TUFESA" EntityType="MasupackModel.TarifasAgenciaTufesa" />
+          <EntitySet Name="D_TARIFAS_AGENCIA_NORTE" EntityType="MasupackModel.TarifasAgenciaNorte" />
+          <EntitySet Name="D_TARIFAS_AGENCIA_REDPACK" EntityType="MasupackModel.TarifasAgenciaRedpack" />
         </EntityContainer>
         <EntityType Name="TarifaAgencia">
           <Key>
@@ -1279,6 +1349,15 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <NavigationProperty Name="C_CLIENTES" Relationship="MasupackModel.C_CLIENTES_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Cliente" />
           <NavigationProperty Name="C_DESTINATARIOS" Relationship="MasupackModel.C_DESTINATARIOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="Destinatario" />
           <NavigationProperty Name="D_ENVIOS_PREASIGNADOS" Relationship="MasupackModel.D_ENVIOS_PREASIGNADOS_D_ENVIOS_DATOS_fk" FromRole="D_ENVIOS_DATOS" ToRole="EnviosPreAsignados" />
+          <Property Name="casetas" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="gastos" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="viaticos" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="pension" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="maniobras_cliente" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="maniobras_propias" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="nombre_proveedor" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="estadias" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="demoras" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <Association Name="C_CLIENTES_D_ENVIOS_DATOS_fk">
           <End Type="MasupackModel.Cliente" Role="Cliente" Multiplicity="1" />
@@ -1316,6 +1395,61 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="TarifasAgenciaTufesa">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_AGENCIA" Type="Int32" />
+          <Property Name="ID_ZONA" Type="Int32" />
+          <Property Name="ID_CUENTA" Type="Int32" />
+          <Property Name="SERVICE_ID" Type="Int32" />
+          <Property Name="PESO_LIMITE_INFERIOR" Type="Double" />
+          <Property Name="PESO_LIMITE_SUPERIOR" Type="Double" />
+          <Property Name="PRECIO" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_KILO" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_KILO_ADICIONAL" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_AREA_EXTENDIDA" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="IsDeleted" Type="Int32" />
+        </EntityType>
+        <EntityType Name="TarifasAgenciaNorte">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_AGENCIA" Type="Int32" />
+          <Property Name="ID_ZONA" Type="Int32" />
+          <Property Name="ID_CUENTA" Type="Int32" />
+          <Property Name="SUB_TIPO_PAQUETE" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SERVICE_ID" Type="Int32" />
+          <Property Name="PESO_LIMITE_INFERIOR" Type="Double" />
+          <Property Name="PESO_LIMITE_SUPERIOR" Type="Double" />
+          <Property Name="PRECIO" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_KILO" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_KILO_ADICIONAL" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_AREA_EXTENDIDA" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="IsDeleted" Type="Int32" />
+        </EntityType>
+        <EntityType Name="TarifasAgenciaRedpack">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_AGENCIA" Type="Int32" />
+          <Property Name="ID_ZONA" Type="Int32" />
+          <Property Name="ID_CUENTA" Type="Int32" />
+          <Property Name="SERVICE_ID" Type="Int32" />
+          <Property Name="PESO_LIMITE_INFERIOR" Type="Double" />
+          <Property Name="PESO_LIMITE_SUPERIOR" Type="Double" />
+          <Property Name="PRECIO" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_KILO" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_KILO_ADICIONAL" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_AREA_EXTENDIDA" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="IsDeleted" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1817,6 +1951,15 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySetMapping Name="D_ENVIOS_DATOS">
             <EntityTypeMapping TypeName="MasupackModel.EnvioDatos">
               <MappingFragment StoreEntitySet="D_ENVIOS_DATOS">
+                <ScalarProperty Name="demoras" ColumnName="demoras" />
+                <ScalarProperty Name="estadias" ColumnName="estadias" />
+                <ScalarProperty Name="nombre_proveedor" ColumnName="nombre_proveedor" />
+                <ScalarProperty Name="maniobras_propias" ColumnName="maniobras_propias" />
+                <ScalarProperty Name="maniobras_cliente" ColumnName="maniobras_cliente" />
+                <ScalarProperty Name="pension" ColumnName="pension" />
+                <ScalarProperty Name="viaticos" ColumnName="viaticos" />
+                <ScalarProperty Name="gastos" ColumnName="gastos" />
+                <ScalarProperty Name="casetas" ColumnName="casetas" />
                 <ScalarProperty Name="costo_envio_proveedor" ColumnName="costo_envio_proveedor" />
                 <ScalarProperty Name="partner_envio_id" ColumnName="partner_envio_id" />
                 <ScalarProperty Name="gratificacion" ColumnName="gratificacion" />
@@ -1833,6 +1976,64 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
                 <ScalarProperty Name="id_destinatario" ColumnName="id_destinatario" />
                 <ScalarProperty Name="id_cliente" ColumnName="id_cliente" />
                 <ScalarProperty Name="id_envio" ColumnName="id_envio" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_TARIFAS_AGENCIA_TUFESA">
+            <EntityTypeMapping TypeName="MasupackModel.TarifasAgenciaTufesa">
+              <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA_TUFESA">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="PRECIO_EXCESO_DIMENSIONES" ColumnName="PRECIO_EXCESO_DIMENSIONES" />
+                <ScalarProperty Name="PRECIO_AREA_EXTENDIDA" ColumnName="PRECIO_AREA_EXTENDIDA" />
+                <ScalarProperty Name="PRECIO_KILO_ADICIONAL" ColumnName="PRECIO_KILO_ADICIONAL" />
+                <ScalarProperty Name="PRECIO_KILO" ColumnName="PRECIO_KILO" />
+                <ScalarProperty Name="PRECIO" ColumnName="PRECIO" />
+                <ScalarProperty Name="PESO_LIMITE_SUPERIOR" ColumnName="PESO_LIMITE_SUPERIOR" />
+                <ScalarProperty Name="PESO_LIMITE_INFERIOR" ColumnName="PESO_LIMITE_INFERIOR" />
+                <ScalarProperty Name="SERVICE_ID" ColumnName="SERVICE_ID" />
+                <ScalarProperty Name="ID_CUENTA" ColumnName="ID_CUENTA" />
+                <ScalarProperty Name="ID_ZONA" ColumnName="ID_ZONA" />
+                <ScalarProperty Name="ID_AGENCIA" ColumnName="ID_AGENCIA" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_TARIFAS_AGENCIA_NORTE">
+            <EntityTypeMapping TypeName="MasupackModel.TarifasAgenciaNorte">
+              <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA_NORTE">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="PRECIO_EXCESO_DIMENSIONES" ColumnName="PRECIO_EXCESO_DIMENSIONES" />
+                <ScalarProperty Name="PRECIO_AREA_EXTENDIDA" ColumnName="PRECIO_AREA_EXTENDIDA" />
+                <ScalarProperty Name="PRECIO_KILO_ADICIONAL" ColumnName="PRECIO_KILO_ADICIONAL" />
+                <ScalarProperty Name="PRECIO_KILO" ColumnName="PRECIO_KILO" />
+                <ScalarProperty Name="PRECIO" ColumnName="PRECIO" />
+                <ScalarProperty Name="PESO_LIMITE_SUPERIOR" ColumnName="PESO_LIMITE_SUPERIOR" />
+                <ScalarProperty Name="PESO_LIMITE_INFERIOR" ColumnName="PESO_LIMITE_INFERIOR" />
+                <ScalarProperty Name="SERVICE_ID" ColumnName="SERVICE_ID" />
+                <ScalarProperty Name="SUB_TIPO_PAQUETE" ColumnName="SUB_TIPO_PAQUETE" />
+                <ScalarProperty Name="ID_CUENTA" ColumnName="ID_CUENTA" />
+                <ScalarProperty Name="ID_ZONA" ColumnName="ID_ZONA" />
+                <ScalarProperty Name="ID_AGENCIA" ColumnName="ID_AGENCIA" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_TARIFAS_AGENCIA_REDPACK">
+            <EntityTypeMapping TypeName="MasupackModel.TarifasAgenciaRedpack">
+              <MappingFragment StoreEntitySet="D_TARIFAS_AGENCIA_REDPACK">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="PRECIO_EXCESO_DIMENSIONES" ColumnName="PRECIO_EXCESO_DIMENSIONES" />
+                <ScalarProperty Name="PRECIO_AREA_EXTENDIDA" ColumnName="PRECIO_AREA_EXTENDIDA" />
+                <ScalarProperty Name="PRECIO_KILO_ADICIONAL" ColumnName="PRECIO_KILO_ADICIONAL" />
+                <ScalarProperty Name="PRECIO_KILO" ColumnName="PRECIO_KILO" />
+                <ScalarProperty Name="PRECIO" ColumnName="PRECIO" />
+                <ScalarProperty Name="PESO_LIMITE_SUPERIOR" ColumnName="PESO_LIMITE_SUPERIOR" />
+                <ScalarProperty Name="PESO_LIMITE_INFERIOR" ColumnName="PESO_LIMITE_INFERIOR" />
+                <ScalarProperty Name="SERVICE_ID" ColumnName="SERVICE_ID" />
+                <ScalarProperty Name="ID_CUENTA" ColumnName="ID_CUENTA" />
+                <ScalarProperty Name="ID_ZONA" ColumnName="ID_ZONA" />
+                <ScalarProperty Name="ID_AGENCIA" ColumnName="ID_AGENCIA" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

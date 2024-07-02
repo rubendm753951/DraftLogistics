@@ -105,6 +105,70 @@ var MANTENIMIENTOTARIFAS = (function ($) { // parameters relate to scope
         { name: "IsDeleted", index: "Desactivado", width: 100, align: "Left" }
     ];
 
+    var gridNorthColumns = [
+        "Id", "Agencia", "Zona", "Cuenta", "SubTipoPaquete", "Servicio", "Peso Limite Inferior", "Peso Limite Superior", "Precio", "Precio Por Kilo", "Precio Kilo Adicional",
+        "Precio Area Extendida", "Precio Exceso Dimensiones", "Desactivado"
+    ];
+
+    var gridNorthColModel = [
+        { name: "ID", index: "Id", width: 100, align: "Left", sorttype: "int", hidden: true },
+        { name: "ID_AGENCIA", index: "Agencia", width: 100, align: "Left" },
+        { name: "ID_ZONA", index: "Zona", width: 100, align: "Left" },
+        { name: "ID_CUENTA", index: "Cuenta", width: 100, align: "Left" },
+        { name: "SUB_TIPO_PAQUETE", index: "SubTipoPaquete", width: 100, align: "Left" },
+        { name: "SERVICE_ID", index: "Servicio", width: 100, align: "Left" },
+        { name: "PESO_LIMITE_INFERIOR", index: "PesoLimiteInferior", width: 100, align: "Left" },
+        { name: "PESO_LIMITE_SUPERIOR", index: "PesoLimiteSuperior", width: 100, align: "Left" },
+        { name: "PRECIO", index: "Precio", width: 100, align: "Left" },
+        { name: "PRECIO_KILO", index: "PrecioPorKilo", width: 100, align: "Left" },
+        { name: "PRECIO_KILO_ADICIONAL", index: "PrecioKiloAdicional", width: 100, align: "Left" },
+        { name: "PRECIO_AREA_EXTENDIDA", index: "PrecioAreaExtendida", width: 100, align: "Left" },
+        { name: "PRECIO_EXCESO_DIMENSIONES", index: "PrecioExcesoDimensiones", width: 100, align: "Left" },
+        { name: "IsDeleted", index: "Desactivado", width: 100, align: "Left" }
+    ];
+
+    var gridTufesaColumns = [
+        "Id", "Agencia", "Zona", "Cuenta", "Servicio", "Peso Limite Inferior", "Peso Limite Superior", "Precio", "Precio Por Kilo", "Precio Kilo Adicional",
+        "Precio Area Extendida", "Precio Exceso Dimensiones", "Desactivado"
+    ];
+
+    var gridTufesaColModel = [
+        { name: "ID", index: "Id", width: 100, align: "Left", sorttype: "int", hidden: true },
+        { name: "ID_AGENCIA", index: "Agencia", width: 100, align: "Left" },
+        { name: "ID_ZONA", index: "Zona", width: 100, align: "Left" },
+        { name: "ID_CUENTA", index: "Cuenta", width: 100, align: "Left" },
+        { name: "SERVICE_ID", index: "Servicio", width: 100, align: "Left" },
+        { name: "PESO_LIMITE_INFERIOR", index: "PesoLimiteInferior", width: 100, align: "Left" },
+        { name: "PESO_LIMITE_SUPERIOR", index: "PesoLimiteSuperior", width: 100, align: "Left" },
+        { name: "PRECIO", index: "Precio", width: 100, align: "Left" },
+        { name: "PRECIO_KILO", index: "PrecioPorKilo", width: 100, align: "Left" },
+        { name: "PRECIO_KILO_ADICIONAL", index: "PrecioKiloAdicional", width: 100, align: "Left" },
+        { name: "PRECIO_AREA_EXTENDIDA", index: "PrecioAreaExtendida", width: 100, align: "Left" },
+        { name: "PRECIO_EXCESO_DIMENSIONES", index: "PrecioExcesoDimensiones", width: 100, align: "Left" },
+        { name: "IsDeleted", index: "Desactivado", width: 100, align: "Left" }
+    ];
+
+    var gridRedpackColumns = [
+        "Id", "Agencia", "Zona", "Cuenta", "Servicio", "Peso Limite Inferior", "Peso Limite Superior", "Precio", "Precio Por Kilo", "Precio Kilo Adicional",
+        "Precio Area Extendida", "Precio Exceso Dimensiones", "Desactivado"
+    ];
+
+    var gridRedPackColModel = [
+        { name: "ID", index: "Id", width: 100, align: "Left", sorttype: "int", hidden: true },
+        { name: "ID_AGENCIA", index: "Agencia", width: 100, align: "Left" },
+        { name: "ID_ZONA", index: "Zona", width: 100, align: "Left" },
+        { name: "ID_CUENTA", index: "Cuenta", width: 100, align: "Left" },
+        { name: "SERVICE_ID", index: "Servicio", width: 100, align: "Left" },
+        { name: "PESO_LIMITE_INFERIOR", index: "PesoLimiteInferior", width: 100, align: "Left" },
+        { name: "PESO_LIMITE_SUPERIOR", index: "PesoLimiteSuperior", width: 100, align: "Left" },
+        { name: "PRECIO", index: "Precio", width: 100, align: "Left" },
+        { name: "PRECIO_KILO", index: "PrecioPorKilo", width: 100, align: "Left" },
+        { name: "PRECIO_KILO_ADICIONAL", index: "PrecioKiloAdicional", width: 100, align: "Left" },
+        { name: "PRECIO_AREA_EXTENDIDA", index: "PrecioAreaExtendida", width: 100, align: "Left" },
+        { name: "PRECIO_EXCESO_DIMENSIONES", index: "PrecioExcesoDimensiones", width: 100, align: "Left" },
+        { name: "IsDeleted", index: "Desactivado", width: 100, align: "Left" }
+    ];
+
     function updateTarifas() {
         var rows = jQuery("#gridTarifas").jqGrid('getRowData');        
         if (rows.length > 0) {
@@ -232,6 +296,17 @@ var MANTENIMIENTOTARIFAS = (function ($) { // parameters relate to scope
             case '51': //dliver
                 gridColumns = gridDliverColumns
                 gridColumnsModel = gridDliverColModel
+            case '52': //Ruta norte
+                gridColumns = gridNorthColumns
+                gridColumnsModel = gridNorthColModel
+                break;
+            case '53': //Tufesa
+                gridColumns = gridTufesaColumns
+                gridColumnsModel = gridTufesaColModel
+                break;
+            case '54': //RedPAck
+                gridColumns = gridRedpackColumns
+                gridColumnsModel = gridRedPackColModel
                 break;
             default:
         }               
@@ -381,6 +456,18 @@ var MANTENIMIENTOTARIFAS = (function ($) { // parameters relate to scope
                     case '51': //dliver
                         gridColumns = gridDliverColumns
                         gridColumnsModel = gridDliverColModel
+                        break;
+                    case '52': //Ruta norte
+                        gridColumns = gridNorthColumns
+                        gridColumnsModel = gridNorthColModel
+                        break;
+                    case '53': //Tufesa
+                        gridColumns = gridTufesaColumns
+                        gridColumnsModel = gridTufesaColModel
+                        break;
+                    case '54': //RedPAck
+                        gridColumns = gridRedpackColumns
+                        gridColumnsModel = gridRedPackColModel
                         break;
                     default:
                 }

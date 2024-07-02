@@ -27,6 +27,15 @@ Partial Public Class EnvioDatos
     Public Property gratificacion As String
     Public Property partner_envio_id As String
     Public Property costo_envio_proveedor As String
+    Public Property casetas As Nullable(Of Decimal)
+    Public Property gastos As Nullable(Of Decimal)
+    Public Property viaticos As Nullable(Of Decimal)
+    Public Property pension As Nullable(Of Decimal)
+    Public Property maniobras_cliente As Nullable(Of Decimal)
+    Public Property maniobras_propias As Nullable(Of Decimal)
+    Public Property nombre_proveedor As String
+    Public Property estadias As Nullable(Of Decimal)
+    Public Property demoras As Nullable(Of Decimal)
 
     Public Overridable Property C_CLIENTES As Cliente
     Public Overridable Property C_DESTINATARIOS As Destinatario

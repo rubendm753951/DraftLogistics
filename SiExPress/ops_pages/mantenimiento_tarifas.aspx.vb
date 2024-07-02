@@ -49,6 +49,12 @@ Partial Class ops_pages_mantenimiento_tarifas
                                     tarifas.Add(TarifasDraftRow(currentRow, fileFullName))
                                 Case 51 'DliverExpress
                                     tarifas.Add(TarifasDliverExpress(currentRow, fileFullName))
+                                Case 52 'Ruta Norte
+                                    tarifas.Add(TarifasNorte(currentRow, fileFullName))
+                                Case 53 'Tufesa
+                                    tarifas.Add(TarifasTufesa(currentRow, fileFullName))
+                                Case 54 'RedPack
+                                    tarifas.Add(TarifasRedPack(currentRow, fileFullName))
                             End Select
                         End If
                     Else
@@ -115,6 +121,15 @@ Partial Class ops_pages_mantenimiento_tarifas
                 Case 51 'DLIVER EXPRESS
                     Dim tarifasDliverExpress = serializer.ConvertToType(Of List(Of TarifaAgenciaDliverExpress))(tarifas)
                     response.responseMessage = DaspackDALC.ActualizaTarifas(tarifasDliverExpress, idAgente)
+                Case 52 'RUTA NORTE
+                    Dim tarifasNorte = serializer.ConvertToType(Of List(Of TarifasAgenciaNorte))(tarifas)
+                    response.responseMessage = DaspackDALC.ActualizaTarifas(tarifasNorte, idAgente)
+                Case 53 'TUFESA
+                    Dim tarifasTufesa = serializer.ConvertToType(Of List(Of TarifasAgenciaTufesa))(tarifas)
+                    response.responseMessage = DaspackDALC.ActualizaTarifas(tarifasTufesa, idAgente)
+                Case 54 'TUFESA
+                    Dim tarifasRedPack = serializer.ConvertToType(Of List(Of TarifasAgenciaRedpack))(tarifas)
+                    response.responseMessage = DaspackDALC.ActualizaTarifas(tarifasRedPack, idAgente)
             End Select
 
             response.responseSuccess = True
@@ -216,6 +231,70 @@ Partial Class ops_pages_mantenimiento_tarifas
 
     Private Shared Function TarifasDliverExpress(row As String(), fileName As String) As TarifaAgenciaDliverExpress
         Dim tarifa As New TarifaAgenciaDliverExpress
+
+        With tarifa
+            .ID_AGENCIA = row(1)
+            .ID_ZONA = row(2)
+            .ID_CUENTA = row(3)
+            .SERVICE_ID = row(4)
+            .PESO_LIMITE_INFERIOR = row(5)
+            .PESO_LIMITE_SUPERIOR = row(6)
+            .PRECIO = row(7)
+            .PRECIO_KILO = row(8)
+            .PRECIO_KILO_ADICIONAL = row(9)
+            .PRECIO_AREA_EXTENDIDA = row(10)
+            .PRECIO_EXCESO_DIMENSIONES = row(11)
+            .IsDeleted = row(12)
+        End With
+
+        Return tarifa
+    End Function
+
+    Private Shared Function TarifasNorte(row As String(), fileName As String) As TarifasAgenciaNorte
+        Dim tarifa As New TarifasAgenciaNorte
+
+        With tarifa
+            .ID_AGENCIA = row(1)
+            .ID_ZONA = row(2)
+            .ID_CUENTA = row(3)
+            .SUB_TIPO_PAQUETE = row(4)
+            .SERVICE_ID = row(5)
+            .PESO_LIMITE_INFERIOR = row(6)
+            .PESO_LIMITE_SUPERIOR = row(7)
+            .PRECIO = row(8)
+            .PRECIO_KILO = row(9)
+            .PRECIO_KILO_ADICIONAL = row(10)
+            .PRECIO_AREA_EXTENDIDA = row(11)
+            .PRECIO_EXCESO_DIMENSIONES = row(12)
+            .IsDeleted = row(13)
+        End With
+
+        Return tarifa
+    End Function
+
+    Private Shared Function TarifasRedPack(row As String(), fileName As String) As TarifasAgenciaRedpack
+        Dim tarifa As New TarifasAgenciaRedpack
+
+        With tarifa
+            .ID_AGENCIA = row(1)
+            .ID_ZONA = row(2)
+            .ID_CUENTA = row(3)
+            .SERVICE_ID = row(4)
+            .PESO_LIMITE_INFERIOR = row(5)
+            .PESO_LIMITE_SUPERIOR = row(6)
+            .PRECIO = row(7)
+            .PRECIO_KILO = row(8)
+            .PRECIO_KILO_ADICIONAL = row(9)
+            .PRECIO_AREA_EXTENDIDA = row(10)
+            .PRECIO_EXCESO_DIMENSIONES = row(11)
+            .IsDeleted = row(12)
+        End With
+
+        Return tarifa
+    End Function
+
+    Private Shared Function TarifasTufesa(row As String(), fileName As String) As TarifasAgenciaTufesa
+        Dim tarifa As New TarifasAgenciaTufesa
 
         With tarifa
             .ID_AGENCIA = row(1)

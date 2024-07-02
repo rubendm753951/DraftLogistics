@@ -691,6 +691,11 @@
                                                 <asp:RadioButton ID="rbTarimasOcurreRutaPacifico" GroupName="myg" Text=" DL Tarimas Ocurre Ruta Pacífico:" Style="margin-left: 15px; margin-top: 15px" runat="server" /><br id="brTarimasOcurreRutaPacifico" runat="server" />
                                                 <asp:RadioButton ID="rbRedPackEcoExpress" GroupName="myg" Text=" RedPAck Económico:" Style="margin-left: 15px" runat="server" /><br id="brRedPackEcoExpress" runat="server" />
                                                 <asp:RadioButton ID="rbGombarRutaNorte" GroupName="myg" Text=" DL Ruta Norte:" Style="margin-left: 15px; margin-top: 15px" runat="server" /><br id="brGombarRutaNorte" runat="server" />
+
+                                                <asp:DropDownList CssClass="form-control" Height="30px" style="width: 95%; margin-left: 10px; margin-bottom: 20px;" ID="DropDownBranches" runat="server" AutoPostBack="False">                                                    
+                                                </asp:DropDownList>
+
+
                                                 <asp:Button CssClass="btn btn-outline btn-success btn-sm" ID="btnAceptar" Style="margin-left: 15px" OnClientClick="this.disabled=true;" UseSubmitBehavior="false" runat="server" Text="Guardar Envío" Width="118px"></asp:Button>
                                                 <asp:Button CssClass="btn btn-outline btn-success btn-sm" Style="margin-left: 10px" ID="btnCancelar" runat="server" Text="Cancelar" Width="118px"></asp:Button>
                                             </asp:Panel>

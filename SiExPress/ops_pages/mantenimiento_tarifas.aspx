@@ -83,6 +83,9 @@
                                     <option value="40" >PAQUETE EXPRESS</option>
                                     <option value="50" >DRAFT</option>
                                     <option value="51" >DLIVER EXPRESS</option>
+                                    <option value="52" >RUTA NORTE</option>
+                                    <option value="53" >TUFESA</option>
+                                    <option value="54" >REDPACK</option>
                                 </select>
                             </div>
                         </div>

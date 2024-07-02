@@ -185,6 +185,15 @@
     <Compile Include="TarifaAgenciaPaqueteExpress.vb">
       <DependentUpon>SiExProModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="TarifasAgenciaNorte.vb">
+      <DependentUpon>SiExProModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TarifasAgenciaRedpack.vb">
+      <DependentUpon>SiExProModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TarifasAgenciaTufesa.vb">
+      <DependentUpon>SiExProModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Zonas.vb">
       <DependentUpon>SiExProModel.tt</DependentUpon>
     </Compile>

@@ -20,5 +20,6 @@ Public Class ShipmentRequestDto
     Public Property TotlDeclVlue() As Decimal
     Public Property IsOcurre() As Integer
     Public Property ServiceTypeId() As Integer
+    Public Property BrnOcurreForzed() As String
 End Class
 
