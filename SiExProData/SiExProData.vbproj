@@ -143,6 +143,9 @@
     <Compile Include="PaqueteExpressTipoPaquete.vb">
       <DependentUpon>SiExProModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ProveedorReconciliaciones.vb">
+      <DependentUpon>SiExProModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="ProviderLabel.vb">
       <DependentUpon>SiExProModel.tt</DependentUpon>
     </Compile>

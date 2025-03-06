@@ -36,6 +36,7 @@
           <Property Name="RFC" Type="varchar" MaxLength="50" />
           <Property Name="tipo_de_pago" Type="varchar" MaxLength="20" />
           <Property Name="pe_remitente" Type="bit" Nullable="false" />
+          <Property Name="fedex_remitente" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="C_CLIENTES">
           <Key>
@@ -391,6 +392,18 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="Selecccionado" Type="bit" />
           <Property Name="identificador" Type="uniqueidentifier" />
         </EntityType>
+        <EntityType Name="D_PROVEEDOR_RECONC">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Proveedor" Type="nvarchar" MaxLength="50" />
+          <Property Name="guia_proveedor" Type="nvarchar" MaxLength="100" />
+          <Property Name="guia_draft" Type="int" />
+          <Property Name="costo" Type="money" />
+          <Property Name="peso" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="no_cajas" Type="int" />
+        </EntityType>
         <EntityType Name="D_PROVIDER_LABEL">
           <Key>
             <PropertyRef Name="Id" />
@@ -665,6 +678,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySet Name="D_ESTAFETA_LABEL" EntityType="Self.D_ESTAFETA_LABEL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_ESTAFETA_REQUEST_RESPONSE" EntityType="Self.D_ESTAFETA_REQUEST_RESPONSE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_ESTAFETA_TIPO_SERVICIO" EntityType="Self.D_ESTAFETA_TIPO_SERVICIO" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_PROVEEDOR_RECONC" EntityType="Self.D_PROVEEDOR_RECONC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_PROVIDER_LABEL" EntityType="Self.D_PROVIDER_LABEL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_TARIFAS_AGENCIA" EntityType="Self.D_TARIFAS_AGENCIA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_TARIFAS_AGENCIA_DLIVER_EXPRESS" EntityType="Self.D_TARIFAS_AGENCIA_DLIVER_EXPRESS" Schema="dbo" store:Type="Tables" />
@@ -762,6 +776,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <NavigationProperty Name="D_ENVIOS_PREASIGNADOS" Relationship="MasupackModel.C_AGENCIAS_D_ENVIOS_PREVENTA_fk" FromRole="Agencias" ToRole="D_ENVIOS_PREASIGNADOS" />
           <Property Name="tipo_de_pago" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="pe_remitente" Type="Boolean" Nullable="false" />
+          <Property Name="fedex_remitente" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Cliente">
           <Key>
@@ -907,6 +922,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySet Name="D_TARIFAS_AGENCIA_TUFESA" EntityType="MasupackModel.TarifasAgenciaTufesa" />
           <EntitySet Name="D_TARIFAS_AGENCIA_NORTE" EntityType="MasupackModel.TarifasAgenciaNorte" />
           <EntitySet Name="D_TARIFAS_AGENCIA_REDPACK" EntityType="MasupackModel.TarifasAgenciaRedpack" />
+          <EntitySet Name="D_PROVEEDOR_RECONC" EntityType="MasupackModel.ProveedorReconciliaciones" />
         </EntityContainer>
         <EntityType Name="TarifaAgencia">
           <Key>
@@ -1450,6 +1466,18 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="PRECIO_EXCESO_DIMENSIONES" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="IsDeleted" Type="Int32" />
         </EntityType>
+        <EntityType Name="ProveedorReconciliaciones">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Proveedor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="guia_proveedor" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="guia_draft" Type="Int32" />
+          <Property Name="costo" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="peso" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="no_cajas" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1459,6 +1487,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySetMapping Name="C_AGENCIAS">
             <EntityTypeMapping TypeName="MasupackModel.Agencias">
               <MappingFragment StoreEntitySet="C_AGENCIAS">
+                <ScalarProperty Name="fedex_remitente" ColumnName="fedex_remitente" />
                 <ScalarProperty Name="pe_remitente" ColumnName="pe_remitente" />
                 <ScalarProperty Name="tipo_de_pago" ColumnName="tipo_de_pago" />
                 <ScalarProperty Name="RFC" ColumnName="RFC" />
@@ -2033,6 +2062,19 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
                 <ScalarProperty Name="ID_CUENTA" ColumnName="ID_CUENTA" />
                 <ScalarProperty Name="ID_ZONA" ColumnName="ID_ZONA" />
                 <ScalarProperty Name="ID_AGENCIA" ColumnName="ID_AGENCIA" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_PROVEEDOR_RECONC">
+            <EntityTypeMapping TypeName="MasupackModel.ProveedorReconciliaciones">
+              <MappingFragment StoreEntitySet="D_PROVEEDOR_RECONC">
+                <ScalarProperty Name="no_cajas" ColumnName="no_cajas" />
+                <ScalarProperty Name="peso" ColumnName="peso" />
+                <ScalarProperty Name="costo" ColumnName="costo" />
+                <ScalarProperty Name="guia_draft" ColumnName="guia_draft" />
+                <ScalarProperty Name="guia_proveedor" ColumnName="guia_proveedor" />
+                <ScalarProperty Name="Proveedor" ColumnName="Proveedor" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
