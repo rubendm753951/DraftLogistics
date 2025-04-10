@@ -276,12 +276,13 @@ C:\MySites\DraftLogistics\SiExProECommerce\bin\Debug\System.Memory.xml
 C:\MySites\DraftLogistics\SiExProECommerce\bin\Debug\System.Numerics.Vectors.xml
 C:\MySites\DraftLogistics\SiExProECommerce\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\MySites\DraftLogistics\SiExProECommerce\bin\Debug\System.Threading.Tasks.Extensions.xml
-C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.vbprojAssemblyReference.cache
 C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.dll.config
 C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.Resources.resources
 C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.vbproj.GenerateResource.cache
 C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.vbproj.CoreCompileInputs.cache
-C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.vbproj.CopyComplete
 C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.dll
 C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.xml
 C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.pdb
+C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.vbproj.AssemblyReference.cache
+C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProECommerce.vbproj.SuggestedBindingRedirects.cache
+C:\MySites\DraftLogistics\SiExProECommerce\obj\Debug\SiExProE.1F4E82F5.Up2Date

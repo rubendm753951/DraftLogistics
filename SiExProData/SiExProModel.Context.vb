@@ -55,6 +55,7 @@ Partial Public Class SiExProEntities
     Public Overridable Property D_TARIFAS_AGENCIA_NORTE() As DbSet(Of TarifasAgenciaNorte)
     Public Overridable Property D_TARIFAS_AGENCIA_REDPACK() As DbSet(Of TarifasAgenciaRedpack)
     Public Overridable Property D_PROVEEDOR_RECONC() As DbSet(Of ProveedorReconciliaciones)
+    Public Overridable Property D_PAK2GO_REFERENCE() As DbSet(Of Pak2GoReference)
 
     Public Overridable Function sp_Select_envios_comentarios_pendientes(id_oficina As Nullable(Of Integer)) As ObjectResult(Of SelectEnviosComentariosPendientesResult)
         Dim id_oficinaParameter As ObjectParameter = If(id_oficina.HasValue, New ObjectParameter("id_oficina", id_oficina), New ObjectParameter("id_oficina", GetType(Integer)))

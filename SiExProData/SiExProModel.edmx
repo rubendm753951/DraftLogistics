@@ -392,6 +392,18 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="Selecccionado" Type="bit" />
           <Property Name="identificador" Type="uniqueidentifier" />
         </EntityType>
+        <EntityType Name="D_PAK2GO_REFERENCE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RateId" Type="int" />
+          <Property Name="ReferenceNumber" Type="varchar" MaxLength="50" />
+          <Property Name="TrackNumber" Type="varchar" MaxLength="50" />
+          <Property Name="ShipmentId" Type="int" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" />
+        </EntityType>
         <EntityType Name="D_PROVEEDOR_RECONC">
           <Key>
             <PropertyRef Name="ID" />
@@ -678,6 +690,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySet Name="D_ESTAFETA_LABEL" EntityType="Self.D_ESTAFETA_LABEL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_ESTAFETA_REQUEST_RESPONSE" EntityType="Self.D_ESTAFETA_REQUEST_RESPONSE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_ESTAFETA_TIPO_SERVICIO" EntityType="Self.D_ESTAFETA_TIPO_SERVICIO" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="D_PAK2GO_REFERENCE" EntityType="Self.D_PAK2GO_REFERENCE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_PROVEEDOR_RECONC" EntityType="Self.D_PROVEEDOR_RECONC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_PROVIDER_LABEL" EntityType="Self.D_PROVIDER_LABEL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="D_TARIFAS_AGENCIA" EntityType="Self.D_TARIFAS_AGENCIA" Schema="dbo" store:Type="Tables" />
@@ -923,6 +936,7 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <EntitySet Name="D_TARIFAS_AGENCIA_NORTE" EntityType="MasupackModel.TarifasAgenciaNorte" />
           <EntitySet Name="D_TARIFAS_AGENCIA_REDPACK" EntityType="MasupackModel.TarifasAgenciaRedpack" />
           <EntitySet Name="D_PROVEEDOR_RECONC" EntityType="MasupackModel.ProveedorReconciliaciones" />
+          <EntitySet Name="D_PAK2GO_REFERENCE" EntityType="MasupackModel.Pak2GoReference" />
         </EntityContainer>
         <EntityType Name="TarifaAgencia">
           <Key>
@@ -1477,6 +1491,18 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
           <Property Name="costo" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="peso" Type="Decimal" Precision="18" Scale="4" />
           <Property Name="no_cajas" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Pak2GoReference">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RateId" Type="Int32" />
+          <Property Name="ReferenceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TrackNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ShipmentId" Type="Int32" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2076,6 +2102,19 @@ warning 6002: The table/view 'Gombar.dbo.C_SEPOMEX' does not have a primary key 
                 <ScalarProperty Name="guia_proveedor" ColumnName="guia_proveedor" />
                 <ScalarProperty Name="Proveedor" ColumnName="Proveedor" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="D_PAK2GO_REFERENCE">
+            <EntityTypeMapping TypeName="MasupackModel.Pak2GoReference">
+              <MappingFragment StoreEntitySet="D_PAK2GO_REFERENCE">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ShipmentId" ColumnName="ShipmentId" />
+                <ScalarProperty Name="TrackNumber" ColumnName="TrackNumber" />
+                <ScalarProperty Name="ReferenceNumber" ColumnName="ReferenceNumber" />
+                <ScalarProperty Name="RateId" ColumnName="RateId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

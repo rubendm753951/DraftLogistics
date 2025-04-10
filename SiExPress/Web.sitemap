@@ -17,6 +17,7 @@
           <siteMapNode url="admin_pages/admin_tarifas_estafeta.aspx" title="Tarifas Estafeta"  description="Tarifas Estafeta" />
           <siteMapNode url="admin_pages/admin_tarifas_tarimas.aspx" title="Tarifas Tarimas"  description="Tarifas Tarimas" />
           <siteMapNode url="admin_pages/admin_clientes.aspx" title="Clientes"  description="Clientes" />
+          <siteMapNode url="admin_pages/importar_reconciliacion_proveedores.aspx" title="Importar Reconciliacion Proveedores"  description="Importar Reconciliacion Proveedores" />
         </siteMapNode>
 
         <siteMapNode url="ops_pages/operacion.aspx" title="Modulo Operativo"  description="Operación">

@@ -357,6 +357,13 @@ Public Class DaspackDALC
 
     End Function
 
+    Public Shared Function GetSenderById(clienteId As Integer) As Cliente
+        Dim dbContext As New SiExProEntities
+
+        Return dbContext.C_CLIENTES.FirstOrDefault(Function(x) x.id_cliente = clienteId)
+
+    End Function
+
     Public Shared Function GetSearchZipCode(cp As String) As List(Of Sepomex)
         Dim dbContext As New SiExProEntities
         Dim result = dbContext.C_SEPOMEX.Where(Function(x) x.d_codigo = cp)
@@ -396,6 +403,36 @@ Public Class DaspackDALC
         Else
             Return Nothing
         End If
+    End Function
+
+    Public Shared Function CreatePak2GoReference(rateId As Integer, reference As String) As String
+        Dim dbContext As New SiExProEntities
+
+        Dim pak2GoReference As New Pak2GoReference()
+
+        pak2GoReference.RateId = rateId
+        pak2GoReference.ReferenceNumber = reference
+        pak2GoReference.CreatedOn = DateTime.Now.Date()
+
+        dbContext.D_PAK2GO_REFERENCE.Add(pak2GoReference)
+
+        dbContext.SaveChanges()
+
+    End Function
+
+    Public Shared Function UpdatePak2GoReference(rateId As Integer, shipmentId As Integer, trackNumber As String) As String
+        Dim dbContext As New SiExProEntities
+
+        Dim pak2GoReference = dbContext.D_PAK2GO_REFERENCE.FirstOrDefault(Function(x) x.RateId = rateId)
+
+        If pak2GoReference IsNot Nothing Then
+            pak2GoReference.ShipmentId = shipmentId
+            pak2GoReference.TrackNumber = trackNumber
+            pak2GoReference.ModifiedOn = DateTime.Now.Date()
+
+            dbContext.SaveChanges()
+        End If
+
     End Function
 
     Public Shared Function FedexShipment(ByVal fedexShipRequest As ShipRequestDto) As ResponseData
@@ -465,6 +502,56 @@ Public Class DaspackDALC
             resByte = webClient.UploadData(ConfigurationManager.AppSettings("PaqueteExpress.Quote"), "post", reqString)
             resString = Encoding.Default.GetString(resByte)
             response = serializer.Deserialize(Of PaqueteExpressQuoteServiceResponse)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function Pak2GoQuote(ByVal request As ShipRequestDto) As Pak2GoShipServiceResponse
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New Pak2GoShipServiceResponse()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(request)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("Pak2Go.Quote"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of Pak2GoShipServiceResponse)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function Pak2GoLabel(ByVal request As ShipRequestDto) As Pak2GoLabelServiceResponse
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New Pak2GoLabelServiceResponse()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(request)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("Pak2Go.Ship"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of Pak2GoLabelServiceResponse)(resString)
             webClient.Dispose()
         Catch ex As Exception
             response.Success = False
@@ -911,58 +998,78 @@ Public Class DaspackDALC
 
     Public Shared Function ModificacionEnvioProveedor(id_envio As Integer, comentarios As String, idProveedor As Integer, idUsuario As Integer, noFactura As String, importeFacturaProveedor As Decimal, gratificacion As String) As Boolean
         Dim dbContext As New SiExProEntities
-
-        InsComenatrio(id_envio, idUsuario, "Proveedor Envio Modificado: " + comentarios)
         Dim auditLogEnvio = New AuditLog
 
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
-        Dim auditLogEnvioDatos = New AuditLog
-        auditLogEnvioDatos.Columna = "id_proveedor"
-        auditLogEnvioDatos.Fecha = DateTime.Now
-        auditLogEnvioDatos.Tabla = "D_ENVIOS_DATOS"
-        auditLogEnvioDatos.Usuario = idUsuario
-        auditLogEnvioDatos.ValorAnterior = envioDato.id_proveedor.ToString
-        auditLogEnvioDatos.ValorActual = idProveedor.ToString
-        auditLogEnvioDatos.IdEnvio = id_envio
 
-        envioDato.id_proveedor = idProveedor
-        dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatos)
+        Dim currentIdProveedor As Integer = IIf(envioDato.id_proveedor Is Nothing, 0, envioDato.id_proveedor)
 
-        Dim auditLogEnvioDatosNoFactura = New AuditLog
-        auditLogEnvioDatosNoFactura.Columna = "no_factura"
-        auditLogEnvioDatosNoFactura.Fecha = DateTime.Now
-        auditLogEnvioDatosNoFactura.Tabla = "D_ENVIOS_DATOS"
-        auditLogEnvioDatosNoFactura.Usuario = idUsuario
-        auditLogEnvioDatosNoFactura.ValorAnterior = IIf(envioDato.no_factura Is Nothing, "", envioDato.no_factura)
-        auditLogEnvioDatosNoFactura.ValorActual = noFactura
-        auditLogEnvioDatosNoFactura.IdEnvio = id_envio
+        If currentIdProveedor <> idProveedor Then
+            InsComenatrio(id_envio, idUsuario, "Envio Modificado Proveedor: " + comentarios + " Valor Anterior:" + IIf(envioDato.id_proveedor Is Nothing, "", envioDato.id_proveedor.ToString) + " Valor Actual: " + idProveedor.ToString())
 
-        envioDato.no_factura = noFactura
-        dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosNoFactura)
+            Dim auditLogEnvioDatos = New AuditLog
+            auditLogEnvioDatos.Columna = "id_proveedor"
+            auditLogEnvioDatos.Fecha = DateTime.Now
+            auditLogEnvioDatos.Tabla = "D_ENVIOS_DATOS"
+            auditLogEnvioDatos.Usuario = idUsuario
+            auditLogEnvioDatos.ValorAnterior = envioDato.id_proveedor.ToString
+            auditLogEnvioDatos.ValorActual = idProveedor.ToString
+            auditLogEnvioDatos.IdEnvio = id_envio
 
-        Dim auditLogEnvioDatosImporteFacturaProveedor = New AuditLog
-        auditLogEnvioDatosImporteFacturaProveedor.Columna = "importe_factura_proveedor"
-        auditLogEnvioDatosImporteFacturaProveedor.Fecha = DateTime.Now
-        auditLogEnvioDatosImporteFacturaProveedor.Tabla = "D_ENVIOS_DATOS"
-        auditLogEnvioDatosImporteFacturaProveedor.Usuario = idUsuario
-        auditLogEnvioDatosImporteFacturaProveedor.ValorAnterior = IIf(envioDato.importe_factura_proveedor Is Nothing, "", envioDato.importe_factura_proveedor.ToString)
-        auditLogEnvioDatosImporteFacturaProveedor.ValorActual = importeFacturaProveedor
-        auditLogEnvioDatosImporteFacturaProveedor.IdEnvio = id_envio
+            envioDato.id_proveedor = idProveedor
+            dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatos)
+        End If
 
-        envioDato.importe_factura_proveedor = importeFacturaProveedor
-        dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosImporteFacturaProveedor)
+        If envioDato.no_factura <> noFactura Then
+            InsComenatrio(id_envio, idUsuario, "Envio Modificado No Factura: " + comentarios + " Valor Anterior:" + IIf(envioDato.no_factura Is Nothing, "", envioDato.no_factura) + " Valor Actual: " + noFactura)
 
-        Dim auditLogEnvioDatosGratificacion = New AuditLog
-        auditLogEnvioDatosGratificacion.Columna = "gratificacion"
-        auditLogEnvioDatosGratificacion.Fecha = DateTime.Now
-        auditLogEnvioDatosGratificacion.Tabla = "D_ENVIOS_DATOS"
-        auditLogEnvioDatosGratificacion.Usuario = idUsuario
-        auditLogEnvioDatosGratificacion.ValorAnterior = IIf(envioDato.gratificacion Is Nothing, "", envioDato.gratificacion)
-        auditLogEnvioDatosGratificacion.ValorActual = gratificacion
-        auditLogEnvioDatosGratificacion.IdEnvio = id_envio
+            Dim auditLogEnvioDatosNoFactura = New AuditLog
+            auditLogEnvioDatosNoFactura.Columna = "no_factura"
+            auditLogEnvioDatosNoFactura.Fecha = DateTime.Now
+            auditLogEnvioDatosNoFactura.Tabla = "D_ENVIOS_DATOS"
+            auditLogEnvioDatosNoFactura.Usuario = idUsuario
+            auditLogEnvioDatosNoFactura.ValorAnterior = IIf(envioDato.no_factura Is Nothing, "", envioDato.no_factura)
+            auditLogEnvioDatosNoFactura.ValorActual = noFactura
+            auditLogEnvioDatosNoFactura.IdEnvio = id_envio
 
-        envioDato.gratificacion = gratificacion
-        dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosGratificacion)
+            envioDato.no_factura = noFactura
+            dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosNoFactura)
+        End If
+
+        Dim currentImporteFactura As Decimal = IIf(envioDato.importe_factura_proveedor Is Nothing, 0, envioDato.importe_factura_proveedor)
+
+        If currentImporteFactura <> importeFacturaProveedor Then
+            InsComenatrio(id_envio, idUsuario, "Envio Modificado Importe Factura Proveedor: " + comentarios + " Valor Anterior:" + IIf(envioDato.importe_factura_proveedor Is Nothing, "", envioDato.importe_factura_proveedor.ToString) + " Valor Actual: " + importeFacturaProveedor.ToString)
+
+            Dim auditLogEnvioDatosImporteFacturaProveedor = New AuditLog
+            auditLogEnvioDatosImporteFacturaProveedor.Columna = "importe_factura_proveedor"
+            auditLogEnvioDatosImporteFacturaProveedor.Fecha = DateTime.Now
+            auditLogEnvioDatosImporteFacturaProveedor.Tabla = "D_ENVIOS_DATOS"
+            auditLogEnvioDatosImporteFacturaProveedor.Usuario = idUsuario
+            auditLogEnvioDatosImporteFacturaProveedor.ValorAnterior = IIf(envioDato.importe_factura_proveedor Is Nothing, "", envioDato.importe_factura_proveedor.ToString)
+            auditLogEnvioDatosImporteFacturaProveedor.ValorActual = importeFacturaProveedor
+            auditLogEnvioDatosImporteFacturaProveedor.IdEnvio = id_envio
+
+            envioDato.importe_factura_proveedor = importeFacturaProveedor
+            dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosImporteFacturaProveedor)
+        End If
+
+
+        If envioDato.gratificacion <> gratificacion Then
+            InsComenatrio(id_envio, idUsuario, "Envio Modificado Gratificacion: " + comentarios + " Valor Anterior:" + IIf(envioDato.gratificacion Is Nothing, "", envioDato.gratificacion) + " Valor Actual: " + gratificacion.ToString)
+
+            Dim auditLogEnvioDatosGratificacion = New AuditLog
+            auditLogEnvioDatosGratificacion.Columna = "gratificacion"
+            auditLogEnvioDatosGratificacion.Fecha = DateTime.Now
+            auditLogEnvioDatosGratificacion.Tabla = "D_ENVIOS_DATOS"
+            auditLogEnvioDatosGratificacion.Usuario = idUsuario
+            auditLogEnvioDatosGratificacion.ValorAnterior = IIf(envioDato.gratificacion Is Nothing, "", envioDato.gratificacion)
+            auditLogEnvioDatosGratificacion.ValorActual = gratificacion
+            auditLogEnvioDatosGratificacion.IdEnvio = id_envio
+
+            envioDato.gratificacion = gratificacion
+            dbContext.D_AUDIT_LOG.Add(auditLogEnvioDatosGratificacion)
+        End If
 
         dbContext.SaveChanges()
 
@@ -973,10 +1080,11 @@ Public Class DaspackDALC
     Public Shared Function ModificacionTotalEnvio(id_envio As Integer, totalEnvio As Double, comentarios As String, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Total Envio Modificado: " + comentarios)
         Dim auditLogEnvio = New AuditLog
 
         Dim envio As Envio = dbContext.D_ENVIOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Total Envio Modificado: " + comentarios + " Valor Anterior:" + envio.total_envio.ToString + " Valor Actual: " + totalEnvio.ToString)
 
         auditLogEnvio.Columna = "total_envio"
         auditLogEnvio.Fecha = DateTime.Now
@@ -1001,9 +1109,10 @@ Public Class DaspackDALC
     Public Shared Function ModificacionReferenciaFedex(id_envio As Integer, referenciaFedex As String, comentarios As String, idUsuario As Integer) As Boolean
 
         Dim dbContext As New SiExProEntities
-        InsComenatrio(id_envio, idUsuario, "Referencia Fedex Modificado: " + comentarios)
         Dim auditLogEnvio = New AuditLog
         Dim envio As Envio = dbContext.D_ENVIOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Referencia Fedex Modificado: " + comentarios + " Valor Anterior:" + envio.Referencia_FedEx.ToString + " Valor Actual: " + referenciaFedex)
 
         Dim control As New seguimiento_envios
         'validar si el código proporcionado es refeencia o guía interna
@@ -1030,10 +1139,10 @@ Public Class DaspackDALC
     Public Shared Function ModificacionCasetas(id_envio As Integer, comentarios As String, casetas As Double, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Casetas Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
-
         Dim auditLogEnvio = New AuditLog
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Casetas Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios) + " Valor Anterior:" + IIf(envioDato.casetas Is Nothing, "", envioDato.casetas.ToString()) + " Valor Actual: " + casetas.ToString())
 
         Dim auditLogEnvioDatosNoFactura = New AuditLog
         auditLogEnvioDatosNoFactura.Columna = "casetas"
@@ -1055,10 +1164,10 @@ Public Class DaspackDALC
     Public Shared Function ModificacionGastos(id_envio As Integer, comentarios As String, gastos As Double, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Gastos Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
-
         Dim auditLogEnvio = New AuditLog
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Gastos Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios) + " Valor Anterior:" + IIf(envioDato.gastos Is Nothing, "", envioDato.gastos.ToString()) + " Valor Actual: " + gastos.ToString())
 
         Dim auditLogEnvioDatosNoFactura = New AuditLog
         auditLogEnvioDatosNoFactura.Columna = "gastos"
@@ -1079,10 +1188,10 @@ Public Class DaspackDALC
     Public Shared Function ModificacionViaticos(id_envio As Integer, comentarios As String, viaticos As Double, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Viaticos Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
-
         Dim auditLogEnvio = New AuditLog
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Viaticos Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios) + " Valor Anterior:" + IIf(envioDato.viaticos Is Nothing, "", envioDato.viaticos.ToString()) + " Valor Actual: " + viaticos.ToString())
 
         Dim auditLogEnvioDatosNoFactura = New AuditLog
         auditLogEnvioDatosNoFactura.Columna = "viaticos"
@@ -1103,10 +1212,10 @@ Public Class DaspackDALC
     Public Shared Function ModificacionPension(id_envio As Integer, comentarios As String, pension As Double, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Pension Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
-
         Dim auditLogEnvio = New AuditLog
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Pension Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios) + " Valor Anterior:" + IIf(envioDato.pension Is Nothing, "", envioDato.pension.ToString()) + " Valor Actual: " + pension.ToString())
 
         Dim auditLogEnvioDatosNoFactura = New AuditLog
         auditLogEnvioDatosNoFactura.Columna = "pension"
@@ -1127,10 +1236,10 @@ Public Class DaspackDALC
     Public Shared Function ModificacionManiobrasCliente(id_envio As Integer, comentarios As String, maniobras_cliente As Double, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Maniobras Cliente Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
-
         Dim auditLogEnvio = New AuditLog
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Maniobras Cliente Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios) + " Valor Anterior:" + IIf(envioDato.maniobras_cliente Is Nothing, "", envioDato.maniobras_cliente.ToString()) + " Valor Actual: " + maniobras_cliente.ToString())
 
         Dim auditLogEnvioDatosNoFactura = New AuditLog
         auditLogEnvioDatosNoFactura.Columna = "maniobras_cliente"
@@ -1151,10 +1260,10 @@ Public Class DaspackDALC
     Public Shared Function ModificacionManiobrasPropias(id_envio As Integer, comentarios As String, maniobras_propias As Double, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Maniobras Propias Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
-
         Dim auditLogEnvio = New AuditLog
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Maniobras Propias Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios) + " Valor Anterior:" + IIf(envioDato.maniobras_propias Is Nothing, "", envioDato.maniobras_propias.ToString()) + " Valor Actual: " + maniobras_propias.ToString())
 
         Dim auditLogEnvioDatosNoFactura = New AuditLog
         auditLogEnvioDatosNoFactura.Columna = "maniobras_propias"
@@ -1175,10 +1284,10 @@ Public Class DaspackDALC
     Public Shared Function ModificacionEstadias(id_envio As Integer, comentarios As String, estadias As Double, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Estadias Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
-
         Dim auditLogEnvio = New AuditLog
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Estadias Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios) + " Valor Anterior:" + IIf(envioDato.estadias Is Nothing, "", envioDato.estadias.ToString()) + " Valor Actual: " + estadias.ToString())
 
         Dim auditLogEnvioDatosNoFactura = New AuditLog
         auditLogEnvioDatosNoFactura.Columna = "estadias"
@@ -1199,10 +1308,10 @@ Public Class DaspackDALC
     Public Shared Function ModificacionDemoras(id_envio As Integer, comentarios As String, demoras As Double, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Demoras Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
-
         Dim auditLogEnvio = New AuditLog
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Demoras Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios) + " Valor Anterior:" + IIf(envioDato.demoras Is Nothing, "", envioDato.demoras.ToString()) + " Valor Actual: " + demoras.ToString())
 
         Dim auditLogEnvioDatosNoFactura = New AuditLog
         auditLogEnvioDatosNoFactura.Columna = "demoras"
@@ -1223,17 +1332,17 @@ Public Class DaspackDALC
     Public Shared Function ModificacionNombreProveedor(id_envio As Integer, comentarios As String, nombre_proveedor As String, idUsuario As Integer) As Boolean
         Dim dbContext As New SiExProEntities
 
-        InsComenatrio(id_envio, idUsuario, "Nombre Proveedor Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios))
-
         Dim auditLogEnvio = New AuditLog
         Dim envioDato As EnvioDatos = dbContext.D_ENVIOS_DATOS.FirstOrDefault(Function(x) x.id_envio = id_envio)
+
+        InsComenatrio(id_envio, idUsuario, "Nombre Proveedor Modificado: " + IIf(String.IsNullOrWhiteSpace(comentarios), "", comentarios) + " Valor Anterior:" + IIf(String.IsNullOrWhiteSpace(envioDato.nombre_proveedor), "", envioDato.nombre_proveedor) + " Valor Actual: " + nombre_proveedor.ToString())
 
         Dim auditLogEnvioDatosNoFactura = New AuditLog
         auditLogEnvioDatosNoFactura.Columna = "nombre_proveedor"
         auditLogEnvioDatosNoFactura.Fecha = DateTime.Now
         auditLogEnvioDatosNoFactura.Tabla = "D_ENVIOS_DATOS"
         auditLogEnvioDatosNoFactura.Usuario = idUsuario
-        auditLogEnvioDatosNoFactura.ValorAnterior = IIf(String.IsNullOrWhiteSpace(nombre_proveedor), "", envioDato.nombre_proveedor)
+        auditLogEnvioDatosNoFactura.ValorAnterior = IIf(String.IsNullOrWhiteSpace(envioDato.nombre_proveedor), "", envioDato.nombre_proveedor)
         auditLogEnvioDatosNoFactura.ValorActual = nombre_proveedor
         auditLogEnvioDatosNoFactura.IdEnvio = id_envio
 
@@ -1339,6 +1448,21 @@ Public Class DaspackDALC
         Catch ex As Exception
             response.Success = False
             response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
+
+    Public Shared Function ConciliacionProveedores(conciliacion As List(Of ProveedorReconciliaciones)) As String
+        Dim response As String = ""
+        Dim dbContext As New SiExProEntities
+        Try
+
+            dbContext.D_PROVEEDOR_RECONC.AddRange(conciliacion)
+            dbContext.SaveChanges()
+
+            response = "Importacion Actualizada"
+        Catch ex As Exception
+            response = "No se pudieron insertar registros"
         End Try
         Return response
     End Function

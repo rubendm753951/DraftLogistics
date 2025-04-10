@@ -140,6 +140,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Pak2GoReference.vb">
+      <DependentUpon>SiExProModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="PaqueteExpressTipoPaquete.vb">
       <DependentUpon>SiExProModel.tt</DependentUpon>
     </Compile>

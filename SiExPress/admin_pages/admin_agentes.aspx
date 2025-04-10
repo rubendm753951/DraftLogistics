@@ -187,6 +187,7 @@
                                             </asp:BoundField>
                                             <asp:CheckBoxField DataField="guia_estafeta" HeaderText="Guia Estafeta" SortExpression="guia_estafeta" />
                                             <asp:CheckBoxField DataField="pe_remitente" HeaderText="PE Remitente" SortExpression="pe_remitente" />
+                                            <asp:CheckBoxField DataField="fedex_remitente" HeaderText="FEDEX Remitente" SortExpression="fedex_remitente" />
                                         </Columns>
                                         <PagerStyle CssClass="pagination-ys"></PagerStyle>
                                     </asp:GridView>
@@ -218,6 +219,7 @@
                         <asp:Parameter Name="costo_adicional" Type="Decimal" />
                         <asp:Parameter Name="guia_estafeta" Type="Boolean" />
                         <asp:Parameter Name="pe_remitente" Type="Boolean" />
+                        <asp:Parameter Name="fedex_remitente" Type="Boolean" />
                     </UpdateParameters>
                     <SelectParameters>
                         <asp:ControlParameter ControlID="DropDownCorp" Name="id_corporativo" PropertyName="SelectedValue" Type="Int32" />

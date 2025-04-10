@@ -734,6 +734,7 @@
                             <asp:HiddenField ID="hdnPaqueteExpressNextDay" Value="" runat="server" />
                             <asp:HiddenField ID="hdnValorTotalDeclarado" Value="" runat="server" />
                             <asp:HiddenField ID="hdnValorAreaExtendida" Value="" runat="server" />
+                            <asp:HiddenField ID="hdnPak2GoRateId" Value="" runat="server" />
                             <br />
                             <asp:SqlDataSource ID="Tarifas" runat="server" SelectCommandType="StoredProcedure" SelectCommand="sp_SelectTarifas_por_Agente" ConnectionString="<%$ ConnectionStrings:paqueteriaDB_ConnectionString %>">
                                 <SelectParameters>

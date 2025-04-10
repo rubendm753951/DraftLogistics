@@ -50,7 +50,8 @@ Public Class EstafetaWrapper
             End With
 
             cuentaServicios.Add(cuentaServicio)
-
+            ServicePointManager.Expect100Continue = True
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
             respuestaFrecuenciaCotizador = estafetaService.FrecuenciaCotizador(tmpEstafetaUserTarimas.UserId, tmpEstafetaUserTarimas.UserName, tmpEstafetaUserTarimas.Password, False, True, tipoEnvio, cpOrigen, cpDestino)
             If log = "true" Then
                 Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
@@ -302,7 +303,7 @@ Public Class EstafetaWrapper
 
     End Function
 
-    Public Function NewLabel(idUsuario As Integer, shipmentRequest As ShipRequestDto, tipoServicio As Estafeta.Frecuenciacotizador.TipoServicio, respuestaFrecuenciaCotizador As Estafeta.Frecuenciacotizador.Respuesta(), envios() As Integer) As String
+    Public Function NewLabel(idUsuario As Integer, shipmentRequest As ShipRequestDto, tipoServicio As EstafetaQuoteService, envios() As Integer) As String
         Dim message As String = ""
         Dim webClient As New WebClient()
         Dim resByte As Byte()
@@ -312,11 +313,11 @@ Public Class EstafetaWrapper
 
             Dim serviceTypeId = 1 '70
 
-            If tipoServicio.DescripcionServicio.ToLower = DIA_SIGUIENTE Then
+            If tipoServicio.ServiceName.ToLower = DIA_SIGUIENTE Then
                 serviceTypeId = 2 '60
             End If
 
-            If tipoServicio.DescripcionServicio.ToLower = LTL Then
+            If tipoServicio.ServiceName.ToLower = LTL Then
                 serviceTypeId = 3 'L0
             End If
 
@@ -328,7 +329,7 @@ Public Class EstafetaWrapper
             Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
             Dim jsonRequest = serializer.Serialize(shipmentRequest)
 
-            Dim url = ConfigurationManager.AppSettings("Estafeta.NewLabel.Service") + IIf(tipoServicio.DescripcionServicio.ToLower = LTL, "true", "false")
+            Dim url = ConfigurationManager.AppSettings("Estafeta.NewLabel.Service") + IIf(tipoServicio.ServiceName.ToLower = LTL, "true", "false")
 
             Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
             resByte = webClient.UploadData(url, "post", reqString)
@@ -339,13 +340,13 @@ Public Class EstafetaWrapper
             If response IsNot Nothing And response.Data IsNot Nothing Then
                 Dim identificador = System.Guid.NewGuid
 
-                DaspackDALC.InsFrecuanciaCotizador(envios(0), respuestaFrecuenciaCotizador, tipoServicio)
+                'DaspackDALC.InsFrecuanciaCotizador(envios(0), respuestaFrecuenciaCotizador, tipoServicio)
 
                 If response.Data.Elements IsNot Nothing Then
                     If response.Data.Elements.Count > 0 Then
                         If response.Data.Elements(0) IsNot Nothing Then
                             If Not String.IsNullOrWhiteSpace(response.Data.Elements.FirstOrDefault().TrackingCode) Then
-                                If Not tipoServicio.DescripcionServicio.ToLower = LTL Then
+                                If Not tipoServicio.ServiceName.ToLower = LTL Then
                                     Dim zpl() As Byte = Encoding.UTF8.GetBytes(response.Data.Elements.FirstOrDefault().Data)
 
                                     ' adjust print density (8dpmm), label width (4 inches), label height (6 inches), and label index (0) as necessary
@@ -403,6 +404,30 @@ Public Class EstafetaWrapper
 
     End Function
 
+    Public Shared Function EstafetaQuote(ByVal request As ShipRequestDto) As EstafetaQuoteServiceResponse
+        Dim webClient As New WebClient()
+        Dim resByte As Byte()
+        Dim resString As String
+        Dim response As New EstafetaQuoteServiceResponse()
+        Try
+
+            webClient.Headers("Content-type") = "application/json;charset=utf-8"
+            webClient.Encoding = Encoding.UTF8
+
+            Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+            Dim jsonRequest = serializer.Serialize(request)
+
+            Dim reqString = Encoding.UTF8.GetBytes(jsonRequest)
+            resByte = webClient.UploadData(ConfigurationManager.AppSettings("Estafeta.QuoteLabel.Service"), "post", reqString)
+            resString = Encoding.Default.GetString(resByte)
+            response = serializer.Deserialize(Of EstafetaQuoteServiceResponse)(resString)
+            webClient.Dispose()
+        Catch ex As Exception
+            response.Success = False
+            response.ErrorMessage = ex.Message
+        End Try
+        Return response
+    End Function
     Private Function UpdateObservations(ByVal message As String, ByVal idEnvio As Integer, ByVal idUsuario As Integer) As String
         Dim observaciones As String = "No se pudo crear envio " + message
 
