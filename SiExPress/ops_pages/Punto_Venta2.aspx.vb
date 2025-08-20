@@ -406,7 +406,7 @@ Partial Class Punto_Venta
             Dim area_extendida_standard_overnight As Decimal = 0
             Dim pesoVol As Decimal = (datos_envio.alto * datos_envio.ancho * datos_envio.largo) / 5000
             Dim pesoVolumetrico = IIf(datos_envio.peso > pesoVol, datos_envio.peso, pesoVol)
-            Dim estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, datos_envio.id_agente, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, datos_envio.peso, 0, 0)
+            Dim estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, datos_envio.id_agente, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, datos_envio.peso, 0, 0, "", datos_envio.largo, datos_envio.alto, datos_envio.ancho)
 
             InicializaControles()
             Dim shipmentRequest As New ShipmentRequestDto()
@@ -461,7 +461,7 @@ Partial Class Punto_Venta
                     If agente IsNot Nothing AndAlso agente.fedex_remitente Then
                         Dim datos_cliente As New ObjCliente
                         Dim id_cliente As Integer
-                        datos_cliente.id_pais = DropDownPais.SelectedValue
+                        datos_cliente.id_pais = IIf(String.IsNullOrWhiteSpace(DropDownPais.SelectedValue), 52, DropDownPais.SelectedValue)
                         datos_cliente.nombre = txtNombre.Text
                         'datos_cliente.apellidos = TxtApellidos.Text
                         datos_cliente.empresa = txtEmpresa.Text
@@ -504,7 +504,7 @@ Partial Class Punto_Venta
                         area_extendida_express_saver = fedexResponse.Data.ExpressSaver.Amount
                     End If
 
-                    estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, datos_envio.id_agente, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, datos_envio.peso, 0, 0)
+                    estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, datos_envio.id_agente, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, datos_envio.peso, 0, 0, "", datos_envio.largo, datos_envio.alto, datos_envio.ancho)
 
                     If fedexResponse.Data.ExpressSaver.Supported = False Then
                         estafetaPrecios.ExpressSaverUser = 0
@@ -747,11 +747,11 @@ Partial Class Punto_Venta
                                 If dtgridview IsNot Nothing Then
                                     For Each row As DataRow In dtgridview.Rows
                                         pesoVol = (row("Alto") * row("Ancho") * row("Largo")) / 5000
-                                        estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, datos_envio.id_agente, pesoVol, area_extendida_express_saver, area_extendida_standard_overnight, row("Peso"), paqueteExpressResponse.Data.attributes.out_of_area_pricing, valorTotalDeclarado, "", paqueteExpressResponse.Data.attributes.total_pricing)
+                                        estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, datos_envio.id_agente, pesoVol, area_extendida_express_saver, area_extendida_standard_overnight, row("Peso"), paqueteExpressResponse.Data.attributes.out_of_area_pricing, valorTotalDeclarado, "", row("Largo"), row("Alto"), row("Ancho"))
 
                                         paqueteExpressEconomic = paqueteExpressEconomic + (estafetaPrecios.PaqueteExpressEconomic * row("Cantidad"))
                                         row("PrecioPEEconomic") = estafetaPrecios.PaqueteExpressEconomic
-                                        row("AreaExtendida") = 0
+                                        row("AreaExtendida") = IIf(paqueteExpressResponse.Data.attributes.out_of_area, paqueteExpressResponse.Data.attributes.out_of_area_pricing, 0)
                                     Next row
                                     estafetaPrecios.PaqueteExpressEconomic = paqueteExpressEconomic
                                 End If
@@ -909,7 +909,7 @@ Partial Class Punto_Venta
 
                     For Each row As DataRow In dtgridview.Rows
                         pesoVol = (row("Alto") * row("Ancho") * row("Largo")) / 5000
-                        estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, datos_envio.id_agente, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, row("Peso"), 0, 0, row("Tipo"))
+                        estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, datos_envio.id_agente, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, row("Peso"), 0, 0, row("Tipo"), row("Largo"), row("Alto"), row("Ancho"))
                         row("AreaExtendida") = 0
 
                         precioDLGombar = precioDLGombar + (estafetaPrecios.Gombar * row("Cantidad"))
@@ -1256,7 +1256,7 @@ Partial Class Punto_Venta
             Dim area_extendida_standard_overnight As Decimal = 0
             Dim pesoVol As Decimal = (txtAlto.Text * txtAncho.Text * txtLargo.Text) / 5000
             Dim pesoVolumetrico = IIf(txtPeso.Text > pesoVol, txtPeso.Text, pesoVol)
-            Dim estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, DropDownAgentes.Text, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, txtPeso.Text, 0, 0)
+            Dim estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, DropDownAgentes.Text, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, txtPeso.Text, 0, 0, "", txtLargo.Text, txtAlto.Text, txtAncho.Text)
 
             Dim proveedor = DropDownProveedores.SelectedValue
             If proveedor = 30 Or proveedor = 10 Or proveedor = redPackId Then
@@ -1554,7 +1554,7 @@ Partial Class Punto_Venta
                         area_extendida_express_saver = fedexRateResponse.Data.ExpressSaver.Amount
                     End If
 
-                    estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, DropDownAgentes.Text, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, txtPeso.Text, 0, 0)
+                    estafetaPrecios = seguimiento.costo_estafeta_gombar(Datos_Dest.codigo_postal, DropDownAgentes.Text, pesoVolumetrico, area_extendida_express_saver, area_extendida_standard_overnight, txtPeso.Text, 0, 0, "", txtLargo.Text, txtAlto.Text, txtAncho.Text)
                     envioEstafeta = False
                     If rbFedexExpress.Checked Then
                         valor_envio = estafetaPrecios.ExpressSaverAmount
